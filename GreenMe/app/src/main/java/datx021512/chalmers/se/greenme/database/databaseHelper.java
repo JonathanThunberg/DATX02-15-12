@@ -18,11 +18,11 @@ public class databaseHelper extends SQLiteAssetHelper {
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
     }
 
-    public Cursor getCategories() {
+    public Cursor getMeanCategories() {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String [] sqlSelect = {"NAME", "IMPACT"};
-        String sqlTables = "Categories";
+        String sqlTables = "meanCategories";
         qb.setTables(sqlTables);
         Cursor c = qb.query(db, sqlSelect, null, null,
                 null, null, null);
