@@ -40,7 +40,7 @@ public class MainActivity extends Activity
 
     private GoogleApiClient mGoogleApiClient;
 
-    private static final String TAG = "Debug";
+    private static final String TAG = "Sigin";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,23 +56,23 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));*/
+        Log.i(TAG,"FUcking Nooooooooob!!!!!!!");
+        setContentView(R.layout.signin_main);
 
-
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        /*mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Games.API)
                 .addScope(Games.SCOPE_GAMES)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .build();
+                .build();*/
     }
-
+/*
     @Override
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
     }
-
+*/
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
