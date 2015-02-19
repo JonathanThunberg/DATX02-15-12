@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,10 +40,13 @@ public class MainActivity extends Activity
 
     private GoogleApiClient mGoogleApiClient;
 
+    private static final String TAG = "Debug";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+       /* setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -51,7 +55,10 @@ public class MainActivity extends Activity
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+                (DrawerLayout) findViewById(R.id.drawer_layout));*/
+
+
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Games.API)
                 .addScope(Games.SCOPE_GAMES)
@@ -127,17 +134,26 @@ public class MainActivity extends Activity
 
     @Override
     public void onConnected(Bundle bundle) {
+        setContentView(R.layout.activity_main);
 
+        mNavigationDrawerFragment = (NavigationDrawerFragment)
+                getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mTitle = getTitle();
+
+        // Set up the drawer.
+        mNavigationDrawerFragment.setUp(
+                R.id.navigation_drawer,
+                (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.i(TAG, "Connection suspended :(");
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        Log.i(TAG, "Connection failed :(");
     }
 
     /**
