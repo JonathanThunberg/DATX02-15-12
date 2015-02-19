@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ListActivity;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -16,7 +19,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+
+import datx021512.chalmers.se.greenme.database.databaseHelper;
 
 
 public class MainActivity extends Activity
@@ -31,11 +42,29 @@ public class MainActivity extends Activity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private databaseHelper db;
+    private Cursor categories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        db = new databaseHelper(this);
+        categories = db.getCategories(); // you would not typically call this on the main thread
+        //ListAdapter adapter = new CursorAdapter(this,categories);
+        ArrayList<String> mArrayList = new ArrayList<String>();
+        categories.moveToFirst();
+        while(!categories.isAfterLast()) {
+            mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))+"   "+categories.getString(categories.getColumnIndex("IMPACT")))); //add the item
+            categories.moveToNext();
+        }
+
+        ListView lW = (ListView)findViewById(R.id.listView);
+        ArrayAdapter<String> itemsAdapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mArrayList);
+        lW.setAdapter(itemsAdapter);
+
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
