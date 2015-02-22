@@ -12,5 +12,5 @@
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.37"
-        android:src="@drawable/linuxlogo"/>
+        android:src="@drawable/kandidatloga"/>
 </LinearLayout>
