@@ -7,16 +7,18 @@
 
     <ImageView
         android:layout_width="189dp"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginTop="50dp"
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.37"
-        android:src="@drawable/linuxlogo"/>
+        android:src="@drawable/kandidatloga"
+        android:contentDescription="GreenMe_Logo" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="195dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="200dp"/>
+        android:layout_marginTop="150dp"/>
 </LinearLayout>
