@@ -5,7 +5,6 @@
     android:weightSum="1"
     android:background="@drawable/bg">
 
-
     <ImageView
         android:layout_width="189dp"
         android:layout_height="wrap_content"
@@ -13,4 +12,11 @@
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.37"
         android:src="@drawable/linuxlogo"/>
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="200dp"/>
 </LinearLayout>

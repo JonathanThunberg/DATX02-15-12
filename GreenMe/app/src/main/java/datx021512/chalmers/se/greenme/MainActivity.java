@@ -21,6 +21,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.google.android.gms.plus.Plus;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
@@ -44,6 +45,7 @@ public class MainActivity extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG,"OnCreate!!!!!!");
         super.onCreate(savedInstanceState);
 
        /* setContentView(R.layout.activity_main);
@@ -56,23 +58,24 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));*/
-        Log.i(TAG,"FUcking Nooooooooob!!!!!!!");
         setContentView(R.layout.signin_main);
 
-        /*mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Games.API)
-                .addScope(Games.SCOPE_GAMES)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .build();*/
+                .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
+                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
+                .build();
+
     }
-/*
+
     @Override
     protected void onStart() {
+        Log.i(TAG,"OnStart!!!!!!!");
         super.onStart();
         mGoogleApiClient.connect();
     }
-*/
+
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
@@ -154,6 +157,7 @@ public class MainActivity extends Activity
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.i(TAG, "Connection failed :(");
+
     }
 
     /**
