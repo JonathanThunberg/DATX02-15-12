@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.IntentSender;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -49,6 +51,9 @@ public class MainActivity extends Activity
     private static final String TAG = "Sigin";
 
     Boolean mSignInClicked = false;
+    private boolean mIntentInProgress;
+    private ConnectionResult mConnectionResult;
+    private static final int RC_SIGN_IN = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,12 +166,53 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.i(TAG, "Connection failed :(");
+    public void onConnectionFailed(ConnectionResult result) {
+       /* Log.i(TAG, "Connection failed :(");
         setContentView(R.layout.signin_main);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         mconnectionResult = connectionResult;
+*/
+        if (!result.hasResolution()) {
+            GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this,
+                    0).show();
+            return;
+        }
 
+        if (!mIntentInProgress) {
+            // Store the ConnectionResult for later usage
+            mConnectionResult = result;
+
+            if (mSignInClicked) {
+                // The user has already clicked 'sign-in' so we attempt to
+                // resolve all
+                // errors until the user is signed in, or they cancel.
+                resolveSignInError();
+            }
+        }
+    }
+
+    /**
+     * Method to resolve any signin errors
+     * */
+    private void resolveSignInError() {
+        if (mConnectionResult.hasResolution()) {
+            try {
+                mIntentInProgress = true;
+                mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
+            } catch (IntentSender.SendIntentException e) {
+                mIntentInProgress = false;
+                mGoogleApiClient.connect();
+            }
+        }
+    }
+    /**
+     * Sign-in into google
+     * */
+    private void signInWithGplus() {
+        if (!mGoogleApiClient.isConnecting()) {
+            mSignInClicked = true;
+            resolveSignInError();
+        }
     }
 
     @Override
@@ -174,7 +220,7 @@ public class MainActivity extends Activity
         switch (v.getId()) {
             case R.id.sign_in_button:
                 Log.i(TAG,"Nu har vi klickat på signIn");
-                signInButtonClicked();
+                signInWithGplus();
                 break;
         }
     }
