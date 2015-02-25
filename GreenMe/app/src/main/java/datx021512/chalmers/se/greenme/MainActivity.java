@@ -1,7 +1,6 @@
 package datx021512.chalmers.se.greenme;
 
 import android.app.Activity;
-
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -25,9 +24,12 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener ,
+        View.OnClickListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -43,23 +45,23 @@ public class MainActivity extends Activity
 
     private static final String TAG = "Sigin";
 
+    Listener mListener = null;
+    Boolean mSignInClicked = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG,"OnCreate!!!!!!");
         super.onCreate(savedInstanceState);
 
-       /* setContentView(R.layout.activity_main);
-
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
+      /*  mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));*/
-        setContentView(R.layout.signin_main);
-
+                (DrawerLayout) findViewById(R.id.drawer_layout));
+*/
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -157,8 +159,37 @@ public class MainActivity extends Activity
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.i(TAG, "Connection failed :(");
-
+        setContentView(R.layout.signin_main);
     }
+
+    public interface Listener {
+        public void onStartGameRequested(boolean hardMode);
+        public void onShowAchievementsRequested();
+        public void onShowLeaderboardsRequested();
+        public void onSignInButtonClicked();
+        public void onSignOutButtonClicked();
+    }
+
+    public void setListener(Listener l) {
+        mListener = l;
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                Log.i(TAG,"Nu har vi klickat på signIn");
+                mListener.onSignInButtonClicked();
+                break;
+        }
+    }
+    public void onSignInButtonClicked() {
+        Log.i(TAG,"Sign in- Button clicked!!!!!!!");
+        mSignInClicked = true;
+        mGoogleApiClient.connect();
+    }
+
 
     /**
      * A placeholder fragment containing a simple view.
