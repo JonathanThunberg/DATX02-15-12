@@ -27,6 +27,9 @@ import com.google.android.gms.games.Games;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import static com.google.android.gms.common.GooglePlayServicesUtil.getErrorString;
+import static com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable;
+
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener ,
         View.OnClickListener {
@@ -45,12 +48,11 @@ public class MainActivity extends Activity
 
     private static final String TAG = "Sigin";
 
-    Listener mListener = null;
     Boolean mSignInClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i(TAG,"OnCreate!!!!!!");
+        Log.i(TAG, "OnCreate!!!!!!");
         super.onCreate(savedInstanceState);
 
       /*  mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -68,6 +70,8 @@ public class MainActivity extends Activity
                 .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
+
+
 
     }
 
@@ -160,33 +164,28 @@ public class MainActivity extends Activity
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.i(TAG, "Connection failed :(");
         setContentView(R.layout.signin_main);
-    }
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        mconnectionResult = connectionResult;
 
-    public interface Listener {
-        public void onStartGameRequested(boolean hardMode);
-        public void onShowAchievementsRequested();
-        public void onShowLeaderboardsRequested();
-        public void onSignInButtonClicked();
-        public void onSignOutButtonClicked();
     }
-
-    public void setListener(Listener l) {
-        mListener = l;
-    }
-
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sign_in_button:
                 Log.i(TAG,"Nu har vi klickat på signIn");
-                mListener.onSignInButtonClicked();
+                signInButtonClicked();
                 break;
         }
     }
-    public void onSignInButtonClicked() {
-        Log.i(TAG,"Sign in- Button clicked!!!!!!!");
+    ConnectionResult mconnectionResult;
+
+    public void signInButtonClicked() {
+        Log.i(TAG,getErrorString(isGooglePlayServicesAvailable(getApplicationContext())));
+        Log.i(TAG,"signInButtonClicked()!!!!!!!");
+        Log.i(TAG,mconnectionResult.toString());
         mSignInClicked = true;
+
         mGoogleApiClient.connect();
     }
 
