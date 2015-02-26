@@ -3,6 +3,7 @@ package datx021512.chalmers.se.greenme;
 import android.app.Activity;
 import android.os.Bundle;
 import android.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -32,11 +33,13 @@ public class GroceryFragment extends ListFragment {
 
     // TODO: Rename and change types of parameters
     public static GroceryFragment newInstance(String param1, String param2) {
+        Log.d("abc","begening of new instance");
         GroceryFragment fragment = new GroceryFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+        Log.d("abc","end of new instance");
         return fragment;
     }
 
