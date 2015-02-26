@@ -50,15 +50,6 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = new databaseHelper(this);
-        categories = db.getCategories(); // you would not typically call this on the main thread
-        //ListAdapter adapter = new CursorAdapter(this,categories);
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categories);
-
-        ListView lW = (ListView) findViewById(R.id.listView);
-
-        lW.setAdapter(itemsAdapter);
 
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)

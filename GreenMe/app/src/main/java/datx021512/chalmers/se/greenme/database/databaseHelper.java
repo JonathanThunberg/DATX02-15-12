@@ -25,6 +25,19 @@ public class databaseHelper extends SQLiteAssetHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+  /**
+   * How to use:
+   * db = new databaseHelper(this);
+    categories = db.getCategories(); // you would not typically call this on the main thread
+    //ListAdapter adapter = new CursorAdapter(this,categories);
+    ArrayAdapter<String> itemsAdapter =
+            new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categories);
+
+    ListView lW = (ListView) findViewById(R.id.listView);
+
+    lW.setAdapter(itemsAdapter);
+   **/
+
     public ArrayList<String> getCategories () {
         Cursor categories = getEkoCategories();
         ArrayList<String> mArrayList = new ArrayList<>();
