@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, GroceryFragment.OnFragmentInteractionListener{
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, GroceryFragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -51,19 +51,21 @@ public class MainActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
-        if(position == 0) {
-
+        if(position == 0)
+            fragmentManager.beginTransaction().replace(R.id.container, GroceryFragment.newInstance("hej","hej2")).commit();
+        else {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, GroceryFragment.newInstance("hej", "hej2"))
-                    .commit();
-        }else {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, PlaceholderFragment.newInstance(position+1))
+                    .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                     .commit();
 
         }
     }
 
+    @Override
+    public void onFragmentInteraction(String id)
+    {
+
+    }
 
     public void onSectionAttached(int number) {
         switch (number) {
@@ -113,11 +115,6 @@ public class MainActivity extends Activity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onFragmentInteraction(String id) {
-
     }
 
     /**
