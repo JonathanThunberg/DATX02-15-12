@@ -43,7 +43,7 @@ public class MainActivity extends Activity
      */
     private CharSequence mTitle;
     private databaseHelper db;
-    private Cursor categories;
+    private ArrayList<String> categories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +53,11 @@ public class MainActivity extends Activity
         db = new databaseHelper(this);
         categories = db.getCategories(); // you would not typically call this on the main thread
         //ListAdapter adapter = new CursorAdapter(this,categories);
-        ArrayList<String> mArrayList = new ArrayList<String>();
-        categories.moveToFirst();
-        while(!categories.isAfterLast()) {
-            mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))+"   "+categories.getString(categories.getColumnIndex("IMPACT")))); //add the item
-            categories.moveToNext();
-        }
-
-        ListView lW = (ListView)findViewById(R.id.listView);
         ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mArrayList);
+                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categories);
+
+        ListView lW = (ListView) findViewById(R.id.listView);
+
         lW.setAdapter(itemsAdapter);
 
 
