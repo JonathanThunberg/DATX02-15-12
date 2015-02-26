@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, GroceryFragment.OnFragmentInteractionListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -59,13 +59,6 @@ public class MainActivity extends Activity
                     .commit();
 
         //}
-    }
-
-    @Override
-    public void onFragmentInteraction(String id)
-    {
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, GroceryFragment.newInstance("hej","hej2")).commit();
     }
 
     public void onSectionAttached(int number) {
