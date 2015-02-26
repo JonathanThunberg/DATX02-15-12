@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Build;
 import android.os.Bundle;
@@ -75,8 +76,6 @@ public class MainActivity extends Activity
                 .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
-
-
 
     }
 
@@ -148,6 +147,7 @@ public class MainActivity extends Activity
 
     @Override
     public void onConnected(Bundle bundle) {
+        Log.i(TAG,"Connected");
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -167,22 +167,25 @@ public class MainActivity extends Activity
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-       /* Log.i(TAG, "Connection failed :(");
+        Log.i(TAG, "Connection failed :(");
         setContentView(R.layout.signin_main);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        mconnectionResult = connectionResult;
-*/
+
         if (!result.hasResolution()) {
+            Log.i(TAG, "Not sure what this is!!!!!!");
             GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this,
                     0).show();
             return;
         }
 
         if (!mIntentInProgress) {
+
             // Store the ConnectionResult for later usage
+            Log.i(TAG, "Store the ConnectionResult for later usage");
             mConnectionResult = result;
 
-            if (mSignInClicked) {
+            if(mSignInClicked) {
+                Log.i(TAG, "The user has already clicked 'sign-in', whats the error!!!!!!");
                 // The user has already clicked 'sign-in' so we attempt to
                 // resolve all
                 // errors until the user is signed in, or they cancel.
@@ -190,16 +193,18 @@ public class MainActivity extends Activity
             }
         }
     }
-
     /**
      * Method to resolve any signin errors
      * */
     private void resolveSignInError() {
+        Log.i(TAG,"resolveSignInError()");
         if (mConnectionResult.hasResolution()) {
             try {
                 mIntentInProgress = true;
                 mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
+                Log.i(TAG,"Try-sats");
             } catch (IntentSender.SendIntentException e) {
+                Log.i(TAG,"Catch-sats");
                 mIntentInProgress = false;
                 mGoogleApiClient.connect();
             }
@@ -209,6 +214,7 @@ public class MainActivity extends Activity
      * Sign-in into google
      * */
     private void signInWithGplus() {
+        Log.i(TAG,"signInWithGplus()");
         if (!mGoogleApiClient.isConnecting()) {
             mSignInClicked = true;
             resolveSignInError();
@@ -226,13 +232,24 @@ public class MainActivity extends Activity
     }
     ConnectionResult mconnectionResult;
 
-    public void signInButtonClicked() {
-        Log.i(TAG,getErrorString(isGooglePlayServicesAvailable(getApplicationContext())));
-        Log.i(TAG,"signInButtonClicked()!!!!!!!");
-        Log.i(TAG,mconnectionResult.toString());
-        mSignInClicked = true;
+    @Override
+    protected void onActivityResult(int requestCode, int responseCode,
+                                    Intent intent) {
+        Log.i(TAG, "OnActivityResult()");
+        if (requestCode == RC_SIGN_IN) {
+            if (responseCode != RESULT_OK) {
+                Log.i(TAG,"Resultcode = OK");
+                mSignInClicked = false;
 
-        mGoogleApiClient.connect();
+            }
+
+            mIntentInProgress = false;
+
+            if (!mGoogleApiClient.isConnecting()) {
+                Log.i(TAG,"NotConnecting right now!!!!");
+                mGoogleApiClient.connect();
+            }
+        }
     }
 
 
