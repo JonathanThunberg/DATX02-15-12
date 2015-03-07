@@ -8,6 +8,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -51,8 +52,8 @@ public class MainActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
-        if(position == 0)
-            fragmentManager.beginTransaction().replace(R.id.container, GroceryFragment.newInstance("hej","hej2")).commit();
+        if(position == 1)
+            fragmentManager.beginTransaction().replace(R.id.container, GroceryFragment.newInstance(position + 1)).commit();
         else {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
@@ -68,6 +69,7 @@ public class MainActivity extends Activity
     }
 
     public void onSectionAttached(int number) {
+//        Log.d("Test", "attached nr: " + number);
         switch (number) {
             case 1:
                 mTitle = getString(R.string.title_section1);
@@ -152,8 +154,7 @@ public class MainActivity extends Activity
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
+            ((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
 

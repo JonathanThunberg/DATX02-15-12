@@ -22,24 +22,22 @@ public class GroceryFragment extends ListFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String MENU_POSITION = "position";
+
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int mParam1;
 
     private OnFragmentInteractionListener mListener;
 
     // TODO: Rename and change types of parameters
-    public static GroceryFragment newInstance(String param1, String param2) {
-        Log.d("abc","begening of new instance");
+    public static GroceryFragment newInstance(int position) {
+        //Log.d("abc","begening of new instance");
         GroceryFragment fragment = new GroceryFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(MENU_POSITION, position);
         fragment.setArguments(args);
-        Log.d("abc","end of new instance");
+        //Log.d("abc","end of new instance");
         return fragment;
     }
 
@@ -55,13 +53,12 @@ public class GroceryFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam1 = getArguments().getInt(MENU_POSITION);
         }
-
+        // Set title of fragment page
+        getActivity().getActionBar().setTitle(R.string.title_section2);
         // TODO: Change Adapter to display your content
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
+        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),R.layout.fragment_shopping, android.R.id.empty, DummyContent.ITEMS));
     }
 
 
@@ -70,6 +67,7 @@ public class GroceryFragment extends ListFragment {
         super.onAttach(activity);
         try {
             mListener = (OnFragmentInteractionListener) activity;
+            ((MainActivity) activity).onSectionAttached(getArguments().getInt(MENU_POSITION));
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
