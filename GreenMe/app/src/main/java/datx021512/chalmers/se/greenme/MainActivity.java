@@ -7,8 +7,10 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -28,10 +30,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import datx021512.chalmers.se.greenme.database.databaseHelper;
+import datx021512.chalmers.se.greenme.plot.testPlot;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, OverviewFragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -66,9 +69,15 @@ public class MainActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+        if(position == 2 ){
+            Intent intent = new Intent(this, testPlot.class);
+            startActivity(intent);
+        }else {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                    .commit();
+        }
+
     }
 
     public void onSectionAttached(int number) {
@@ -119,6 +128,11 @@ public class MainActivity extends Activity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     /**
