@@ -3,31 +3,23 @@ package datx021512.chalmers.se.greenme;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 
 public class MainActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
-    /* Request code used to invoke sign in user interactions. */
     private static final int RC_SIGN_IN = 0;
-    String TAG = "Testing";
-    /* Client used to interact with Google APIs. */
     private GoogleApiClient mGoogleApiClient;
-
-    /* A flag indicating that a PendingIntent is in progress and prevents
-     * us from starting further intents.
-     */
+    private boolean mSignInClicked;
+    private ConnectionResult mConnectionResult;
     private boolean mIntentInProgress;
+    String TAG = "Testing";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,15 +45,7 @@ public class MainActivity extends Activity implements
         }
     }
 
-    /* Track whether the sign-in button has been clicked so that we know to resolve
-  * all issues preventing sign-in without waiting.
-  */
-    private boolean mSignInClicked;
 
-    /* Store the connection result from onConnectionFailed callbacks so that we can
-     * resolve them when the user clicks sign-in.
-     */
-    private ConnectionResult mConnectionResult;
 
     /* A helper method to resolve the current ConnectionResult error. */
     private void resolveSignInError() {
@@ -87,7 +71,7 @@ public class MainActivity extends Activity implements
     }
 
     public void onConnectionFailed(ConnectionResult result) {
-        Toast.makeText(this, "Connection Failed!", Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Connection Failed!", Toast.LENGTH_LONG).show();
         if (!mIntentInProgress) {
             // Store the ConnectionResult so that we can use it later when the user clicks
             // 'sign-in'.
@@ -105,14 +89,13 @@ public class MainActivity extends Activity implements
     @Override
     public void onConnected(Bundle connectionHint) {
         mSignInClicked = false;
-        Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
         setContentView(R.layout.activity_main);
-
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.i(TAG,"Connection Suspended");
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
@@ -120,7 +103,6 @@ public class MainActivity extends Activity implements
             if (responseCode != RESULT_OK) {
                 mSignInClicked = false;
             }
-
             mIntentInProgress = false;
 
             if (!mGoogleApiClient.isConnecting()) {
