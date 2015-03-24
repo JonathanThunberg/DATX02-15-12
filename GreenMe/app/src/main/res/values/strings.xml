@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GreenMe2</string>
+    <string name="app_name">GreenMe</string>
     <string name="action_settings">Inställningar</string>
     <string name="action_reset">Rensa</string>
     <string name="action_open">Öppna</string>
