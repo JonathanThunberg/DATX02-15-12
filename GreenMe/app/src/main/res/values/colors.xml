@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="actionbarbackground">#1976D2</color>
+    <color name="myPrimaryDarkColor">#3F51B5</color>
+    <color name="myAccentColor">#90CAF9</color>
+    <color name="myDrawerBackground">#E3F2FD</color>
+    <color name="myWindowBackground">#64B5F6</color>
+    <color name="myTextPrimaryColor">#ff000000</color>
+    <color name="myNavigationColor">#000000</color>
+
+    <color name="selection">#F5F5F5</color>
+    <color name="colorPrimary">#ff23b046</color>
+</resources>
