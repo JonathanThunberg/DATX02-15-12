@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 import com.google.android.gms.plus.Plus;
 
 
@@ -31,6 +32,8 @@ public class LoginActivity extends Activity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .addApi(Games.API)
+                .addScope(Games.SCOPE_GAMES)
                 .build();
     }
 
