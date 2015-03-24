@@ -30,7 +30,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import datx021512.chalmers.se.greenme.database.databaseHelper;
-import datx021512.chalmers.se.greenme.plot.testPlot;
 
 
 public class MainActivity extends Activity
@@ -70,8 +69,9 @@ public class MainActivity extends Activity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
         if(position == 2 ){
-            Intent intent = new Intent(this, testPlot.class);
-            startActivity(intent);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, OverviewFragment.newInstance("hej","då"))
+                    .commit();
         }else {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
