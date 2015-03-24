@@ -70,7 +70,7 @@ public class MainActivity extends Activity
         FragmentManager fragmentManager = getFragmentManager();
         if(position == 2 ){
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, OverviewFragment.newInstance("hej","då"))
+                    .replace(R.id.container, OverviewFragment.newInstance())
                     .commit();
         }else {
             fragmentManager.beginTransaction()
