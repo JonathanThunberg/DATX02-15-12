@@ -1,20 +1,25 @@
-package se.chalmers.greenme.base;
+package datx021512.chalmers.se.greenme;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.WindowManager;
+import android.util.Log;
 
-import se.chalmers.greenme.base.fragments.Home;
-import se.chalmers.greenme.base.fragments.ShoppingFragment;
-import se.chalmers.greenme.base.fragments.StatisticsFragment;
-import se.chalmers.greenme.base.fragments.TravelFragment;
-import se.chalmers.greenme.base.navigation.NavCallback;
-import se.chalmers.greenme.base.navigation.NavFragment;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.plus.Plus;
+
+import datx021512.chalmers.se.greenme.fragments.Home;
+import datx021512.chalmers.se.greenme.fragments.PlayFragment;
+import datx021512.chalmers.se.greenme.fragments.ShoppingFragment;
+import datx021512.chalmers.se.greenme.fragments.StatisticsFragment;
+import datx021512.chalmers.se.greenme.fragments.TravelFragment;
+import datx021512.chalmers.se.greenme.navigation.NavCallback;
+import datx021512.chalmers.se.greenme.navigation.NavFragment;
 
 
 public class MainActivity extends ActionBarActivity implements NavCallback {
@@ -22,6 +27,7 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
     private Toolbar toolBar;
 
     private NavFragment navigationDrawerFragment;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +42,23 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
         navigationDrawerFragment = (NavFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
         navigationDrawerFragment.setup(R.id.fragment_drawer,(DrawerLayout) findViewById(R.id.drawer), toolBar);
 
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+                .addApi(Plus.API)
+                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .addApi(Games.API)
+                .addScope(Games.SCOPE_GAMES)
+                .build();
+
     }
+    protected void onStart() {
+        super.onStart();
+
+        mGoogleApiClient.connect();
+    }
+
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -55,6 +77,17 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
             case 3:
                 fragment = new StatisticsFragment();
                 break;
+            case 4:
+                fragment = new PlayFragment();
+                break;
+            case 5:
+                if(mGoogleApiClient.isConnected()) {
+                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+                    mGoogleApiClient.disconnect();
+                }
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                this.finish();
             default:
                 break;
         }

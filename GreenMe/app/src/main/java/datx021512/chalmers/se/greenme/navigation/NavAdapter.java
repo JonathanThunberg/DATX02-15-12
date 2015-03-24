@@ -1,4 +1,4 @@
-package se.chalmers.greenme.base.navigation;
+package datx021512.chalmers.se.greenme.navigation;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import se.chalmers.greenme.base.R;
+import datx021512.chalmers.se.greenme.R;
 
 /**
  * Created by Fredrik on 2015-03-23.

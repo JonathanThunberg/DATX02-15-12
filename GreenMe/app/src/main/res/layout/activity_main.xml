@@ -21,13 +21,11 @@
             android:background="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
-
-
         </FrameLayout>
 
         <fragment
             android:id="@+id/fragment_drawer"
-            android:name="se.chalmers.greenme.base.navigation.NavFragment"
+            android:name="datx021512.chalmers.se.greenme.navigation.NavFragment"
             android:layout_width="@dimen/navigation_drawer_width"
             android:layout_height="match_parent"
             android:layout_gravity="start"

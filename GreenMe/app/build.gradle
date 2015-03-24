@@ -6,9 +6,7 @@ android {
 
     defaultConfig {
         applicationId "datx021512.chalmers.se.greenme"
-        minSdkVersion 18
-        applicationId "se.chalmers.greenme.base"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -26,6 +24,7 @@ dependencies {
     compile 'com.android.support:support-v13:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile "com.androidplot:androidplot-core:0.6.1"

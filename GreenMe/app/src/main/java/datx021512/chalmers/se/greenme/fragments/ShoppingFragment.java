@@ -1,4 +1,4 @@
-package se.chalmers.greenme.base.fragments;
+package datx021512.chalmers.se.greenme.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -14,8 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
-import se.chalmers.greenme.base.R;
-import se.chalmers.greenme.base.adapters.ShoppingAdapter;
+import datx021512.chalmers.se.greenme.R;
+import datx021512.chalmers.se.greenme.adapters.ShoppingAdapter;
 
 
 public class ShoppingFragment extends Fragment implements View.OnClickListener {

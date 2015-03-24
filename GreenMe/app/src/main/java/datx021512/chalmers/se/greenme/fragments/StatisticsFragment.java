@@ -1,4 +1,4 @@
-package se.chalmers.greenme.base.fragments;
+package datx021512.chalmers.se.greenme.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import com.androidplot.xy.XYSeries;
 
 import java.util.Arrays;
 
-import se.chalmers.greenme.base.R;
+import datx021512.chalmers.se.greenme.R;
 
 /**
  * Created by Fredrik on 2015-03-23.

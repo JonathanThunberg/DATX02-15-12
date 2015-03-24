@@ -1,4 +1,4 @@
-package se.chalmers.greenme.base.database;
+package datx021512.chalmers.se.greenme.database;
 
 import android.content.Context;
 import android.database.Cursor;

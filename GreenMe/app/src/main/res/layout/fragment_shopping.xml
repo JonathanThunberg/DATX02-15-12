@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="se.chalmers.greenme.base.fragments.ShoppingFragment">
+    tools:context="datx021512.chalmers.se.greenme.fragments.ShoppingFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

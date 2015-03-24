@@ -1,4 +1,4 @@
-package se.chalmers.greenme.base.navigation;
+package datx021512.chalmers.se.greenme.navigation;
 
 /**
  * Created by Fredrik on 2015-03-23.

@@ -1,7 +1,8 @@
-package se.chalmers.greenme.base.navigation;
+package datx021512.chalmers.se.greenme.navigation;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,7 +16,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.chalmers.greenme.base.R;
+import datx021512.chalmers.se.greenme.R;
 
 public class NavFragment extends Fragment implements NavCallback {
     private RecyclerView recyclerviewDrawerList;
@@ -111,8 +112,12 @@ public class NavFragment extends Fragment implements NavCallback {
                 R.drawable.ic_shopping_cart_grey600_48dp)));
         items.add(new NavItem("Resa", getResources().getDrawable(
                 R.drawable.ic_directions_car_grey600_48dp)));
-        items.add(new NavItem("Statestik", getResources().getDrawable(
+        items.add(new NavItem("Statistik", getResources().getDrawable(
                 R.drawable.ic_trending_up_grey600_48dp)));
+        items.add(new NavItem("Tävling", getResources().getDrawable(
+                R.drawable.ic_group_grey600_48dp)));
+        items.add(new NavItem("Logga ut", getResources().getDrawable(
+                R.drawable.abc_ic_ab_back_mtrl_am_alpha)));
         return items;
     }
 

@@ -1,4 +1,4 @@
-package se.chalmers.greenme.base.adapters;
+package datx021512.chalmers.se.greenme.adapters;
 
 
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import se.chalmers.greenme.base.R;
+import datx021512.chalmers.se.greenme.R;
 
 public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.Holder>{
     private ArrayList<String> mListData = new ArrayList<>();
