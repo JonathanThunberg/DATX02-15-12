@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.plus.Plus;
@@ -22,7 +23,8 @@ import datx021512.chalmers.se.greenme.navigation.NavCallback;
 import datx021512.chalmers.se.greenme.navigation.NavFragment;
 
 
-public class MainActivity extends ActionBarActivity implements NavCallback {
+public class MainActivity extends ActionBarActivity implements NavCallback, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private Toolbar toolBar;
 
@@ -43,8 +45,8 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
         navigationDrawerFragment.setup(R.id.fragment_drawer,(DrawerLayout) findViewById(R.id.drawer), toolBar);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API)
@@ -56,6 +58,14 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
         super.onStart();
 
         mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
     }
 
 
@@ -88,6 +98,7 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 this.finish();
+                break;
             default:
                 break;
         }
@@ -114,4 +125,18 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
         // finish();
     }
 
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+
+    }
 }

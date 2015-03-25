@@ -55,14 +55,17 @@ public class LoginActivity extends Activity implements
 
     /* A helper method to resolve the current ConnectionResult error. */
     private void resolveSignInError() {
+        Log.i(TAG,"resolveSignInError");
         if (mConnectionResult.hasResolution()) {
             try {
+                Log.i(TAG,"Try-satsen");
                 mIntentInProgress = true;
                 startIntentSenderForResult(mConnectionResult.getResolution().getIntentSender(),
                         RC_SIGN_IN, null, 0, 0, 0);
             } catch (IntentSender.SendIntentException e) {
                 // The intent was canceled before it was sent.  Return to the default
                 // state and attempt to connect to get an updated ConnectionResult.
+                Log.i(TAG,"catch-satsen, error: " + e);
                 mIntentInProgress = false;
                 mGoogleApiClient.connect();
             }
@@ -77,6 +80,7 @@ public class LoginActivity extends Activity implements
     }
 
     public void onConnectionFailed(ConnectionResult result) {
+        Log.i(TAG,"onConnectionFailed");
 //        Toast.makeText(this, "Connection Failed!", Toast.LENGTH_LONG).show();
         if (!mIntentInProgress) {
             // Store the ConnectionResult so that we can use it later when the user clicks
@@ -94,6 +98,7 @@ public class LoginActivity extends Activity implements
 
     @Override
     public void onConnected(Bundle connectionHint) {
+        Log.i(TAG,"onConnected");
         mSignInClicked = false;
         //Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, MainActivity.class);
