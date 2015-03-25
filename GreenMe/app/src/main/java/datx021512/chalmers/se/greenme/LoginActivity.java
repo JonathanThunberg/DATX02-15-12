@@ -58,14 +58,12 @@ public class LoginActivity extends Activity implements
         Log.i(TAG,"resolveSignInError");
         if (mConnectionResult.hasResolution()) {
             try {
-                Log.i(TAG,"Try-satsen");
                 mIntentInProgress = true;
                 startIntentSenderForResult(mConnectionResult.getResolution().getIntentSender(),
                         RC_SIGN_IN, null, 0, 0, 0);
             } catch (IntentSender.SendIntentException e) {
                 // The intent was canceled before it was sent.  Return to the default
                 // state and attempt to connect to get an updated ConnectionResult.
-                Log.i(TAG,"catch-satsen, error: " + e);
                 mIntentInProgress = false;
                 mGoogleApiClient.connect();
             }
