@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import datx021512.chalmers.se.greenme.R;
 
-public class ShoppingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.Holder>{
     private ArrayList<ShopItem> mListData;
     private LayoutInflater mLayoutInflater;
 
@@ -25,20 +25,20 @@ public class ShoppingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public ShoppingAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d("ADAPTER", "entering oncreateviewholder!");
         //View row = mLayoutInflater.inflate(R.layout.shopping_item, parent, false);
         //ShoppingAdapter.ViewHolder holder = new ShoppingAdapter.ViewHolder(row);
-        View v = mLayoutInflater.inflate(R.layout.shopping_item, parent, false);
-        ViewHolder vh = new ViewHolder(v);
+        View v = mLayoutInflater.inflate(R.layout.card_view, parent, false);
+        Holder vh = new Holder(v);
         return vh;
         //return holder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
-        if(viewHolder instanceof ViewHolder) {
-            ViewHolder holder = (ViewHolder) viewHolder;
+    public void onBindViewHolder(Holder viewHolder, final int position) {
+        if(viewHolder instanceof Holder) {
+            Holder holder = (Holder) viewHolder;
             Log.d("ADAPTER", "entering onbindviewholder!");
 
             ShopItem data = mListData.get(position);
@@ -80,7 +80,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return mListData.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class Holder extends RecyclerView.ViewHolder {
         TextView textItem;
         TextView textCO2;
         TextView textQuantity;
@@ -88,9 +88,9 @@ public class ShoppingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ImageButton buttonPlus;
         ImageButton buttonMinus;
 
-        public ViewHolder(View itemView) {
+        public Holder(View itemView) {
             super(itemView);
-            textItem = (TextView) itemView.findViewById(R.id.text_item);
+            textItem = (TextView) itemView.findViewById(R.id.title);
             textCO2 = (TextView) itemView.findViewById(R.id.text_co2);
             buttonPlus = (ImageButton) itemView.findViewById(R.id.button_plus);
             textQuantity = (TextView) itemView.findViewById(R.id.text_quantity);
