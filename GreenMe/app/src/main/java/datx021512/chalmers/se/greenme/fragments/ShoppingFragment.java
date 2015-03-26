@@ -34,7 +34,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
 
         //Init fields
         mInput = (EditText) rootView.findViewById(R.id.text_input);
-        ArrayList<ShopItem> items = new ArrayList<ShopItem>();
+        ArrayList<ShopItem> items = new ArrayList<>();
         items.add(new ShopItem("Gurka", 0.2));
         items.add(new ShopItem("Banan", 1.2));
         Log.d("SHOPPING","item 1:" + items.get(1).getmName());
