@@ -6,6 +6,7 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,8 +33,8 @@ public class LoginActivity extends Activity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
-                .addApi(Games.API)
-                .addScope(Games.SCOPE_GAMES)
+                //.addApi(Games.API)
+               // .addScope(Games.SCOPE_GAMES)
                 .build();
     }
 
@@ -77,7 +78,7 @@ public class LoginActivity extends Activity implements
     }
 
     public void onConnectionFailed(ConnectionResult result) {
-//        Toast.makeText(this, "Connection Failed!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Connection Failed!", Toast.LENGTH_LONG).show();
         if (!mIntentInProgress) {
             // Store the ConnectionResult so that we can use it later when the user clicks
             // 'sign-in'.

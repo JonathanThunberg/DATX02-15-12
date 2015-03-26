@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.plus.Plus;
 
+import datx021512.chalmers.se.greenme.analytics.AnalyticsApp;
+import datx021512.chalmers.se.greenme.analytics.TrackerName;
 import datx021512.chalmers.se.greenme.fragments.Home;
 import datx021512.chalmers.se.greenme.fragments.PlayFragment;
 import datx021512.chalmers.se.greenme.fragments.ShoppingFragment;
@@ -47,15 +49,22 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
 //                .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
-                .addApi(Games.API)
-                .addScope(Games.SCOPE_GAMES)
+  //              .addApi(Games.API)
+    //            .addScope(Games.SCOPE_GAMES)
                 .build();
+        ((AnalyticsApp) getApplication()).getTracker(TrackerName.APP_TRACKER).enableAutoActivityTracking(true);
 
     }
     protected void onStart() {
         super.onStart();
-
         mGoogleApiClient.connect();
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+     }
+
+    @Override
+    public void onDestroy(){
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
+        super.onStop();
     }
 
 
