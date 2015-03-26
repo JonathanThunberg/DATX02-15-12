@@ -3,6 +3,7 @@ package datx021512.chalmers.se.greenme.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,37 +14,48 @@ import java.util.ArrayList;
 
 import datx021512.chalmers.se.greenme.R;
 
-public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.Holder>{
-    private ArrayList<ShopItem> mListData = new ArrayList<>();
+public class ShoppingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+    private ArrayList<ShopItem> mListData;
     private LayoutInflater mLayoutInflater;
 
-    public ShoppingAdapter(Context context)
+    public ShoppingAdapter(Context context, ArrayList<ShopItem> items)
     {
         mLayoutInflater = LayoutInflater.from(context);
+        mListData = items;
     }
 
     @Override
-    public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View row = mLayoutInflater.inflate(R.layout.shopping_item, parent, false);
-        Holder holder = new Holder(row);
-        return holder;
+    public ShoppingAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d("ADAPTER", "entering oncreateviewholder!");
+        //View row = mLayoutInflater.inflate(R.layout.shopping_item, parent, false);
+        //ShoppingAdapter.ViewHolder holder = new ShoppingAdapter.ViewHolder(row);
+        View v = mLayoutInflater.inflate(R.layout.shopping_item, parent, false);
+        ViewHolder vh = new ViewHolder(v);
+        return vh;
+        //return holder;
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, final int position) {
-        ShopItem data = mListData.get(position);
-        holder.textItem.setText(data.getmName());
-        holder.textCO2.setText(Double.toString(data.getmCO2()));
-        holder.textQuantity.setText("1");
-        holder.buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeItem(position);
-            }
-        });
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+        if(viewHolder instanceof ViewHolder) {
+            ViewHolder holder = (ViewHolder) viewHolder;
+            Log.d("ADAPTER", "entering onbindviewholder!");
+
+            ShopItem data = mListData.get(position);
+            holder.textItem.setText(data.getmName());
+            holder.textCO2.setText(Double.toString(data.getmCO2()));
+            holder.textQuantity.setText("1");
+            holder.buttonDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeItem(position);
+                }
+            });
+        }
     }
 
     public void addItem(ShopItem item) {
+        Log.d("ADAPTER", "entering addItem!");
         mListData.add(item);
         notifyDataSetChanged();
         notifyItemInserted(mListData.size());
@@ -68,7 +80,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.Holder
         return mListData.size();
     }
 
-    public static class Holder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textItem;
         TextView textCO2;
         TextView textQuantity;
@@ -76,7 +88,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.Holder
         ImageButton buttonPlus;
         ImageButton buttonMinus;
 
-        public Holder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
             textItem = (TextView) itemView.findViewById(R.id.text_item);
             textCO2 = (TextView) itemView.findViewById(R.id.text_co2);

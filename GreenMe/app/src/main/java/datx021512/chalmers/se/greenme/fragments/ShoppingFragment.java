@@ -14,7 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
+import java.util.ArrayList;
+
 import datx021512.chalmers.se.greenme.R;
+import datx021512.chalmers.se.greenme.adapters.ShopItem;
 import datx021512.chalmers.se.greenme.adapters.ShoppingAdapter;
 
 
@@ -31,7 +34,11 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
 
         //Init fields
         mInput = (EditText) rootView.findViewById(R.id.text_input);
-        mAdapter = new ShoppingAdapter(rootView.getContext());
+        ArrayList<ShopItem> items = new ArrayList<ShopItem>();
+        items.add(new ShopItem("Gurka", 0.2));
+        items.add(new ShopItem("Banan", 1.2));
+        Log.d("SHOPPING","item 1:" + items.get(1).getmName());
+        mAdapter = new ShoppingAdapter(rootView.getContext(),items);
         mAddButton = (Button) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);
         mRecycleView = (RecyclerView) rootView.findViewById(R.id.recyclerShoppingItems);
@@ -39,6 +46,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycleView.setLayoutManager(llm);
         mRecycleView.setAdapter(mAdapter);
+        Log.d("GREEN","Setting adapter!");
         setHasOptionsMenu(true);
 
         return rootView;
@@ -61,7 +69,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                 if (mInput.getText() != null) {
                     String text = mInput.getText().toString();
                     if (text != null && text.trim().length() > 0) {
-                        mAdapter.addItem(mInput.getText().toString());
+                        //mAdapter.addItem(mInput.getText().toString());
                         mAdapter.notifyDataSetChanged();
                         Log.d("GREEN", "item added");
                         Log.d("GREEN", "items: " + mAdapter.getItemCount());
