@@ -35,7 +35,9 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         mAddButton = (Button) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);
         mRecycleView = (RecyclerView) rootView.findViewById(R.id.recyclerShoppingItems);
-        mRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecycleView.setLayoutManager(llm);
         mRecycleView.setAdapter(mAdapter);
         setHasOptionsMenu(true);
 

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import datx021512.chalmers.se.greenme.R;
 
 public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.Holder>{
-    private ArrayList<String> mListData = new ArrayList<>();
+    private ArrayList<ShopItem> mListData = new ArrayList<>();
     private LayoutInflater mLayoutInflater;
 
     public ShoppingAdapter(Context context)
@@ -31,8 +31,10 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.Holder
 
     @Override
     public void onBindViewHolder(Holder holder, final int position) {
-        String data = mListData.get(position);
-        holder.textDataItem.setText(data);
+        ShopItem data = mListData.get(position);
+        holder.textItem.setText(data.getmName());
+        holder.textCO2.setText(Double.toString(data.getmCO2()));
+        holder.textQuantity.setText("1");
         holder.buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,12 +43,13 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.Holder
         });
     }
 
-    public void addItem(String item) {
+    public void addItem(ShopItem item) {
         mListData.add(item);
+        notifyDataSetChanged();
         notifyItemInserted(mListData.size());
     }
 
-    public void removeItem(String item) {
+    public void removeItem(ShopItem item) {
         int position = mListData.indexOf(item);
         if (position != -1) {
             mListData.remove(item);
@@ -56,6 +59,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.Holder
 
     public void removeItem(int position) {
         mListData.remove(position);
+        notifyDataSetChanged();
         notifyItemRemoved(position);
     }
 
@@ -65,12 +69,20 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.Holder
     }
 
     public static class Holder extends RecyclerView.ViewHolder {
-        TextView textDataItem;
+        TextView textItem;
+        TextView textCO2;
+        TextView textQuantity;
         ImageButton buttonDelete;
+        ImageButton buttonPlus;
+        ImageButton buttonMinus;
 
         public Holder(View itemView) {
             super(itemView);
-            textDataItem = (TextView) itemView.findViewById(R.id.text_item);
+            textItem = (TextView) itemView.findViewById(R.id.text_item);
+            textCO2 = (TextView) itemView.findViewById(R.id.text_co2);
+            buttonPlus = (ImageButton) itemView.findViewById(R.id.button_plus);
+            textQuantity = (TextView) itemView.findViewById(R.id.text_quantity);
+            buttonMinus = (ImageButton) itemView.findViewById(R.id.button_minus);
             buttonDelete = (ImageButton) itemView.findViewById(R.id.button_delete);
 
         }
