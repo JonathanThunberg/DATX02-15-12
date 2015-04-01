@@ -10,7 +10,7 @@ public class ShopItem {
     public ShopItem(String name, double c02)
     {
         this.mName = name;
-        this.mCO2 = mCO2;
+        this.mCO2 = c02;
     }
 
     public String getmName() {

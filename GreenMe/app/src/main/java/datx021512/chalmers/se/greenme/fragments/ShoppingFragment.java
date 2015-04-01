@@ -38,7 +38,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         items.add(new ShopItem("Gurka", 0.2));
         items.add(new ShopItem("Banan", 1.2));
         Log.d("SHOPPING","item 1:" + items.get(1).getmName());
-        mAdapter = new ShoppingAdapter(rootView.getContext(),items);
+        mAdapter = new ShoppingAdapter(items);
         mAddButton = (Button) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);
         mRecycleView = (RecyclerView) rootView.findViewById(R.id.recyclerShoppingItems);
@@ -69,8 +69,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                 if (mInput.getText() != null) {
                     String text = mInput.getText().toString();
                     if (text != null && text.trim().length() > 0) {
-                        //mAdapter.addItem(mInput.getText().toString());
-                        mAdapter.notifyDataSetChanged();
+                        mAdapter.addItem(new ShopItem(mInput.getText().toString(),20));
+                       // mAdapter.notifyDataSetChanged();
                         Log.d("GREEN", "item added");
                         Log.d("GREEN", "items: " + mAdapter.getItemCount());
                     }
