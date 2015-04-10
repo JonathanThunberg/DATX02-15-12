@@ -6,11 +6,13 @@ public class ShopItem {
 
     private String mName;
     private double mCO2;
+    private double quantity;
 
     public ShopItem(String name, double c02)
     {
         this.mName = name;
         this.mCO2 = c02;
+        this.quantity =1;
     }
 
     public String getmName() {
@@ -27,5 +29,13 @@ public class ShopItem {
 
     public void setmCO2(double mCO2) {
         this.mCO2 = mCO2;
+    }
+
+    public double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(double quantity) {
+        this.quantity = quantity;
     }
 }

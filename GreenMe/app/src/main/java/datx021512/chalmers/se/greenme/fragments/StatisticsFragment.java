@@ -17,9 +17,8 @@ import java.util.Arrays;
 
 import datx021512.chalmers.se.greenme.R;
 
-/**
- * Created by Fredrik on 2015-03-23.
- */
+
+
 public class StatisticsFragment extends Fragment {
     private XYPlot plot;
     @Override

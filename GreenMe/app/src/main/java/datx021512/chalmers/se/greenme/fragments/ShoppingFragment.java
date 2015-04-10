@@ -1,6 +1,9 @@
 package datx021512.chalmers.se.greenme.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,8 +13,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 
 
 import java.util.ArrayList;
@@ -19,13 +28,15 @@ import java.util.ArrayList;
 import datx021512.chalmers.se.greenme.R;
 import datx021512.chalmers.se.greenme.adapters.ShopItem;
 import datx021512.chalmers.se.greenme.adapters.ShoppingAdapter;
+import datx021512.chalmers.se.greenme.database.databaseHelper;
 
 
 public class ShoppingFragment extends Fragment implements View.OnClickListener {
-    private EditText mInput;
+    private AutoCompleteTextView textView;
     private RecyclerView mRecycleView;
     private ShoppingAdapter mAdapter;
     private Button mAddButton;
+    private databaseHelper db;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,12 +44,9 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
 
         //Init fields
-        mInput = (EditText) rootView.findViewById(R.id.text_input);
+      //  mInput = (EditText) rootView.findViewById(R.id.text_input);
         ArrayList<ShopItem> items = new ArrayList<ShopItem>();
-        items.add(new ShopItem("Gurka", 0.2));
-        items.add(new ShopItem("Banan", 1.2));
-        Log.d("SHOPPING","item 1:" + items.get(1).getmName());
-        mAdapter = new ShoppingAdapter(items);
+        mAdapter = new ShoppingAdapter(items,rootView);
         mAddButton = (Button) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);
         mRecycleView = (RecyclerView) rootView.findViewById(R.id.recyclerShoppingItems);
@@ -49,6 +57,15 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         Log.d("GREEN","Setting adapter!");
         setHasOptionsMenu(true);
 
+
+
+        db = new databaseHelper(rootView.getContext());
+        ArrayList<String> categories = db.getCategories();
+        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.select_dialog_item, categories);
+
+        textView = (AutoCompleteTextView)
+                rootView.findViewById(R.id.text_input);
+        textView.setAdapter(itemsAdapter);
         return rootView;
     }
 
@@ -66,20 +83,69 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.add_text:
                 Log.d("GREEN", "Add button pressed!");
-                if (mInput.getText() != null) {
-                    String text = mInput.getText().toString();
+                if (textView.getText() != null) {
+                    final String text = textView.getText().toString();
                     if (text != null && text.trim().length() > 0) {
-                        mAdapter.addItem(new ShopItem(mInput.getText().toString(),20));
-                       // mAdapter.notifyDataSetChanged();
-                        Log.d("GREEN", "item added");
-                        Log.d("GREEN", "items: " + mAdapter.getItemCount());
+                       if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
+                               addItemToList(text,0);
+                               View view = getActivity().getCurrentFocus();
+                               if (view != null) {
+                                   InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getActivity().getBaseContext().INPUT_METHOD_SERVICE);
+                                   inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                               }
+                           } else {
+                               final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                               LayoutInflater inflater = getActivity().getLayoutInflater();
+                               View convertView = (View) inflater.inflate(R.layout.list_alert, null);
+                               alertDialog.setView(convertView);
+                               alertDialog.setTitle("Menade du detta?");
+                               ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+                               ArrayList<String> suggestions = new ArrayList<>();
+                               suggestions.add("Skapa nytt objekt");
+                               suggestions.addAll(db.getImpactName(text));
+                               ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,suggestions );
+                               lv.setAdapter(arrayAdapter);
+                               final AlertDialog mdialog = alertDialog.create();
+                               lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                       if(position==0){
+                                            createNewItem(text);
+                                       }else{
+                                            addItemToList(text,position-1);
+                                       }
+                                       mdialog.dismiss();
+                                   }
+                               });
+                               mdialog.show();
+
+                           }
+                       }
                     }
-                }
+
                 break;
             case R.id.OCR_add:
                 Log.d("GREEN","OCR button pushed");
                 break;
         }
+    }
+
+    private void createNewItem(String text) {
+        //todo make a dialog and push to database
+    }
+
+    public void addItemToList(String text,int position){
+        if(!mAdapter.contains(text)) {
+            mAdapter.addItem(new ShopItem(db.getImpactName(text).get(position), Double.parseDouble(db.getImpact(text).get(position))));
+            textView.setText("");
+            updateTotal();
+        }
+    }
+
+    public void updateTotal(){
+        Double total = mAdapter.getTotalImpact();
+        TextView textTotal = (TextView) getActivity().findViewById(R.id.text_total);
+        textTotal.setText(total+" kg/co2");
+
     }
 
     @Override
