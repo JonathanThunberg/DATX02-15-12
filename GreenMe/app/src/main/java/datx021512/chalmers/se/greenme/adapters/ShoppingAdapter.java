@@ -43,7 +43,6 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
 
     @Override
     public ShoppingAdapter.ListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d("ADAPTER", "entering oncreateviewholder!");
         //View row = mLayoutInflater.inflate(R.layout.shopping_item, parent, false);
         //ShoppingAdapter.ViewHolder holder = new ShoppingAdapter.ViewHolder(row);
         View v = LayoutInflater.
@@ -137,6 +136,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
         return mListData.size();
     }
 
+
     public Double getTotalImpact() {
         double totalImpact =0;
         for(ShopItem i: mListData){
@@ -156,7 +156,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
 
         public ListViewHolder(View itemView) {
             super(itemView);
-            textItem = (TextView) itemView.findViewById(R.id.text_item);
+            textItem = (TextView) itemView.findViewById(R.id.title);
             textCO2 = (TextView) itemView.findViewById(R.id.text_co2);
             buttonPlus = (ImageButton) itemView.findViewById(R.id.button_plus);
             textQuantity = (TextView) itemView.findViewById(R.id.text_quantity);
