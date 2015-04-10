@@ -38,17 +38,22 @@ public class databaseHelper extends SQLiteAssetHelper {
         ArrayList<String> mArrayList = new ArrayList<>();
         categories.moveToFirst();
         while(!categories.isAfterLast()){
-            mArrayList.add((categories.getString(categories.getColumnIndex("NAME")) + "   " +
+            if(!mArrayList.contains((categories.getString(categories.getColumnIndex("NAME"))))){
+                    mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+            }
+
+                    /**+ "   " +
                     categories.getString(categories.getColumnIndex("COUNTRY"))+ "   Ekologisk: " +
                     categories.getString(categories.getColumnIndex("EKOLOGICAL"))+ "   " +
-                    categories.getString(categories.getColumnIndex("IMPACT")))); //add the item
+                    categories.getString(categories.getColumnIndex("IMPACT")))); //add the item**/
             categories.moveToNext();
         }
 
         categories = getMeanCategories();
         categories.moveToFirst();
         while(!categories.isAfterLast()){
-            mArrayList.add((categories.getString(categories.getColumnIndex("NAME")) + "   " + categories.getString(categories.getColumnIndex("IMPACT")))); //add the item
+            mArrayList.add((categories.getString(categories.getColumnIndex("NAME")) ));
+                    //+ "   " + categories.getString(categories.getColumnIndex("IMPACT")))); //add the item
             categories.moveToNext();
         }
 
@@ -79,6 +84,55 @@ public class databaseHelper extends SQLiteAssetHelper {
                 null, null, null);
         c.moveToFirst();
         return c;
+    }
+    public Cursor getImpactFromDatabase(String sqlTables,String s){
+          SQLiteDatabase db = getReadableDatabase();
+          Cursor c = db.rawQuery("SELECT NAME,IMPACT FROM "+sqlTables+" WHERE NAME LIKE '%"+s+"%'", null);
+
+          SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+          String [] sqlSelect = {"IMPACT"};
+          qb.setTables(sqlTables);
+          String []selectionArgs = {s + "%"};
+//          Cursor c = qb.query(db, sqlSelect, null, selectionArgs,
+  //                null, null, null);
+          c.moveToFirst();
+          return c;
+    }
+
+    public ArrayList<String> getImpact(String s){
+        Cursor categories = getImpactFromDatabase("vegetableCategories",s);
+        ArrayList<String> mArrayList = new ArrayList<>();
+        categories.moveToFirst();
+        while(!categories.isAfterLast()){
+            mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT"))));
+            categories.moveToNext();
+        }
+
+        categories = getImpactFromDatabase("meanCategories", s);
+        categories.moveToFirst();
+        while(!categories.isAfterLast()){
+            mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT")) ));
+            categories.moveToNext();
+        }
+        return mArrayList;
+    }
+
+    public ArrayList<String> getImpactName(String s){
+        Cursor categories = getImpactFromDatabase("vegetableCategories",s);
+        ArrayList<String> mArrayList = new ArrayList<>();
+        categories.moveToFirst();
+        while(!categories.isAfterLast()){
+            mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+            categories.moveToNext();
+        }
+
+        categories = getImpactFromDatabase("meanCategories", s);
+        categories.moveToFirst();
+        while(!categories.isAfterLast()){
+            mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+            categories.moveToNext();
+        }
+        return mArrayList;
     }
 
 }

@@ -14,7 +14,10 @@
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/AppTheme">
 
-
+        <uses-permission android:name="android.permission.INTERNET" />
+        <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+        <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+        <uses-permission android:name="com.sonymobile.permission.SYSTEM_UI_VISIBILITY_EXTENSIONS"/>
 
         <activity
             android:name="datx021512.chalmers.se.greenme.LoginActivity"
