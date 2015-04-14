@@ -106,7 +106,7 @@ public class PlayFragment extends Fragment implements View.OnClickListener, Goog
     @Override
     public void onClick(View v) {
 
-        Log.d(TAG, "onClick!");
+        //Log.d(TAG, "onClick!");
         Intent intent;
 
         switch (v.getId()) {
@@ -152,8 +152,7 @@ public class PlayFragment extends Fragment implements View.OnClickListener, Goog
         Games.RealTimeMultiplayer.join(mGoogleApiClient, roomConfigBuilder.build());
     }
     @Override
-    public void onActivityResult(int requestCode, int responseCode,
-                 Intent intent) {
+    public void onActivityResult(int requestCode, int responseCode, Intent intent) {
 
         super.onActivityResult(requestCode, responseCode, intent);
 
@@ -177,10 +176,14 @@ public class PlayFragment extends Fragment implements View.OnClickListener, Goog
                     // player indicated that they want to leave the room
                     leaveRoom();
                 } else if (responseCode == Activity.RESULT_CANCELED) {
+                    Log.d(TAG,"responseCode == Activity.RESULT_CANCELED, Bakåtknappen är klickad på.");
+                    Log.d(TAG, "Intenten är: " + intent.getParcelableExtra("EXTRA_ROOM"));
+                    Log.d(TAG, "Intenten är: " + intent.getParcelableExtra("EXTRA_ROOM"));
+                    Log.d(TAG, "Intenten är: " + (intent.getParcelableExtra("EXTRA_ROOM")).getStatus());
                     // Dialog was cancelled (user pressed back key, for instance). In our game,
                     // this means leaving the room too. In more elaborate games, this could mean
                     // something else (like minimizing the waiting room UI).
-                    leaveRoom();
+                   // leaveRoom();
                 }
                 break;
         }
@@ -282,7 +285,19 @@ public class PlayFragment extends Fragment implements View.OnClickListener, Goog
         Log.d(TAG, "Room created, waiting for it to be ready...");
     }
 
+    void updateRoom(Room room) {
+        if (room != null) {
+            mParticipants = room.getParticipants();
+        }
+        if (mParticipants != null) {
+            updatePeerScoresDisplay();
+        }
+    }
 
+    // updates the screen with the scores from our peers
+    void updatePeerScoresDisplay() {
+        Log.d(TAG,"Here should we update the score for the user but also change it for everyone.");
+    }
 
     @Override
     public void onInvitationReceived(Invitation invitation) {
@@ -304,13 +319,32 @@ public class PlayFragment extends Fragment implements View.OnClickListener, Goog
 
 
     @Override
-    public void onConnected(Bundle bundle) {
-        Log.i(TAG, "onConnected metoden!!!!!!!!" + mGoogleApiClient.isConnected());
+    public void onConnected(Bundle connectionHint) {
+        Log.d(TAG, "onConnected() called. Sign in successful!");
+
+        Log.d(TAG, "Sign-in succeeded.");
+
+        // register listener so we are notified if we receive an invitation to play
+        // while we are in the game
+        Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
+
+        if (connectionHint != null) {
+            Log.d(TAG, "onConnected: connection hint provided. Checking for invite.");
+            Invitation inv = connectionHint
+                    .getParcelable(Multiplayer.EXTRA_INVITATION);
+            if (inv != null && inv.getInvitationId() != null) {
+                // retrieve and cache the invitation ID
+                Log.d(TAG,"onConnected: connection hint has a room invite!");
+                acceptInviteToRoom(inv.getInvitationId());
+                return;
+            }
+        }
     }
 
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "onConnectionSuspended metoden!!!!!!!!" + mGoogleApiClient.isConnected());
+        mGoogleApiClient.connect();
     }
 
     @Override
@@ -355,7 +389,17 @@ public class PlayFragment extends Fragment implements View.OnClickListener, Goog
 
     @Override
     public void onConnectedToRoom(Room room) {
-        Log.d(TAG,"onConnectedToRoom !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        Log.d(TAG, "onConnectedToRoom.");
+
+        // get room ID, participants and my ID:
+        mRoomId = room.getRoomId();
+        mParticipants = room.getParticipants();
+        mMyId = room.getParticipantId(Games.Players.getCurrentPlayerId(mGoogleApiClient));
+
+        // print out the list of participants (for debug purposes)
+        Log.d(TAG, "Room ID: " + mRoomId);
+        Log.d(TAG, "My ID " + mMyId);
+        Log.d(TAG, "<< CONNECTED TO ROOM>>");
     }
 
     @Override
@@ -392,7 +436,6 @@ public class PlayFragment extends Fragment implements View.OnClickListener, Goog
 
     @Override
     public void onRoomCreated(int statusCode, Room room) {
-       // Log.d(TAG,"onRoomCreated !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         Log.d(TAG, "onRoomCreated(" + statusCode + ", " + room + ")");
         if (statusCode != GamesStatusCodes.STATUS_OK) {
             Log.e(TAG, "*** Error: onRoomCreated, status " + statusCode);
@@ -412,24 +455,37 @@ public class PlayFragment extends Fragment implements View.OnClickListener, Goog
         // (this is signaled by Integer.MAX_VALUE).
         final int MIN_PLAYERS = Integer.MAX_VALUE;
         Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(mGoogleApiClient, room, MIN_PLAYERS);
-
         // show waiting room UI
         startActivityForResult(i, RC_WAITING_ROOM);
     }
 
     @Override
-    public void onJoinedRoom(int i, Room room) {
-        Log.d(TAG,"onJoinedRoom !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    public void onJoinedRoom(int statusCode, Room room) {
+        Log.d(TAG, "onJoinedRoom(" + statusCode + ", " + room + ")");
+        if (statusCode != GamesStatusCodes.STATUS_OK) {
+            Log.e(TAG, "*** Error: onRoomConnected, status " + statusCode);
+            showGameError();
+            return;
+        }
+
+        // show the waiting room UI
+        showWaitingRoom(room);
     }
 
     @Override
-    public void onLeftRoom(int i, String s) {
-        Log.d(TAG,"onLeftRoom !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    public void onLeftRoom(int statusCode, String s) {
+        Log.d(TAG, "onLeftRoom, code " + statusCode);
     }
 
     @Override
-    public void onRoomConnected(int i, Room room) {
-        Log.d(TAG,"onRoomConnected !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    public void onRoomConnected(int statusCode, Room room) {
+        Log.d(TAG, "onRoomConnected(" + statusCode + ", " + room + ")");
+        if (statusCode != GamesStatusCodes.STATUS_OK) {
+            Log.e(TAG, "*** Error: onRoomConnected, status " + statusCode);
+            showGameError();
+            return;
+        }
+        updateRoom(room);
     }
 }
 
