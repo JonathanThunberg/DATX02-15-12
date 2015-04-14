@@ -49,7 +49,7 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API)
                 .addScope(Games.SCOPE_GAMES)
-                .build();
+                .build(); 
 
     }
     protected void onStart() {
