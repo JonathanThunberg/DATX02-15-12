@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.plus.Plus;
@@ -17,7 +18,8 @@ import datx021512.chalmers.se.greenme.R;
 /**
  * Created by Patrik on 2015-03-24.
  */
-public class PlayFragment extends Fragment{
+public class PlayFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener{
 
 
     private static final int RC_UNUSED = 5001;
@@ -30,15 +32,16 @@ public class PlayFragment extends Fragment{
         View rootView = inflater.inflate(R.layout.fragment_items, container, false);
 
         TextView txt=(TextView)rootView.findViewById(R.id.txt);
-        ShowLeaderboard();
+        txt.setText("HEJ HEJ!!!");
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(rootView.getContext().getApplicationContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
 
+        mGoogleApiClient.connect();
         return rootView;
     }
 
@@ -58,10 +61,20 @@ public class PlayFragment extends Fragment{
     }
 
 
+    @Override
+    public void onConnected(Bundle bundle) {
+        ShowLeaderboard();
 
+    }
 
+    @Override
+    public void onConnectionSuspended(int i) {
 
+    }
 
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
 
+    }
 }
 
