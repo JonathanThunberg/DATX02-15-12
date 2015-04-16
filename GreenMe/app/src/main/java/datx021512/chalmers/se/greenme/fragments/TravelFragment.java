@@ -55,24 +55,16 @@ public class TravelFragment extends Fragment implements LocationListener {
         Location location = locationManager.getLastKnownLocation(provider); //does not have any lastknownlocation since the app is closed down
         // Initialize the location fields
 
-        if(location!=null){
-            Log.d(TAG, "location!=null: "+ location);
-        }
-        else if (location == null) {
+        if (location == null) {
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
                     400, 1, this);
-            Log.d(TAG, "location==null");
-
             if (locationManager != null) {
                 location = locationManager
                         .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                Log.d(TAG, "locationmanager är inte null och location är: " + location);
                 if (location != null) {
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
-                    Log.d(TAG, "latitude: " + latitude);
-                    Log.d(TAG, "longitude: " + longitude);
                     latitudeField.setText(String.valueOf(latitude));
                     longitudeField.setText(String.valueOf(longitude));
                 }
@@ -100,12 +92,6 @@ public class TravelFragment extends Fragment implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-         /*if (location != null) {
-            onLocationChanged(location);
-        } else {
-            latitudeField.setText("Location not available");
-            longitudeField.setText("Location not available");
-        }*/
     }
 
     @Override
