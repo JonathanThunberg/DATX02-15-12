@@ -27,6 +27,8 @@ public class TravelFragment extends Fragment implements LocationListener {
     private TextView longitudeField;
     private LocationManager locationManager;
     private String provider;
+    private double latitude;
+    private double longitude;
 
 
     @Override
@@ -49,18 +51,33 @@ public class TravelFragment extends Fragment implements LocationListener {
         Criteria criteria = new Criteria();
         // a provider provides periodic reports on the geographical location of the device.
 
-       // criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-        boolean gps = locationManager.isProviderEnabled("gps");
-        boolean passive = locationManager.isProviderEnabled("passive");
-        boolean network = locationManager.isProviderEnabled("network");
-
-        // provider =locationManager.getBestProvider(criteria, false); //provider == null :(
-        Log.d(TAG, "passive: "+ passive + "gps: " + gps + "network: " + network);
-
+        provider = locationManager.getBestProvider(criteria, true);
         Location location = locationManager.getLastKnownLocation(provider); //does not have any lastknownlocation since the app is closed down
         // Initialize the location fields
 
+        if(location!=null){
+            Log.d(TAG, "location!=null: "+ location);
+        }
+        else if (location == null) {
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    400, 1, this);
+            Log.d(TAG, "location==null");
 
+            if (locationManager != null) {
+                location = locationManager
+                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                Log.d(TAG, "locationmanager är inte null och location är: " + location);
+                if (location != null) {
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                    Log.d(TAG, "latitude: " + latitude);
+                    Log.d(TAG, "longitude: " + longitude);
+                    latitudeField.setText(String.valueOf(latitude));
+                    longitudeField.setText(String.valueOf(longitude));
+                }
+            }
+        }
 
         return rootView;
 
@@ -83,17 +100,12 @@ public class TravelFragment extends Fragment implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        double lat = location.getLatitude();
-        double lng = location.getLongitude();
-        latitudeField.setText(String.valueOf(lat));
-        longitudeField.setText(String.valueOf(lng));
-
-        if (location != null) {
+         /*if (location != null) {
             onLocationChanged(location);
         } else {
             latitudeField.setText("Location not available");
             longitudeField.setText("Location not available");
-        }
+        }*/
     }
 
     @Override
