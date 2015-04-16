@@ -1,38 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="datx021512.chalmers.se.greenme">
+package="datx021512.chalmers.se.greenme">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="com.sonymobile.permission.SYSTEM_UI_VISIBILITY_EXTENSIONS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
-        android:allowBackup="true"
+    android:allowBackup="true"
+    android:label="@string/app_name"
+    android:icon="@mipmap/ic_launcher"
+    android:theme="@style/AppTheme">
+
+
+
+    <activity
+        android:name="datx021512.chalmers.se.greenme.LoginActivity"
         android:label="@string/app_name"
-        android:icon="@mipmap/ic_launcher"
-        android:theme="@style/AppTheme">
+        android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
 
-        <uses-permission android:name="android.permission.INTERNET" />
-        <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-        <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-        <uses-permission android:name="com.sonymobile.permission.SYSTEM_UI_VISIBILITY_EXTENSIONS"/>
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-        <activity
-            android:name="datx021512.chalmers.se.greenme.LoginActivity"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="datx021512.chalmers.se.greenme.MainActivity"
-            android:label="@string/app_name">
-        </activity>
-        <meta-data android:name="com.google.android.gms.games.APP_ID"
-            android:value="@string/app_id" />
-        <meta-data android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
-    </application>
+    <activity
+        android:name="datx021512.chalmers.se.greenme.MainActivity"
+        android:label="@string/app_name">
+    </activity>
+    <meta-data android:name="com.google.android.gms.games.APP_ID"
+        android:value="@string/app_id" />
+    <meta-data android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version"/>
+</application>
 
 </manifest>
