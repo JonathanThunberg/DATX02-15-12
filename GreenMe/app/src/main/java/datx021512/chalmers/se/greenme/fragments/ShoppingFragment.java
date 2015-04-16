@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+import datx021512.chalmers.se.greenme.ICA.IcaAPI;
 import datx021512.chalmers.se.greenme.R;
 import datx021512.chalmers.se.greenme.adapters.ShoppingAdapter;
 import datx021512.chalmers.se.greenme.ocr.IntentIntegrator;
@@ -92,7 +93,11 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         IntentResult scan = IntentIntegrator.parseActivityResult(request, result, i);
 
         if (scan!=null) {
-            Toast.makeText(getActivity(), scan.getContents(), Toast.LENGTH_SHORT).show();
+
+            IcaAPI api = new IcaAPI(Integer.parseInt(scan.getContents()));
+            String out = api.getStringFromAPI();
+            Log.d("API","Api should be done");
+            //Toast.makeText(getActivity(), out, Toast.LENGTH_SHORT).show();
         }
         else
         {
