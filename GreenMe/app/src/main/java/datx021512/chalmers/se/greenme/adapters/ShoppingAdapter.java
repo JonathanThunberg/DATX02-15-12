@@ -1,6 +1,7 @@
 package datx021512.chalmers.se.greenme.adapters;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,14 +17,13 @@ import java.util.ArrayList;
 import datx021512.chalmers.se.greenme.R;
 
 public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListViewHolder>{
-    private ArrayList<ShopItem> mListData;
-    //  private LayoutInflater mLayoutInflater;
+    private ArrayList<ShopItem> mListData = new ArrayList();
     private View rootView;
 
-    public ShoppingAdapter(ArrayList<ShopItem> items)
+
+    public ShoppingAdapter(View rootView)
     {
-        //  mLayoutInflater = LayoutInflater.from(context);
-        mListData = items;
+        this.rootView = rootView;
     }
 
     public ShoppingAdapter(ArrayList<ShopItem> items, View rootView) {
@@ -52,10 +52,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
     @Override
     public void onBindViewHolder(ListViewHolder viewHolder, final int position) {
         ShopItem data = mListData.get(position);
-        Log.d("Adapter","Data: " + data.getmName());
-        Log.d("Adapter","holder: " + viewHolder.textItem);
         viewHolder.textItem.setText(data.getmName());
-        Log.d("ADAPTER", data.getmName());
         viewHolder.textCO2.setText(Double.toString(data.getmCO2())+" kg/co2");
         viewHolder.textQuantity.setText(Double.toString(data.getQuantity())+" kg");
         viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
@@ -96,6 +93,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
         textTotal.setText(total+" kg/co2");
     }
 
+
     private void increaseQuantity(int position) {
         ShopItem temp = mListData.get(position);
             temp.setQuantity(temp.getQuantity() + 1);
@@ -109,11 +107,10 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
 
     public void addItem(ShopItem item) {
         mListData.add(item);
-        //notifyDataSetChanged();
         notifyItemInserted(mListData.size());
     }
 
-    public void removeItem(String item) {
+    public void removeItem(ShopItem item) {
         int position = mListData.indexOf(item);
         if (position != -1) {
             mListData.remove(item);
@@ -123,6 +120,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
 
     public void removeItem(int position) {
         mListData.remove(position);
+        notifyDataSetChanged();
         notifyItemRemoved(position);
     }
 

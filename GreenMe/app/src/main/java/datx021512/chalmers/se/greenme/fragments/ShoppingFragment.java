@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -51,25 +50,29 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
     private AutoCompleteTextView textView;
     private RecyclerView mRecycleView;
     private ShoppingAdapter mAdapter;
-    private ImageButton mAddButton;
     private ImageButton mOCRButton;
-    private static String mItem;
+    private ImageButton mAddButton;
     private databaseHelper db;
+    private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
 
+
         ArrayList<ShopItem> items = new ArrayList<ShopItem>();
-        mAdapter = new ShoppingAdapter(items,rootView);
+        mAdapter = new ShoppingAdapter(rootView);
         mAddButton = (ImageButton) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);
         mOCRButton = (ImageButton) rootView.findViewById(R.id.OCR_add);
         mOCRButton.setOnClickListener(this);
         mRecycleView = (RecyclerView) rootView.findViewById(R.id.recyclerShoppingItems);
-        mRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecycleView.setLayoutManager(llm);
         mRecycleView.setAdapter(mAdapter);
+        Log.d("GREEN","Setting adapter!");
         setHasOptionsMenu(true);
 
 
@@ -81,6 +84,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         textView = (AutoCompleteTextView)
                 rootView.findViewById(R.id.text_input);
         textView.setAdapter(itemsAdapter);
+        this.rootView = rootView;
         return rootView;
     }
 
@@ -92,13 +96,9 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                 if (textView.getText() != null) {
                     final String text = textView.getText().toString();
                     if (text != null && text.trim().length() > 0) {
-                       if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
-                               addItemToList(text,0);
-                               View view = getActivity().getCurrentFocus();
-                               if (view != null) {
-                                   InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getActivity().getBaseContext().INPUT_METHOD_SERVICE);
-                                   inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                               }
+                       if (/*db.getImpact(text).size() == 1 &&*/ db.getImpactName(text).get(0).equals(text) ) {
+                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)));
+                              x
                            } else {
                                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                                LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -117,7 +117,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                                        if(position==0){
                                             createNewItem(text);
                                        }else{
-                                            addItemToList(text,position-1);
+                                            addItemToList(db.getImpactName(text).get(position-1), Double.parseDouble(db.getImpact(text).get(position-1)));
                                        }
                                        mdialog.dismiss();
                                    }
@@ -125,6 +125,11 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                                mdialog.show();
 
                            }
+                           View view = getActivity().getCurrentFocus();
+                            if (view != null) {
+                                InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getActivity().getBaseContext().INPUT_METHOD_SERVICE);
+                                inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                            }
                        }
                     }
 
@@ -139,12 +144,41 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
     }
 
     private void createNewItem(String text) {
-        //todo make a dialog and push to database
-    }
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View convertView = (View) inflater.inflate(R.layout.dialog_newitem, null);
+            final EditText userInput = (EditText)
+                    convertView.findViewById(R.id.username);
+            final EditText userImpact = (EditText)
+                    convertView.findViewById(R.id.userimpact);
 
-    public void addItemToList(String text,int position){
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+            alertDialog.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    String text = userInput.getText().toString();
+                    String text2 = userImpact.getText().toString();
+                    db.createNewItem(text, Integer.parseInt(text2));
+                    addItemToList(text, Double.parseDouble(text2));
+
+                }
+            })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+
+
+            alertDialog.setView(convertView);
+            alertDialog.setTitle("Nytt Föremål");
+
+            final AlertDialog mdialog = alertDialog.create();
+
+            mdialog.show();
+        }
+
+    public void addItemToList(String text,double position){
         if(!mAdapter.contains(text)) {
-            mAdapter.addItem(new ShopItem(db.getImpactName(text).get(position), Double.parseDouble(db.getImpact(text).get(position))));
+            mAdapter.addItem(new ShopItem(text, position));
             textView.setText("");
             updateTotal();
         }
