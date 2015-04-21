@@ -2,109 +2,104 @@ package datx021512.chalmers.se.greenme.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
-import android.location.Criteria;
+
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-
-import java.util.List;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 
 import datx021512.chalmers.se.greenme.R;
 
-public class TravelFragment extends Fragment implements LocationListener {
+public class TravelFragment extends Fragment implements OnMapReadyCallback{
 
     private static final String TAG = "test";
-    private TextView latitudeField;
-    private TextView longitudeField;
-    private LocationManager locationManager;
-    private String provider;
-    private double latitude;
-    private double longitude;
+    private double startLatitude;
+    private double startLongitude;
+    private double endLatitude;
+    private double endLongitude;
 
+    private MapView mapView;
+    private GoogleMap map;
 
     @Override
     public void onAttach(Activity activity){
         super.onAttach(activity);
-
 
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         //todo change view
         View rootView = inflater.inflate(R.layout.fragment_travel, container, false);
-        latitudeField = (TextView) rootView.findViewById(R.id.TextView02);
-        longitudeField = (TextView) rootView.findViewById(R.id.TextView04);
 
-        // provides access to the system location services
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        int statusCode = com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getActivity());
+        switch (statusCode) {
+            case ConnectionResult.SUCCESS:
+                Toast.makeText(this.getActivity(), "SUCCESS", Toast.LENGTH_SHORT).show();
+                break;
+            case ConnectionResult.SERVICE_MISSING:
+                Toast.makeText(this.getActivity(), "SERVICE MISSING", Toast.LENGTH_SHORT).show();
+                break;
+            case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
+                Toast.makeText(this.getActivity(), "UPDATE REQUIRED", Toast.LENGTH_SHORT).show();
+                break;
+            default: Toast.makeText(this.getActivity(), "Play Service result " + statusCode, Toast.LENGTH_SHORT).show();
 
-        //criteria for how to select a location provider
-        Criteria criteria = new Criteria();
-        // a provider provides periodic reports on the geographical location of the device.
-
-        provider = locationManager.getBestProvider(criteria, true);
-        Location location = locationManager.getLastKnownLocation(provider); //does not have any lastknownlocation since the app is closed down
-        // Initialize the location fields
-
-        if (location == null) {
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    400, 1, this);
-            if (locationManager != null) {
-                location = locationManager
-                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if (location != null) {
-                    latitude = location.getLatitude();
-                    longitude = location.getLongitude();
-                    latitudeField.setText(String.valueOf(latitude));
-                    longitudeField.setText(String.valueOf(longitude));
-                }
-            }
         }
+
+        mapView= (MapView)rootView.findViewById(R.id.mapview);
+        mapView.onCreate(savedInstanceState);
+
+        map= mapView.getMap();
+        map.getUiSettings().setZoomControlsEnabled(true);
+
+        map.getUiSettings().setMyLocationButtonEnabled(true);
+        map.setMyLocationEnabled(true);
+        MapsInitializer.initialize(getActivity());
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(57.708870,11.974560),10);
+        map.animateCamera(cameraUpdate);
 
         return rootView;
 
 
     }
-
     @Override
-    public void onResume() {
-        super.onResume();
-        locationManager.requestLocationUpdates(provider, 400, 1, this);
+    public void onMapReady(GoogleMap googleMap) {
 
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        locationManager.removeUpdates(this);
+    /**
+     * This method will return a straight line between the locations
+     * @return distance in kilometers
+     */
+    public double getDistanceInKiloMeters(){
+        Location loc1 = new Location("");
+        loc1.setLatitude(startLatitude);
+        loc1.setLongitude(startLongitude);
 
-    }
+        Location loc2 = new Location("");
+        loc2.setLatitude(endLatitude);
+        loc2.setLongitude(endLongitude);
 
-    @Override
-    public void onLocationChanged(Location location) {
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
+        float distanceInMeters = loc1.distanceTo(loc2);
+        float distanceInKiloMeters = distanceInMeters * 1000;
+        return distanceInKiloMeters;
     }
 
 }

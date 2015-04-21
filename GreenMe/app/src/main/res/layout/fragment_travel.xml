@@ -1,29 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white" >
+    android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/TextView02"
-        android:layout_width="wrap_content"
+    <com.google.android.gms.maps.MapView android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+    <Button
+        android:id="@+id/ssbutton"
+        android:layout_width="195dp"
         android:layout_height="wrap_content"
-        android:text="unknown"
-        android:textSize="20dip"
-        android:textStyle="bold"
-        android:textColor="@android:color/black">
-    </TextView>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="150dp"/>
 
-    <TextView
-        android:id="@+id/TextView04"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="unknown"
-        android:textSize="20dip"
-        android:layout_below="@+id/TextView02"
-        android:layout_alignParentStart="true"
-        android:textStyle="bold"
-        android:textColor="@android:color/black">
-    </TextView>
-
-</RelativeLayout>
+</LinearLayout>
