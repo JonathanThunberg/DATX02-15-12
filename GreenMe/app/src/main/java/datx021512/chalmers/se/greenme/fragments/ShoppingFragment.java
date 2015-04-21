@@ -89,7 +89,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                     final String text = textView.getText().toString();
                     if (text != null && text.trim().length() > 0) {
                        if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
-                               addItemToList(text,0);
+                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)));
                                View view = getActivity().getCurrentFocus();
                                if (view != null) {
                                    InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getActivity().getBaseContext().INPUT_METHOD_SERVICE);
@@ -113,7 +113,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                                        if(position==0){
                                             createNewItem(text);
                                        }else{
-                                            addItemToList(text,position-1);
+                                            addItemToList(db.getImpactName(text).get(position-1), Double.parseDouble(db.getImpact(text).get(position-1)));
                                        }
                                        mdialog.dismiss();
                                    }
@@ -145,6 +145,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                         String text = userInput.getText().toString();
                         String text2 = userImpact.getText().toString();
                         db.createNewItem(text,Integer.parseInt(text2));
+                        addItemToList(text,Double.parseDouble(text2));
 
                     }
                 })
@@ -166,9 +167,9 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         mdialog.show();
     }
 
-    public void addItemToList(String text,int position){
+    public void addItemToList(String text,double position){
         if(!mAdapter.contains(text)) {
-            mAdapter.addItem(new ShopItem(db.getImpactName(text).get(position), Double.parseDouble(db.getImpact(text).get(position))));
+            mAdapter.addItem(new ShopItem(text, position));
             textView.setText("");
             updateTotal();
         }

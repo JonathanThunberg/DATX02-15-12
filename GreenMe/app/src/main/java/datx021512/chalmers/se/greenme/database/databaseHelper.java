@@ -171,4 +171,22 @@ public class databaseHelper extends SQLiteAssetHelper {
         db.close();
 
     }
+    public void create(String text, double text2) {
+        SQLiteDatabase db = getWritableDatabase();
+      /*  db.execSQL("INSERT INTO "
+                + "OwnCategories"
+                + "(NAME, IMPACT)"
+                + " VALUES ('"+text+"', "+text2+");");
+    */
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "OwnCategories" + "(NAME VARCHAR, IMPACT DOUBLE);";
+        db.execSQL(CREATE_CONTACTS_TABLE);
+        db.close();
+        db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("NAME", text);
+        values.put("IMPACT", text2);
+        db.insert("OwnCategories", null, values);
+        db.close();
+
+    }
 }
