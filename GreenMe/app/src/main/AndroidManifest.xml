@@ -33,6 +33,19 @@
             android:value="@string/app_id" />
         <meta-data android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
+
+        <!-- We add an application tag here just so that we can indicate that
+         this package needs to link against the android.test library,
+         which is needed when building test cases.
+        <uses-library android:name="android.test.runner" /> -->
     </application>
 
+    <!--
+   Specifies the instrumentation test runner used to run the tests.
+
+    <instrumentation
+        android:name="android.test.InstrumentationTestRunner"
+        android:targetPackage="datx021512.chalmers.se.greenme"
+        android:label="Tests for datx021512.chalmers.se.greenme" />
+ -->
 </manifest>
