@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,8 +51,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
     private AutoCompleteTextView textView;
     private RecyclerView mRecycleView;
     private ShoppingAdapter mAdapter;
-    private Button mAddButton;
-    private Button mOCRButton;
+    private ImageButton mAddButton;
+    private ImageButton mOCRButton;
     private static String mItem;
     private databaseHelper db;
 
@@ -60,13 +61,11 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
 
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
 
-        //Init fields
-      //  mInput = (EditText) rootView.findViewById(R.id.text_input);
         ArrayList<ShopItem> items = new ArrayList<ShopItem>();
         mAdapter = new ShoppingAdapter(items,rootView);
-        mAddButton = (Button) rootView.findViewById(R.id.add_text);
+        mAddButton = (ImageButton) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);
-        mOCRButton = (Button) rootView.findViewById(R.id.OCR_add);
+        mOCRButton = (ImageButton) rootView.findViewById(R.id.OCR_add);
         mOCRButton.setOnClickListener(this);
         mRecycleView = (RecyclerView) rootView.findViewById(R.id.recyclerShoppingItems);
         mRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -85,15 +84,6 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
-    /*public void addItem(View view) {
-        if (mInput.getText() != null) {
-            String text = mInput.getText().toString();
-            if (text != null && text.trim().length() > 0) {
-                mAdapter.addItem(mInput.getText().toString());
-            }
-        }
-
-    }*/
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -143,7 +133,6 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                 Log.d("GREEN","OCR button pushed");
                 IntentIntegrator integrator = new IntentIntegrator(ShoppingFragment.this);
                 integrator.addExtra("PROMPT_MESSAGE", "Skanna din vara");
-                //integrator.setOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 integrator.initiateScan();
                 break;
         }
@@ -184,11 +173,12 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         if (scan!=null) {
             Log.d("OCR","ocr: " + read);
             try{
-
                 text = JSONToString(getFromInternetz(URL + read));
-                //mAdapter.addItem(text);
-                //mAdapter.notifyDataSetChanged();
-                //mInput.setText(text);
+                ShopItem item = new ShopItem(text,1337);
+                mAdapter.addItem(item);
+                mAdapter.notifyDataSetChanged();
+                updateTotal();
+                //textView.setText(text);
             }catch (Exception e){
                 e.printStackTrace();
             }

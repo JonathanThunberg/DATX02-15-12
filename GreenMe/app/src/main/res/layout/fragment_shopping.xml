@@ -28,17 +28,16 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:completionThreshold="2"/>
-        <Button
+        <ImageButton
             android:id="@+id/add_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+"
-             />
-        <Button
+            android:src="@android:drawable/ic_menu_add" />
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/OCR_add"
-            android:text="OCR"/>
+            android:src="@android:drawable/ic_menu_camera"/>
         </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerShoppingItems"

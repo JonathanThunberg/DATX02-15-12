@@ -42,21 +42,18 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
 
     @Override
     public ShoppingAdapter.ListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d("ADAPTER", "entering oncreateviewholder!");
-        //View row = mLayoutInflater.inflate(R.layout.shopping_item, parent, false);
-        //ShoppingAdapter.ViewHolder holder = new ShoppingAdapter.ViewHolder(row);
         View v = LayoutInflater.
                 from(parent.getContext()).
                 inflate(R.layout.shopping_wrapper, parent,  false);
-        //View v = mLayoutInflater.inflate(R.layout.shopping_item, parent, false);
-        ListViewHolder vh = new ListViewHolder(v);
-        return vh;
-        //return holder;
+
+        return new ListViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ListViewHolder viewHolder, final int position) {
         ShopItem data = mListData.get(position);
+        Log.d("Adapter","Data: " + data.getmName());
+        Log.d("Adapter","holder: " + viewHolder.textItem);
         viewHolder.textItem.setText(data.getmName());
         Log.d("ADAPTER", data.getmName());
         viewHolder.textCO2.setText(Double.toString(data.getmCO2())+" kg/co2");
@@ -154,7 +151,14 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
         public ListViewHolder(View itemView) {
             super(itemView);
             textItem = (TextView) itemView.findViewById(R.id.text_item);
+            textCO2 = (TextView) itemView.findViewById(R.id.text_co2);
+            buttonPlus = (ImageButton) itemView.findViewById(R.id.button_plus);
+            buttonPlus.setColorFilter(Color.argb(255, 0, 255, 0));
+            textQuantity = (TextView) itemView.findViewById(R.id.text_quantity);
+            buttonMinus = (ImageButton) itemView.findViewById(R.id.button_minus);
+            buttonMinus.setColorFilter(Color.argb(255, 255, 0, 0));
             buttonDelete = (ImageButton) itemView.findViewById(R.id.button_delete);
+            buttonDelete.setColorFilter(Color.argb(255, 0, 0, 0));
             linearLayout = (LinearLayout) itemView.findViewById(R.id.verticalLayout);
         }
     }
