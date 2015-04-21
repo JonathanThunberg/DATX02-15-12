@@ -18,13 +18,11 @@ import datx021512.chalmers.se.greenme.R;
 
 public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListViewHolder>{
     private ArrayList<ShopItem> mListData;
-    //  private LayoutInflater mLayoutInflater;
     private View rootView;
 
-    public ShoppingAdapter(ArrayList<ShopItem> items)
+    public ShoppingAdapter(View rootView)
     {
-        //  mLayoutInflater = LayoutInflater.from(context);
-        mListData = items;
+        this.rootView = rootView;
     }
 
     public ShoppingAdapter(ArrayList<ShopItem> items, View rootView) {
@@ -156,7 +154,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
 
         public ListViewHolder(View itemView) {
             super(itemView);
-            textItem = (TextView) itemView.findViewById(R.id.title);
+            textItem = (TextView) itemView.findViewById(R.id.text_item);
             textCO2 = (TextView) itemView.findViewById(R.id.text_co2);
             buttonPlus = (ImageButton) itemView.findViewById(R.id.button_plus);
             textQuantity = (TextView) itemView.findViewById(R.id.text_quantity);

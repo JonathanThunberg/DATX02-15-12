@@ -1,11 +1,14 @@
 package datx021512.chalmers.se.greenme.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -99,40 +102,73 @@ public class databaseHelper extends SQLiteAssetHelper {
           return c;
     }
 
-    public ArrayList<String> getImpact(String s){
-        Cursor categories = getImpactFromDatabase("vegetableCategories",s);
+    public ArrayList<String> getImpact(String st){
         ArrayList<String> mArrayList = new ArrayList<>();
-        categories.moveToFirst();
-        while(!categories.isAfterLast()){
-            mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT"))));
-            categories.moveToNext();
-        }
+        for(String s :st.split("\\s+")) {
+            Cursor categories = getImpactFromDatabase("vegetableCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT"))));
+                categories.moveToNext();
+            }
 
-        categories = getImpactFromDatabase("meanCategories", s);
-        categories.moveToFirst();
-        while(!categories.isAfterLast()){
-            mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT")) ));
-            categories.moveToNext();
+            categories = getImpactFromDatabase("meanCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT"))));
+                categories.moveToNext();
+            }
+            categories = getImpactFromDatabase("OwnCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT"))));
+                categories.moveToNext();
+            }
         }
         return mArrayList;
     }
 
-    public ArrayList<String> getImpactName(String s){
-        Cursor categories = getImpactFromDatabase("vegetableCategories",s);
+    public ArrayList<String> getImpactName(String st){
         ArrayList<String> mArrayList = new ArrayList<>();
-        categories.moveToFirst();
-        while(!categories.isAfterLast()){
-            mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
-            categories.moveToNext();
-        }
-
-        categories = getImpactFromDatabase("meanCategories", s);
-        categories.moveToFirst();
-        while(!categories.isAfterLast()){
-            mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
-            categories.moveToNext();
+        for(String s :st.split("\\s+")) {
+            Cursor categories = getImpactFromDatabase("vegetableCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+                categories.moveToNext();
+            }
+            categories = getImpactFromDatabase("meanCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+                categories.moveToNext();
+            }
+            categories = getImpactFromDatabase("OwnCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+                categories.moveToNext();
+            }
         }
         return mArrayList;
     }
 
+    public void createNewItem(String text, double text2) {
+        SQLiteDatabase db = getWritableDatabase();
+      /*  db.execSQL("INSERT INTO "
+                + "OwnCategories"
+                + "(NAME, IMPACT)"
+                + " VALUES ('"+text+"', "+text2+");");
+    */
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "OwnCategories" + "(NAME VARCHAR, IMPACT DOUBLE);";
+        db.execSQL(CREATE_CONTACTS_TABLE);
+        db.close();
+        db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("NAME", text);
+        values.put("IMPACT", text2);
+        db.insert("OwnCategories", null, values);
+        db.close();
+
+    }
 }

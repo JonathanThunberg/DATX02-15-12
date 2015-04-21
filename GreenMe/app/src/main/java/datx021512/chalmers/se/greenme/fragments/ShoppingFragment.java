@@ -37,6 +37,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
     private ShoppingAdapter mAdapter;
     private Button mAddButton;
     private databaseHelper db;
+    private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         textView = (AutoCompleteTextView)
                 rootView.findViewById(R.id.text_input);
         textView.setAdapter(itemsAdapter);
+        this.rootView = rootView;
         return rootView;
     }
 
@@ -130,7 +132,38 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
     }
 
     private void createNewItem(String text) {
-        //todo make a dialog and push to database
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View convertView = (View) inflater.inflate(R.layout.dialog_newitem, null);
+        final EditText userInput = (EditText)
+                convertView.findViewById(R.id.username);
+        final EditText userImpact = (EditText)
+                convertView.findViewById(R.id.userimpact);
+
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        String text = userInput.getText().toString();
+                        String text2 = userImpact.getText().toString();
+                        db.createNewItem(text,Integer.parseInt(text2));
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+
+
+
+
+        alertDialog.setView(convertView);
+        alertDialog.setTitle("Nytt Föremål");
+
+        final AlertDialog mdialog = alertDialog.create();
+
+        mdialog.show();
     }
 
     public void addItemToList(String text,int position){
