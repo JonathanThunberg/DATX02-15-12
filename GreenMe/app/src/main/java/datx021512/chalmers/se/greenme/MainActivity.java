@@ -15,7 +15,6 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.plus.Plus;
 
 import datx021512.chalmers.se.greenme.fragments.Home;
-import datx021512.chalmers.se.greenme.fragments.PlayFragment;
 import datx021512.chalmers.se.greenme.fragments.ShoppingFragment;
 import datx021512.chalmers.se.greenme.fragments.StatisticsFragment;
 import datx021512.chalmers.se.greenme.fragments.TravelFragment;
@@ -26,7 +25,8 @@ import datx021512.chalmers.se.greenme.navigation.NavFragment;
 public class MainActivity extends ActionBarActivity implements NavCallback {
 
     private Toolbar toolBar;
-
+    public String TAG = "MainActivity";
+    private static final int RC_UNUSED = 5001;
     private NavFragment navigationDrawerFragment;
     private GoogleApiClient mGoogleApiClient;
 
@@ -80,7 +80,15 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
                 fragment = new StatisticsFragment();
                 break;
             case 4:
-                fragment = new PlayFragment();
+                if(mGoogleApiClient.isConnected())
+                {
+                    Log.d(TAG,"Show Leaderboard");
+                    startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient),
+                            RC_UNUSED);
+                }
+                else{
+                    Log.d(TAG,"Cant show Leaderboard because user is not connected");
+                }
                 break;
             case 5:
                 if(mGoogleApiClient.isConnected()) {

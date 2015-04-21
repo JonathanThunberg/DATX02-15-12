@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,7 +115,7 @@ public class NavFragment extends Fragment implements NavCallback {
                 R.drawable.ic_directions_car_grey600_48dp)));
         items.add(new NavItem("Statistik", getResources().getDrawable(
                 R.drawable.ic_trending_up_grey600_48dp)));
-        items.add(new NavItem("Tävling", getResources().getDrawable(
+        items.add(new NavItem("Topplistor", getResources().getDrawable(
                 R.drawable.ic_group_grey600_48dp)));
         items.add(new NavItem("Logga ut", getResources().getDrawable(
                 R.drawable.abc_ic_ab_back_mtrl_am_alpha)));
@@ -122,14 +123,18 @@ public class NavFragment extends Fragment implements NavCallback {
     }
 
     void selectItem(int position) {
-        navigationCurrentSelectedPosition = position;
+        Log.d("TAG","position: " + position + "navigationCurrentSelectedPosition: " + navigationCurrentSelectedPosition);
+        if (position != 4)
+        {
+            navigationCurrentSelectedPosition = position;
+        }
         if (drawerLayout != null) {
             drawerLayout.closeDrawer(drawerFragmentContainerView);
         }
         if (drawerCallbacks != null) {
             drawerCallbacks.onNavigationDrawerItemSelected(position);
         }
-        ((NavAdapter) recyclerviewDrawerList.getAdapter()).selectPosition(position);
+        ((NavAdapter) recyclerviewDrawerList.getAdapter()).selectPosition(navigationCurrentSelectedPosition);
     }
 
     public boolean isDrawerOpen() {

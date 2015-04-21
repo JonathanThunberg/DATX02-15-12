@@ -22,7 +22,7 @@ public class LoginActivity extends Activity implements
     private boolean mSignInClicked;
     private ConnectionResult mConnectionResult;
     private boolean mIntentInProgress;
-    String TAG = "Testing";
+    String TAG = "Login";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
