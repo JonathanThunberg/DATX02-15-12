@@ -23,6 +23,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
 import datx021512.chalmers.se.greenme.R;
+import datx021512.chalmers.se.greenme.navigation.NavAdapter;
 
 public class TravelFragment extends Fragment implements OnMapReadyCallback{
 
@@ -80,6 +81,25 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
 
     }
     @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
 
     }
@@ -101,5 +121,4 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         float distanceInKiloMeters = distanceInMeters * 1000;
         return distanceInKiloMeters;
     }
-
 }
