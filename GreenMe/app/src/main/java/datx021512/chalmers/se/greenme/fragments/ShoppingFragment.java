@@ -89,6 +89,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
             case R.id.OCR_add:
                 Log.d("GREEN","OCR button pushed");
                 IntentIntegrator integrator = new IntentIntegrator(ShoppingFragment.this);
+                integrator.addExtra("PROMPT_MESSAGE", "Skanna din vara");
+                //integrator.setOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 integrator.initiateScan();
                 break;
         }
@@ -114,6 +116,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                 text = JSONToString(getFromInternetz(URL + read));
                 mAdapter.addItem(text);
                 mAdapter.notifyDataSetChanged();
+                mInput.setText(text);
             }catch (Exception e){
                 e.printStackTrace();
             }
