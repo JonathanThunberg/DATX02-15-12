@@ -81,8 +81,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         ArrayList<String> categories = db.getCategories();
         ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.select_dialog_item, categories);
 
-        textView = (AutoCompleteTextView)
-                rootView.findViewById(R.id.text_input);
+        textView = (AutoCompleteTextView) rootView.findViewById(R.id.text_input);
         textView.setAdapter(itemsAdapter);
         this.rootView = rootView;
         return rootView;
@@ -97,8 +96,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                     final String text = textView.getText().toString();
                     if (text != null && text.trim().length() > 0) {
                        if (/*db.getImpact(text).size() == 1 &&*/ db.getImpactName(text).get(0).equals(text) ) {
-                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)));
-                              x
+                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),1);
+
                            } else {
                                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                                LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -117,7 +116,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                                        if(position==0){
                                             createNewItem(text);
                                        }else{
-                                            addItemToList(db.getImpactName(text).get(position-1), Double.parseDouble(db.getImpact(text).get(position-1)));
+                                            addItemToList(db.getImpactName(text).get(position-1), Double.parseDouble(db.getImpact(text).get(position-1)),1);
                                        }
                                        mdialog.dismiss();
                                    }
@@ -157,7 +156,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                     String text = userInput.getText().toString();
                     String text2 = userImpact.getText().toString();
                     db.createNewItem(text, Integer.parseInt(text2));
-                    addItemToList(text, Double.parseDouble(text2));
+                    addItemToList(text, Double.parseDouble(text2),1);
 
                 }
             })
@@ -176,9 +175,9 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
             mdialog.show();
         }
 
-    public void addItemToList(String text,double position){
+    public void addItemToList(String text,double position, double quant){
         if(!mAdapter.contains(text)) {
-            mAdapter.addItem(new ShopItem(text, position));
+            mAdapter.addItem(new ShopItem(text, position, quant));
             textView.setText("");
             updateTotal();
         }
@@ -208,21 +207,46 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
             Log.d("OCR","ocr: " + read);
             try{
                 text = JSONToString(getFromInternetz(URL + read));
-                ShopItem item = new ShopItem(text,1337);
-                mAdapter.addItem(item);
-                mAdapter.notifyDataSetChanged();
-                updateTotal();
+                if(text != "" && text != null && text != "null")
+                {
+                    String[] split = text.split(" ");
+                    String weight = split[split.length-1];
+                    String weight2 = weight.substring(weight.length()-2);
+                    double numWeight = 0;
+                    if(weight.contains("kg")){
+                        weight = weight.replaceAll("[^\\d]", "");
+                        numWeight = Double.parseDouble(weight);
+                    }
+                    else if(weight.contains("g")){
+                        weight = weight.replaceAll("[^\\d]", "");
+                        numWeight = Double.parseDouble(weight);
+                        numWeight /= 1000;
+                    }
+                    Log.d("OCR","Inside: " + numWeight);
+                    addItemToList(text,1337,numWeight);
+//                    ShopItem item = new ShopItem(text,1337,1);
+//                    mAdapter.addItem(item);
+//                    mAdapter.notifyDataSetChanged();
+//                    updateTotal();
+                }
+                else
+                    Toast.makeText(getActivity(), "Produkten hittades ej!", Toast.LENGTH_SHORT).show();
+
                 //textView.setText(text);
             }catch (Exception e){
                 e.printStackTrace();
             }
 
+            if(text == null)
+                Toast.makeText(getActivity(), "Ingen produkt scannades", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
             Log.d("API","Nu da: " + text);
-            Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+
         }
         else
         {
-            Toast.makeText(getActivity(), "No barcode is read!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Kunde ej hitta streckkod!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -268,5 +292,10 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
             Log.e("Get Url", "Error in downloading: " + e.toString());
         }
         return null;
+    }
+
+    public String checkIfInDb(String scanned)
+    {
+        return db.getImpactName(scanned).get(0);
     }
 }
