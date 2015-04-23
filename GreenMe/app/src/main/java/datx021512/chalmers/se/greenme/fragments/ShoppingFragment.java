@@ -17,7 +17,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -41,9 +40,9 @@ import java.util.ArrayList;
 import datx021512.chalmers.se.greenme.R;
 import datx021512.chalmers.se.greenme.adapters.ShopItem;
 import datx021512.chalmers.se.greenme.adapters.ShoppingAdapter;
+import datx021512.chalmers.se.greenme.database.DatabaseHelper;
 import datx021512.chalmers.se.greenme.ocr.IntentIntegrator;
 import datx021512.chalmers.se.greenme.ocr.IntentResult;
-import datx021512.chalmers.se.greenme.database.databaseHelper;
 
 
 public class ShoppingFragment extends Fragment implements View.OnClickListener {
@@ -52,17 +51,20 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
     private ShoppingAdapter mAdapter;
     private ImageButton mOCRButton;
     private ImageButton mAddButton;
-    private databaseHelper db;
+    private DatabaseHelper db;
     private View rootView;
+    private String name;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
-
-
-        ArrayList<ShopItem> items = new ArrayList<ShopItem>();
-        mAdapter = new ShoppingAdapter(rootView);
+        db = new DatabaseHelper(rootView.getContext());
+        Bundle args = getArguments();
+        if (args  != null && args.containsKey("Shopping_Name")){
+            this.name = args.getString("Shopping_Name");
+        }
+        mAdapter = new ShoppingAdapter(db.getSavedList(name), rootView);
         mAddButton = (ImageButton) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);
         mOCRButton = (ImageButton) rootView.findViewById(R.id.OCR_add);
@@ -77,7 +79,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
 
 
 
-        db = new databaseHelper(rootView.getContext());
+
         ArrayList<String> categories = db.getCategories();
         ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.select_dialog_item, categories);
 
@@ -95,10 +97,10 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                 if (textView.getText() != null) {
                     final String text = textView.getText().toString();
                     if (text != null && text.trim().length() > 0) {
-                       if (/*db.getImpact(text).size() == 1 &&*/ db.getImpactName(text).get(0).equals(text) ) {
-                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),1);
 
-                           } else {
+                       if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
+                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),1);
+                        } else {
                                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                                LayoutInflater inflater = getActivity().getLayoutInflater();
                                View convertView = (View) inflater.inflate(R.layout.list_alert, null);
@@ -142,6 +144,13 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+        db.saveList(mAdapter.getAllitems(),name);
+    }
+
+
     private void createNewItem(String text) {
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View convertView = (View) inflater.inflate(R.layout.dialog_newitem, null);
@@ -149,6 +158,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                     convertView.findViewById(R.id.username);
             final EditText userImpact = (EditText)
                     convertView.findViewById(R.id.userimpact);
+            userInput.setText(text);
 
             final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
             alertDialog.setPositiveButton("Create", new DialogInterface.OnClickListener() {
@@ -174,6 +184,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
 
             mdialog.show();
         }
+
 
     public void addItemToList(String text,double position, double quant){
         if(!mAdapter.contains(text)) {
@@ -249,6 +260,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
             Toast.makeText(getActivity(), "Kunde ej hitta streckkod!", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     public String JSONToString(String result)
     {
