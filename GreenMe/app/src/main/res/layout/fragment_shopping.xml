@@ -39,6 +39,11 @@
             android:layout_height="wrap_content"
             android:id="@+id/OCR_add"
             android:src="@android:drawable/ic_menu_camera"/>
+        <ImageButton
+            android:id="@+id/upload_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_upload"/>
         </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerShoppingItems"

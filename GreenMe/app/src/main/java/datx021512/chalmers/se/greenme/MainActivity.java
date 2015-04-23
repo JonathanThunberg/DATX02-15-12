@@ -60,7 +60,10 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
         mGoogleApiClient.connect();
     }
 
-
+    public GoogleApiClient getmGoogleApiClient()
+    {
+        return mGoogleApiClient;
+    }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {

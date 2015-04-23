@@ -17,13 +17,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.leaderboard.LeaderboardScore;
+import com.google.android.gms.games.leaderboard.Leaderboards;
+import com.google.android.gms.games.GamesStatusCodes;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -38,6 +44,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import datx021512.chalmers.se.greenme.MainActivity;
 import datx021512.chalmers.se.greenme.R;
 import datx021512.chalmers.se.greenme.adapters.ShopItem;
 import datx021512.chalmers.se.greenme.adapters.ShoppingAdapter;
@@ -46,7 +53,7 @@ import datx021512.chalmers.se.greenme.ocr.IntentResult;
 import datx021512.chalmers.se.greenme.database.databaseHelper;
 
 
-public class ShoppingFragment extends Fragment implements View.OnClickListener {
+public class ShoppingFragment extends Fragment implements View.OnClickListener{
     private AutoCompleteTextView textView;
     private RecyclerView mRecycleView;
     private ShoppingAdapter mAdapter;
@@ -54,18 +61,20 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
     private ImageButton mAddButton;
     private databaseHelper db;
     private View rootView;
-
+    private MainActivity mainActivity;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
-
+        mainActivity = (MainActivity)getActivity();
 
         ArrayList<ShopItem> items = new ArrayList<ShopItem>();
         mAdapter = new ShoppingAdapter(rootView);
         mAddButton = (ImageButton) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);
         mOCRButton = (ImageButton) rootView.findViewById(R.id.OCR_add);
+        mOCRButton.setOnClickListener(this);
+        mOCRButton = (ImageButton) rootView.findViewById(R.id.upload_button);
         mOCRButton.setOnClickListener(this);
         mRecycleView = (RecyclerView) rootView.findViewById(R.id.recyclerShoppingItems);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -98,7 +107,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                     if (text != null && text.trim().length() > 0) {
                        if (/*db.getImpact(text).size() == 1 &&*/ db.getImpactName(text).get(0).equals(text) ) {
                                addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)));
-                              x
+
                            } else {
                                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                                LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -139,6 +148,38 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                 IntentIntegrator integrator = new IntentIntegrator(ShoppingFragment.this);
                 integrator.addExtra("PROMPT_MESSAGE", "Skanna din vara");
                 integrator.initiateScan();
+                break;
+            case R.id.upload_button:
+                Log.d("GREEN", "upload button pushed");
+
+                Games.Leaderboards.submitScoreImmediate(mainActivity.getmGoogleApiClient(),mainActivity.getResources()
+                        .getString(R.string.Leaderboard_Ekologiskt),0)
+                        .setResultCallback(new ResultCallback<Leaderboards.SubmitScoreResult>() {
+
+                            @Override
+                            public void onResult(Leaderboards.SubmitScoreResult submitScoreResult) {
+
+                                if (submitScoreResult.getStatus().getStatusCode() == GamesStatusCodes.STATUS_OK) {
+
+                                    Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mainActivity.getmGoogleApiClient(),
+                                            mainActivity.getResources()
+                                                    .getString(R.string.Leaderboard_Ekologiskt),0,0)
+                                            .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+
+                                                @Override
+                                                public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                                                    Long currScore = loadPlayerScoreResult.getScore().getRawScore();
+                                                    Long score = currScore + 5; //TODO implement the right int to add to the score
+                                                    Games.Leaderboards.submitScore(mainActivity.getmGoogleApiClient(),
+                                                            mainActivity.getResources().getString(R.string.Leaderboard_Ekologiskt), score);
+                                                }
+                                            });
+                                }
+                                else{
+                                    Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. " );
+                                }
+                            }
+                        });
                 break;
         }
     }
@@ -269,4 +310,5 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         }
         return null;
     }
+
 }

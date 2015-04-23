@@ -2,7 +2,6 @@
 
 <resources>
     <string name="app_id">285192974402</string>
-    <string name="Leaderboard_Total">CgkIwuDNtqYIEAIQAQ</string>
-    <string name="Leaderboard_Livsmedel">CgkIwuDNtqYIEAIQAg</string>
-    <string name="Leaderboard_Transport">CgkIwuDNtqYIEAIQAw</string>
+    <string name="Leaderboard_Transport">CgkIwuDNtqYIEAIQAQ</string>
+    <string name="Leaderboard_Ekologiskt">CgkIwuDNtqYIEAIQAg</string>
 </resources>

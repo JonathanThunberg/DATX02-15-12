@@ -9,7 +9,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,8 +122,7 @@ public class NavFragment extends Fragment implements NavCallback {
     }
 
     void selectItem(int position) {
-        Log.d("TAG","position: " + position + "navigationCurrentSelectedPosition: " + navigationCurrentSelectedPosition);
-        if (position != 4)
+        if (position != 4) //if topplistor button is clicked then dont highlight it
         {
             navigationCurrentSelectedPosition = position;
         }
