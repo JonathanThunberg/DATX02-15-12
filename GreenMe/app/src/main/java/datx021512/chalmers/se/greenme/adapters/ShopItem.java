@@ -8,11 +8,27 @@ public class ShopItem {
     private String mName;
     private double mCO2;
     private double mQuantity;
+    private boolean mEco;
 
-    public ShopItem(String name, double c02, double quantity) {
+    public ShopItem(String name, double c02, double quantity, boolean mEco) {
         this.mName = name;
         this.mCO2 = c02;
         this.mQuantity = quantity;
+        this.mEco = mEco;
+    }
+
+    public ShopItem(String name, double c02, String date)
+    {
+        this.mName = name;
+        this.mCO2 = c02;
+        this.quantity =1;
+        this.date = date;
+    }
+    public ShopItem(String name,int amount, double c02)
+    {
+        this.mName = name;
+        this.mCO2 = c02;
+        this.quantity =amount;
     }
 
     public ShopItem(String text, double c02) {
@@ -30,20 +46,6 @@ public class ShopItem {
 
     private String date;
 
-    public ShopItem(String name, double c02, String date)
-    {
-        this.mName = name;
-        this.mCO2 = c02;
-        this.quantity =1;
-        this.date = date;
-    }
-    public ShopItem(String name,int amount, double c02)
-    {
-        this.mName = name;
-        this.mCO2 = c02;
-        this.quantity =amount;
-    }
-
     public String getmName() {
         return mName;
     }
@@ -54,6 +56,10 @@ public class ShopItem {
 
     public double getmCO2() {
         return mCO2;
+    }
+
+    public boolean getEco() {
+        return mEco;
     }
 
     public void setmCO2(double mCO2) {

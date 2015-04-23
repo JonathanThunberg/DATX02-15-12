@@ -144,6 +144,32 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         return mArrayList;
     }
 
+    public ArrayList<String> getEco (String st){
+        ArrayList<String> mArrayList = new ArrayList<>();
+        for(String s :st.split("\\s+")) {
+            Cursor categories = getEcoFromDatabase("vegetableCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("EKOLOGICAL"))));
+                categories.moveToNext();
+            }
+
+            categories = getEcoFromDatabase("meanCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("EKOLOGICAL"))));
+                categories.moveToNext();
+            }
+            categories = getEcoFromDatabase("OwnCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("EKOLOGICAL"))));
+                categories.moveToNext();
+            }
+        }
+        return mArrayList;
+    }
+
     public ArrayList<String> getImpactName(String st){
         ArrayList<String> mArrayList = new ArrayList<>();
         for(String s :st.split("\\s+")) {
@@ -267,4 +293,20 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         db.execSQL("delete from "+ "Shoppingview"+s);
         db.close();
     }
+
+    public Cursor getEcoFromDatabase(String sqlTables,String s){
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor c = db.rawQuery("SELECT NAME,EKOLOGICAL FROM "+sqlTables+" WHERE NAME LIKE '%"+s+"%'", null);
+
+            // SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+            // String [] sqlSelect = {"IMPACT"};
+            // qb.setTables(sqlTables);
+            //String []selectionArgs = {s + "%"};
+//          Cursor c = qb.query(db, sqlSelect, null, selectionArgs,
+            //                null, null, null);
+            c.moveToFirst();
+            db.close();
+            return c;
+    }
+
 }

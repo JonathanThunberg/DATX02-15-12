@@ -113,7 +113,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                     final String text = textView.getText().toString();
                     if (text != null && text.trim().length() > 0) {
                        if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
-                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),1);
+                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),1,Boolean.parseBoolean(db.getEco(text).get(0)));
                         } else {
                                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                                LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -132,7 +132,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                                        if(position==0){
                                             createNewItem(text);
                                        }else{
-                                            addItemToList(db.getImpactName(text).get(position-1), Double.parseDouble(db.getImpact(text).get(position-1)),1);
+                                            addItemToList(db.getImpactName(text).get(position-1), Double.parseDouble(db.getImpact(text).get(position-1)),1,Boolean.parseBoolean(db.getEco(text).get(position-1)));
                                        }
                                        mdialog.dismiss();
                                    }
@@ -212,7 +212,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                     String text = userInput.getText().toString();
                     String text2 = userImpact.getText().toString();
                     db.createNewItem(text, Integer.parseInt(text2));
-                    addItemToList(text, Double.parseDouble(text2),1);
+                    addItemToList(text, Double.parseDouble(text2),1,Boolean.parseBoolean(text2));
 
                 }
             })
@@ -232,9 +232,9 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         }
 
 
-    public void addItemToList(String text,double position, double quant){
+    public void addItemToList(String text,double position, double quant, Boolean eco){
         if(!mAdapter.contains(text)) {
-            mAdapter.addItem(new ShopItem(text, position, quant));
+            mAdapter.addItem(new ShopItem(text, position, quant, eco));
             textView.setText("");
             updateTotal();
         }
@@ -280,7 +280,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                         numWeight /= 1000;
                     }
                     Log.d("OCR","Inside: " + numWeight);
-                    addItemToList(text,1337,numWeight);
+                    addItemToList(text,1337,numWeight,true);
 //                    ShopItem item = new ShopItem(text,1337,1);
 //                    mAdapter.addItem(item);
 //                    mAdapter.notifyDataSetChanged();
