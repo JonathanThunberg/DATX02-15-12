@@ -32,8 +32,8 @@ public class LoginActivity extends Activity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
-                .addApi(Games.API)
-                .addScope(Games.SCOPE_GAMES)
+               // .addApi(Games.API)
+               // .addScope(Games.SCOPE_GAMES)
                 .build();
     }
 
@@ -77,7 +77,7 @@ public class LoginActivity extends Activity implements
     }
 
     public void onConnectionFailed(ConnectionResult result) {
-//        Toast.makeText(this, "Connection Failed!", Toast.LENGTH_LONG).show();
+        Log.d(TAG,"Onconnectionfailed");
         if (!mIntentInProgress) {
             // Store the ConnectionResult so that we can use it later when the user clicks
             // 'sign-in'.
@@ -97,6 +97,7 @@ public class LoginActivity extends Activity implements
         mSignInClicked = false;
         //Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, MainActivity.class);
+        Log.d(TAG,"onconnected");
         startActivity(intent);
         this.finish();
 }
