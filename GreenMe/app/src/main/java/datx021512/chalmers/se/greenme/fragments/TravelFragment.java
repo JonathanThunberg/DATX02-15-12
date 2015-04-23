@@ -2,14 +2,10 @@ package datx021512.chalmers.se.greenme.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-
 import android.content.Context;
-import android.graphics.Color;
 import android.location.Location;
-
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,9 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,12 +22,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import junit.framework.TestCase;
-
-import java.util.List;
 
 import datx021512.chalmers.se.greenme.R;
 
@@ -51,7 +40,7 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
     private Location previousLocation = null;
     private double totalDistance;
 
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 250; // 100 meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 250; // 250 meters
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minutes
 
     @Override
@@ -109,32 +98,23 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
                     stopTracking();
                     mapButton.setText("START");
                     textView.setText("totdist" + totalDistance);
-
-
                 }
-
-                // Change button state
                 isButtonPressed = !isButtonPressed;
             }
         });
-
         return rootView;
     }
 
-    //run method
     public void startTracking() {
         mapButton.setText("STOP");
 
-        // Get the location manager
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        // Add new listeners with the given params
+        // Add new listeners with the given parameters (GPS or NETWORK)
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, locationListener); // Network location
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, locationListener); // Gps location
-
-
     }
-    //stop method
+
     public void stopTracking(){
         locationManager.removeUpdates(locationListener);
 
