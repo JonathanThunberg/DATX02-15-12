@@ -17,6 +17,7 @@ import com.google.android.gms.plus.Plus;
 import datx021512.chalmers.se.greenme.fragments.Home;
 import datx021512.chalmers.se.greenme.fragments.PlayFragment;
 import datx021512.chalmers.se.greenme.fragments.ShoppingFragment;
+import datx021512.chalmers.se.greenme.fragments.ShoppingListsFragment;
 import datx021512.chalmers.se.greenme.fragments.StatisticsFragment;
 import datx021512.chalmers.se.greenme.fragments.TravelFragment;
 import datx021512.chalmers.se.greenme.navigation.NavCallback;
@@ -71,7 +72,7 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
                 fragment = new Home();
                 break;
             case 1:
-                fragment = new ShoppingFragment();
+                fragment = new ShoppingListsFragment();
                 break;
             case 2:
                 fragment = new TravelFragment();

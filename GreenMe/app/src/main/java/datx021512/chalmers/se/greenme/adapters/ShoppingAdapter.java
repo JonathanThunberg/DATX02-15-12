@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import datx021512.chalmers.se.greenme.R;
 
@@ -44,7 +45,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
     public ShoppingAdapter.ListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.
                 from(parent.getContext()).
-                inflate(R.layout.shopping_wrapper, parent,  false);
+                inflate(R.layout.shopping_wrapper, parent, false);
 
         return new ListViewHolder(v);
     }
@@ -90,7 +91,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
         }
         Double total = getTotalImpact();
         TextView textTotal = (TextView) rootView.findViewById(R.id.text_total);
-        textTotal.setText(total+" kg/co2");
+        textTotal.setText(total + " kg/co2");
     }
 
 
@@ -136,6 +137,11 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
         }
         return totalImpact;
     }
+
+    public List<ShopItem> getAllitems() {
+        return(List<ShopItem>) mListData.clone();
+    }
+
 
     public static class ListViewHolder extends RecyclerView.ViewHolder {
         TextView textItem;
