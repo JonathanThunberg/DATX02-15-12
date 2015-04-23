@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.plus.Plus;
 
 import datx021512.chalmers.se.greenme.fragments.Home;
@@ -51,6 +52,7 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API)
                 .addScope(Games.SCOPE_GAMES)
+                .addApi(LocationServices.API)
                 .build();
 
     }
