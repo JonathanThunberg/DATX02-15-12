@@ -3,6 +3,7 @@ package datx021512.chalmers.se.greenme.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,7 +22,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 
 import datx021512.chalmers.se.greenme.R;
@@ -35,6 +41,7 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
     private boolean isButtonPressed = false;
     private  Button mapButton;
     private TextView textView;
+    private Location location;
 
     private LocationManager locationManager = null;
     private Location previousLocation = null;
@@ -79,6 +86,13 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         MapsInitializer.initialize(getActivity());
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
+
+/*        CameraPosition position= new  CameraPosition.Builder().
+                target(myPosition).zoom(17).bearing(19).tilt(30).build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+        map.addMarker(new
+                MarkerOptions().position(myPosition).title("You are here!"));*/
+
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(57.708870,11.974560),10);
         map.animateCamera(cameraUpdate);
 
@@ -97,11 +111,11 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
                 }else{
                     stopTracking();
                     mapButton.setText("START");
-                    textView.setText("totdist" + totalDistance);
                 }
                 isButtonPressed = !isButtonPressed;
             }
         });
+
         return rootView;
     }
 
@@ -113,7 +127,16 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         // Add new listeners with the given parameters (GPS or NETWORK)
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, locationListener); // Network location
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, locationListener); // Gps location
+
+
+
+
+        //add marker to your current location
+
+
     }
+
+
 
     public void stopTracking(){
         locationManager.removeUpdates(locationListener);
@@ -147,20 +170,26 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         @Override
         public void onLocationChanged(Location newLocation)
         {
+
             if (previousLocation != null)
             {
                 double latitude = newLocation.getLatitude() + previousLocation.getLatitude();
                 latitude *= latitude;
+                Log.d(TAG, "latitude: " + latitude);
                 double longitude = newLocation.getLongitude() + previousLocation.getLongitude();
                 longitude *= longitude;
+                Log.d(TAG, "longitude: " + longitude);
                 double altitude = newLocation.getAltitude() + previousLocation.getAltitude();
                 altitude *= altitude;
+                Log.d(TAG, "altitude: " + altitude);
                 totalDistance += Math.sqrt(latitude + longitude + altitude);
             }
 
             previousLocation = newLocation;
 
             Log.d(TAG, "totaldistance: "+ totalDistance);
+            textView.setText("totdist" + totalDistance);
+
 
         }
 
