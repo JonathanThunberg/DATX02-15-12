@@ -101,6 +101,10 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
                     Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
                     mGoogleApiClient.disconnect();
                 }
+                if(this.mGoogleApiClient.isConnected()){
+
+                    Log.d(TAG,"VI är connected!!!");
+                }
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 this.finish();

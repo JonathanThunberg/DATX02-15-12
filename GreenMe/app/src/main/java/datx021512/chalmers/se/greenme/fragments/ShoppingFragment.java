@@ -25,9 +25,7 @@ import android.widget.Toast;
 
 
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.android.gms.games.GamesStatusCodes;
 
@@ -113,8 +111,9 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                     final String text = textView.getText().toString();
                     if (text != null && text.trim().length() > 0) {
                        if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
-                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),1,Boolean.parseBoolean(db.getEco(text).get(0)));
-                        } else {
+                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),1,(db.getEco(text).get(0)));
+                               Log.d("TEST","!!!!!!!!!!!!!!!!GetALL1: " + mAdapter.getAllitems());
+                       } else {
                                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                                LayoutInflater inflater = getActivity().getLayoutInflater();
                                View convertView = (View) inflater.inflate(R.layout.list_alert, null);
@@ -132,7 +131,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                                        if(position==0){
                                             createNewItem(text);
                                        }else{
-                                            addItemToList(db.getImpactName(text).get(position-1), Double.parseDouble(db.getImpact(text).get(position-1)),1,Boolean.parseBoolean(db.getEco(text).get(position-1)));
+                                            addItemToList(db.getImpactName(text).get(position-1), Double.parseDouble(db.getImpact(text).get(position-1)),1,(db.getEco(text).get(position-1)));
+                                           Log.d("TEST","!!!!!!!!!!!!!!!!GetALL2: " + mAdapter.getAllitems());
                                        }
                                        mdialog.dismiss();
                                    }
@@ -157,35 +157,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.upload_button:
                 Log.d("GREEN", "upload button pushed");
-
-                Games.Leaderboards.submitScoreImmediate(mainActivity.getmGoogleApiClient(),mainActivity.getResources()
-                        .getString(R.string.Leaderboard_Ekologiskt),0)
-                        .setResultCallback(new ResultCallback<Leaderboards.SubmitScoreResult>() {
-
-                            @Override
-                            public void onResult(Leaderboards.SubmitScoreResult submitScoreResult) {
-
-                                if (submitScoreResult.getStatus().getStatusCode() == GamesStatusCodes.STATUS_OK) {
-
-                                    Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mainActivity.getmGoogleApiClient(),
-                                            mainActivity.getResources()
-                                                    .getString(R.string.Leaderboard_Ekologiskt),0,0)
-                                            .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-
-                                                @Override
-                                                public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
-                                                    Long currScore = loadPlayerScoreResult.getScore().getRawScore();
-                                                    Long score = currScore + 5; //TODO implement the right int to add to the score
-                                                    Games.Leaderboards.submitScore(mainActivity.getmGoogleApiClient(),
-                                                            mainActivity.getResources().getString(R.string.Leaderboard_Ekologiskt), score);
-                                                }
-                                            });
-                                }
-                                else{
-                                    Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. " );
-                                }
-                            }
-                        });
+              //  updateLeaderboard();
                 break;
         }
     }
@@ -212,7 +184,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                     String text = userInput.getText().toString();
                     String text2 = userImpact.getText().toString();
                     db.createNewItem(text, Integer.parseInt(text2));
-                    addItemToList(text, Double.parseDouble(text2),1,Boolean.parseBoolean(text2));
+                    addItemToList(text, Double.parseDouble(text2),1,0); //TODO create a checkbox to see if the new item is Ekologic instead of the last int (0)
 
                 }
             })
@@ -232,7 +204,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         }
 
 
-    public void addItemToList(String text,double position, double quant, Boolean eco){
+    public void addItemToList(String text,double position, double quant, int eco){
         if(!mAdapter.contains(text)) {
             mAdapter.addItem(new ShopItem(text, position, quant, eco));
             textView.setText("");
@@ -245,6 +217,39 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         TextView textTotal = (TextView) getActivity().findViewById(R.id.text_total);
         textTotal.setText(total+" kg/co2");
 
+    }
+    public void updateLeaderboard(){
+        final int newEco = mAdapter.getNewEco();
+
+
+        Games.Leaderboards.submitScoreImmediate(mainActivity.getmGoogleApiClient(),mainActivity.getResources()
+                .getString(R.string.Leaderboard_Ekologiskt),0)
+                .setResultCallback(new ResultCallback<Leaderboards.SubmitScoreResult>() {
+
+                    @Override
+                    public void onResult(Leaderboards.SubmitScoreResult submitScoreResult) {
+
+                        if (submitScoreResult.getStatus().getStatusCode() == GamesStatusCodes.STATUS_OK) {
+
+                            Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mainActivity.getmGoogleApiClient(),
+                                    mainActivity.getResources()
+                                            .getString(R.string.Leaderboard_Ekologiskt),0,0)
+                                    .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+
+                                        @Override
+                                        public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                                            Long currScore = loadPlayerScoreResult.getScore().getRawScore();
+                                            Long score = currScore + newEco;
+                                            Games.Leaderboards.submitScore(mainActivity.getmGoogleApiClient(),
+                                                    mainActivity.getResources().getString(R.string.Leaderboard_Ekologiskt), score);
+                                        }
+                                    });
+                        }
+                        else{
+                            Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. " );
+                        }
+                    }
+                });
     }
 
     @Override
@@ -280,7 +285,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                         numWeight /= 1000;
                     }
                     Log.d("OCR","Inside: " + numWeight);
-                    addItemToList(text,1337,numWeight,true);
+                    addItemToList(text,1337,numWeight,1);
 //                    ShopItem item = new ShopItem(text,1337,1);
 //                    mAdapter.addItem(item);
 //                    mAdapter.notifyDataSetChanged();

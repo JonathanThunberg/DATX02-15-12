@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +91,8 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         db.close();
         return c;
     }
+
+
     public Cursor getImpactFromDatabase(String sqlTables,String s){
           SQLiteDatabase db = getReadableDatabase();
           Cursor c = db.rawQuery("SELECT NAME,IMPACT FROM "+sqlTables+" WHERE NAME LIKE '%"+s+"%'", null);
@@ -119,6 +119,12 @@ public class DatabaseHelper extends SQLiteAssetHelper {
 
 
     public ArrayList<String> getImpact(String st){
+
+        SQLiteDatabase db = getWritableDatabase();
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "OwnCategories" + "(NAME VARCHAR, IMPACT DOUBLE, EKOLOGICAL INTEGER);";
+        db.execSQL(CREATE_CONTACTS_TABLE);
+        db.close();
+
         ArrayList<String> mArrayList = new ArrayList<>();
         for(String s :st.split("\\s+")) {
             Cursor categories = getImpactFromDatabase("vegetableCategories", s);
@@ -144,16 +150,16 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         return mArrayList;
     }
 
-    public ArrayList<String> getEco (String st){
-        ArrayList<String> mArrayList = new ArrayList<>();
+    public ArrayList<Integer> getEco (String st){
+        ArrayList<Integer> mArrayList = new ArrayList<>();
         for(String s :st.split("\\s+")) {
             Cursor categories = getEcoFromDatabase("vegetableCategories", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
-                mArrayList.add((categories.getString(categories.getColumnIndex("EKOLOGICAL"))));
+                mArrayList.add((categories.getInt(categories.getColumnIndex("EKOLOGICAL"))));
                 categories.moveToNext();
             }
-
+/*
             categories = getEcoFromDatabase("meanCategories", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
@@ -165,7 +171,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
             while (!categories.isAfterLast()) {
                 mArrayList.add((categories.getString(categories.getColumnIndex("EKOLOGICAL"))));
                 categories.moveToNext();
-            }
+            }*/
         }
         return mArrayList;
     }

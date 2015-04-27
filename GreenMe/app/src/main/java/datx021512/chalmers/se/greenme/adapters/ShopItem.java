@@ -8,9 +8,9 @@ public class ShopItem {
     private String mName;
     private double mCO2;
     private double mQuantity;
-    private boolean mEco;
+    private int mEco;
 
-    public ShopItem(String name, double c02, double quantity, boolean mEco) {
+    public ShopItem(String name, double c02, double quantity, int mEco) {
         this.mName = name;
         this.mCO2 = c02;
         this.mQuantity = quantity;
@@ -58,7 +58,7 @@ public class ShopItem {
         return mCO2;
     }
 
-    public boolean getEco() {
+    public int getEco() {
         return mEco;
     }
 
