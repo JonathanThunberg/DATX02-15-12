@@ -138,10 +138,13 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
         return totalImpact;
     }
     public int getNewEco() {
-        int totalNewEco = 0;
+       int totalNewEco = 0;
         for(ShopItem i: mListData) {
-            totalNewEco += i.getEco(); //Asuming standard for LiteSQL where 1 = true and 0 = false
+            Log.d("TAG","gasdasdas: " + i.getEco());
+            totalNewEco += (i.getEco()*i.getQuantity()); //Asuming standard for LiteSQL where 1 = true and 0 = false
         }
+
+        Log.d("TAG","fadsdsa "+ totalNewEco);
         return totalNewEco;
     }
 

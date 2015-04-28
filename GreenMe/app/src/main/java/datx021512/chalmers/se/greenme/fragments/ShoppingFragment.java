@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 
 
 import com.google.android.gms.common.api.ResultCallback;
@@ -61,6 +62,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
     private View rootView;
     private MainActivity mainActivity;
     private String name;
+    public String TAG = "ShoppingFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -157,7 +159,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.upload_button:
                 Log.d("GREEN", "upload button pushed");
-              //  updateLeaderboard();
+                updateLeaderboard();
                 break;
         }
     }
@@ -206,6 +208,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
     public void addItemToList(String text,double position, double quant, int eco){
         if(!mAdapter.contains(text)) {
+           //if(eco == null)
             mAdapter.addItem(new ShopItem(text, position, quant, eco));
             textView.setText("");
             updateTotal();
@@ -220,6 +223,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
     }
     public void updateLeaderboard(){
         final int newEco = mAdapter.getNewEco();
+        Log.d(TAG,"det vi ska lägga till är: " + newEco);
 
 
         Games.Leaderboards.submitScoreImmediate(mainActivity.getmGoogleApiClient(),mainActivity.getResources()
@@ -233,13 +237,14 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
                             Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mainActivity.getmGoogleApiClient(),
                                     mainActivity.getResources()
-                                            .getString(R.string.Leaderboard_Ekologiskt),0,0)
+                                            .getString(R.string.Leaderboard_Ekologiskt),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL)
                                     .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
 
                                         @Override
                                         public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
                                             Long currScore = loadPlayerScoreResult.getScore().getRawScore();
                                             Long score = currScore + newEco;
+                                            Log.d(TAG,score.toString());
                                             Games.Leaderboards.submitScore(mainActivity.getmGoogleApiClient(),
                                                     mainActivity.getResources().getString(R.string.Leaderboard_Ekologiskt), score);
                                         }

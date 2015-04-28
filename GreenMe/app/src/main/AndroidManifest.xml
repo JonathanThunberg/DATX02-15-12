@@ -39,7 +39,7 @@ package="datx021512.chalmers.se.greenme">
             </intent-filter>
         </activity>
 
-        <activity
+       <activity
             android:name="datx021512.chalmers.se.greenme.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.util.Log;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -150,29 +151,20 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         return mArrayList;
     }
 
-    public ArrayList<Integer> getEco (String st){
+        public ArrayList<Integer> getEco (String st){
         ArrayList<Integer> mArrayList = new ArrayList<>();
-        for(String s :st.split("\\s+")) {
-            Cursor categories = getEcoFromDatabase("vegetableCategories", s);
+        Log.d("TEST","!!!! Inuti GetEco()");
+            Cursor categories = getEcoFromDatabase("vegetableCategories", st);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
                 mArrayList.add((categories.getInt(categories.getColumnIndex("EKOLOGICAL"))));
                 categories.moveToNext();
             }
-/*
-            categories = getEcoFromDatabase("meanCategories", s);
-            categories.moveToFirst();
-            while (!categories.isAfterLast()) {
-                mArrayList.add((categories.getString(categories.getColumnIndex("EKOLOGICAL"))));
-                categories.moveToNext();
-            }
-            categories = getEcoFromDatabase("OwnCategories", s);
-            categories.moveToFirst();
-            while (!categories.isAfterLast()) {
-                mArrayList.add((categories.getString(categories.getColumnIndex("EKOLOGICAL"))));
-                categories.moveToNext();
-            }*/
+        //The item is no Eco so set it.
+        if (mArrayList.size() == 0) {
+            mArrayList.add(0);
         }
+
         return mArrayList;
     }
 
