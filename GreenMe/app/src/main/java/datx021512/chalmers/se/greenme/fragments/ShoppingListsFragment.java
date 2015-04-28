@@ -59,7 +59,7 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_text:
-                if (textView.getText() != null && !mAdapter.contains(textView.getText().toString())) {
+                if (textView.getText() != null && !mAdapter.contains(textView.getText().toString()) && !mAdapter.contains(textView.getText().toString().replaceAll("\\s",""))) {
                     SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
                     createNewList(textView.getText().toString(), date.format(new Date()));
 
@@ -78,8 +78,9 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
         bundle.putString("Shopping_Name", s);
         ShoppingFragment sh= new ShoppingFragment();
         sh.setArguments(bundle);
-        fragmentManager.beginTransaction().replace(R.id.container,sh).commit();
         db.createNewList(s,format);
+        fragmentManager.beginTransaction().replace(R.id.container,sh).commit();
+
     }
 
     @Override

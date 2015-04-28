@@ -4,7 +4,7 @@ package datx021512.chalmers.se.greenme.adapters;
 public class ShopItem {
 
 
-    private int quantity;
+   // private int quantity;
     private String mName;
     private double mCO2;
     private double mQuantity;
@@ -34,15 +34,10 @@ public class ShopItem {
     {
         this.mName = name;
         this.mCO2 = c02;
-        this.quantity =1;
+        this.mQuantity =1;
         this.date = date;
     }
-    public ShopItem(String name,int amount, double c02)
-    {
-        this.mName = name;
-        this.mCO2 = c02;
-        this.quantity =amount;
-    }
+
 
     public String getmName() {
         return mName;

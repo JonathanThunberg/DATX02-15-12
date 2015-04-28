@@ -106,8 +106,13 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
 
     @Override
     public void onBackPressed() {
+        Fragment f = getFragmentManager().findFragmentById(R.id.container);
         if (navigationDrawerFragment.isDrawerOpen())
             navigationDrawerFragment.closeDrawer();
+        else if(f instanceof ShoppingFragment){
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, new ShoppingListsFragment()).commit();
+        }
         else
             super.onBackPressed();
     }

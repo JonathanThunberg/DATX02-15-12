@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.util.Log;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -24,6 +25,12 @@ public class DatabaseHelper extends SQLiteAssetHelper {
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        SQLiteDatabase db = getWritableDatabase();
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "ShoppingListsview" + "(NAME VARCHAR,DATE VARCHAR, AMOUNT DOUBLE);";
+        db.execSQL(CREATE_CONTACTS_TABLE);
+        CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "OwnCategories" + "(NAME VARCHAR, IMPACT DOUBLE, STANDARDWEIGHT DOUBLE);";
+        db.execSQL(CREATE_CONTACTS_TABLE);
+        db.close();
     }
 
   /**
@@ -95,7 +102,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
     }
     public Cursor getImpactFromDatabase(String sqlTables,String s){
           SQLiteDatabase db = getReadableDatabase();
-          Cursor c = db.rawQuery("SELECT NAME,IMPACT FROM "+sqlTables+" WHERE NAME LIKE '%"+s+"%'", null);
+          Cursor c = db.rawQuery("SELECT * FROM "+sqlTables+" WHERE NAME LIKE '%"+s+"%'", null);
 
          // SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
          // String [] sqlSelect = {"IMPACT"};
@@ -150,13 +157,14 @@ public class DatabaseHelper extends SQLiteAssetHelper {
             Cursor categories = getImpactFromDatabase("vegetableCategories", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
-                mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+                mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))+"  "+categories.getString(categories.getColumnIndex("COUNTRY"))+"  Ekologisk:"+categories.getString(categories.getColumnIndex("EKOLOGICAL"))));
                 categories.moveToNext();
             }
             categories = getImpactFromDatabase("meanCategories", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
                 mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+
                 categories.moveToNext();
             }
             categories = getImpactFromDatabase("OwnCategories", s);
@@ -171,23 +179,14 @@ public class DatabaseHelper extends SQLiteAssetHelper {
 
     public void createNewItem(String text, double text2) {
         SQLiteDatabase db = getWritableDatabase();
-      /*  db.execSQL("INSERT INTO "
-                + "OwnCategories"
-                + "(NAME, IMPACT)"
-                + " VALUES ('"+text+"', "+text2+");");
-    */
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "OwnCategories" + "(NAME VARCHAR, IMPACT DOUBLE);";
-        db.execSQL(CREATE_CONTACTS_TABLE);
-        db.close();
-        db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("NAME", text);
         values.put("IMPACT", text2);
         db.insert("OwnCategories", null, values);
         db.close();
     }
-    public void saveList(List<ShopItem> l,String name) {
-
+    public void saveList(List<ShopItem> l,String name1) {
+        String name=name1.replaceAll("\\s","");
         SQLiteDatabase db = getWritableDatabase();
 
         String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "Shoppingview"+name + "(NAME VARCHAR, AMOUNT INTEGER);";
@@ -200,12 +199,13 @@ public class DatabaseHelper extends SQLiteAssetHelper {
             ContentValues values = new ContentValues();
             values.put("NAME", s.getmName());
             values.put("AMOUNT", s.getQuantity());
+            Log.d("database", "database: " + s.getQuantity());
             db.insert("Shoppingview"+name, null, values);
             db.close();
             totalimpact += s.getmCO2()*s.getQuantity();
         }
         db = getWritableDatabase();
-        db.execSQL("UPDATE ShoppingListsview SET AMOUNT='"+totalimpact+"' WHERE NAME='"+name+"'");
+        db.execSQL("UPDATE ShoppingListsview SET AMOUNT='"+totalimpact+"' WHERE NAME='"+name1+"'");
         db.close();
 
     }
@@ -213,16 +213,17 @@ public class DatabaseHelper extends SQLiteAssetHelper {
     public ArrayList<ShopItem> getSavedList(String name) {
         ArrayList<ShopItem> savedList = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "Shoppingview"+name + "(NAME VARCHAR, AMOUNT INTEGER);";
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "Shoppingview"+name.replaceAll("\\s","") + "(NAME VARCHAR, AMOUNT INTEGER);";
         db.execSQL(CREATE_CONTACTS_TABLE);
         db.close();
 
-        Cursor categories = getFromDatabase("Shoppingview"+name, "NAME, AMOUNT");
+        Cursor categories = getFromDatabase("Shoppingview"+name.replaceAll("\\s",""), "NAME, AMOUNT");
         while (!categories.isAfterLast()) {
             savedList.add(
                     new ShopItem(categories.getString(categories.getColumnIndex("NAME")),
-                            Integer.parseInt(categories.getString(categories.getColumnIndex("AMOUNT"))),
-                            Double.parseDouble(getImpact(categories.getString(categories.getColumnIndex("NAME"))).get(0))));
+                            Double.parseDouble(getImpact(categories.getString(categories.getColumnIndex("NAME"))).get(0)),
+                            Double.parseDouble(categories.getString(categories.getColumnIndex("AMOUNT")))));
+            Log.d("database", "database: " + categories.getColumnIndex("AMOUNT"));
             categories.moveToNext();
         }
         return savedList;
@@ -264,7 +265,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
     public void removeShoppingList(String s) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete("ShoppingListsview", "NAME='" + s+"'", null);
-        db.execSQL("delete from "+ "Shoppingview"+s);
+        db.execSQL("delete from "+ "Shoppingview"+s.replaceAll("\\s",""));
         db.close();
     }
 }
