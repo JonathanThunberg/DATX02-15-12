@@ -53,8 +53,8 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
         navigationDrawerFragment.setup(R.id.fragment_drawer,(DrawerLayout) findViewById(R.id.drawer), toolBar);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
+                //.addConnectionCallbacks(this)
+                //.addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API)

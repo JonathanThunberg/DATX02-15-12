@@ -203,13 +203,56 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
             final AlertDialog mdialog = alertDialog.create();
 
             mdialog.show();
-        }
+    }
+
+    private void createNewOCRItem(String text, final double weight) {
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View convertView = inflater.inflate(R.layout.dialog_newitem, null);
+        final EditText userInput = (EditText) convertView.findViewById(R.id.username);
+        final EditText userImpact = (EditText) convertView.findViewById(R.id.userimpact);
+        userInput.setText(text);
+
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setPositiveButton("Create", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id) {
+                String text = userInput.getText().toString();
+                String text2 = userImpact.getText().toString();
+                db.createNewItem(text, Integer.parseInt(text2));
+                addOCRToList(text, 1, weight, Double.parseDouble(text2));
+
+            }
+        })
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+
+
+        alertDialog.setView(convertView);
+        alertDialog.setTitle("Nytt Föremål");
+
+        final AlertDialog mdialog = alertDialog.create();
+
+        mdialog.show();
+    }
 
 
     public void addItemToList(String text,double position, double quant, int eco){
         if(!mAdapter.contains(text)) {
            //if(eco == null)
             mAdapter.addItem(new ShopItem(text, position, quant, eco));
+            textView.setText("");
+            updateTotal();
+        }
+    }
+
+    public void addOCRToList(String text, int amount, double weight, double co2)
+    {
+        if(!mAdapter.contains(text)) {
+            mAdapter.addItem(new ShopItem(text, amount, weight, co2));
             textView.setText("");
             updateTotal();
         }
@@ -277,20 +320,38 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                 if(text != "" && text != null && text != "null")
                 {
                     String[] split = text.split(" ");
-                    String weight = split[split.length-1];
-                    String weight2 = weight.substring(weight.length()-2);
+                    String last = split[split.length-1];
+                    Log.d("OCR","Weight: " + last);
+                    String last2 = split[split.length-2];
+                    Log.d("OCR","Weight2: " + last2);
                     double numWeight = 0;
-                    if(weight.contains("kg")){
-                        weight = weight.replaceAll("[^\\d]", "");
-                        numWeight = Double.parseDouble(weight);
+                    if(last2.matches(".*\\d.*")){
+                        if(last.contains("kg")){
+                            numWeight = Double.parseDouble(last2);
+                        }
+                        else if(last.contains("g")){
+                            last2 = last2.replaceAll("[^\\d]", "");
+                            numWeight = Double.parseDouble(last2);
+                            numWeight /= 1000;
+                        }
                     }
-                    else if(weight.contains("g")){
-                        weight = weight.replaceAll("[^\\d]", "");
-                        numWeight = Double.parseDouble(weight);
-                        numWeight /= 1000;
+                    else
+                    {
+                        if(last.contains("kg")){
+                            last = last.replaceAll("[^\\d]", "");
+                            numWeight = Double.parseDouble(last);
+                        }
+                        else if(last.contains("g")){
+                            last = last.replaceAll("[^\\d]", "");
+                            numWeight = Double.parseDouble(last);
+                            numWeight /= 1000;
+                        }
                     }
+
+
                     Log.d("OCR","Inside: " + numWeight);
-                    addItemToList(text,1337,numWeight,1);
+                    checkDbForItem(text,numWeight);
+                    //addOCRToList(text, 1, numWeight);
 //                    ShopItem item = new ShopItem(text,1337,1);
 //                    mAdapter.addItem(item);
 //                    mAdapter.notifyDataSetChanged();
@@ -364,5 +425,45 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
     public String checkIfInDb(String scanned)
     {
         return db.getImpactName(scanned).get(0);
+    }
+
+    public void checkDbForItem(String text, final double weight)
+    {
+        final String inputText = text;
+        if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
+            addOCRToList(db.getImpactName(text).get(0), 1, weight, Double.parseDouble(db.getImpact(text).get(0)));
+            Log.d("SHOPPING","!!!!!!!!!!!!!!!!GetALL1: " + mAdapter.getAllitems());
+        } else {
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View convertView = inflater.inflate(R.layout.list_alert, null);
+            alertDialog.setView(convertView);
+            alertDialog.setTitle("Menade du detta?");
+            ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+            ArrayList<String> suggestions = new ArrayList<>();
+            suggestions.add("Skapa nytt objekt");
+            suggestions.addAll(db.getImpactName(text));
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1,suggestions );
+            lv.setAdapter(arrayAdapter);
+            final AlertDialog mdialog = alertDialog.create();
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if(position==0){
+                        createNewOCRItem(inputText, weight);
+                    }else{
+                        addOCRToList(db.getImpactName(inputText).get(0), 1, weight, Double.parseDouble(db.getImpact(inputText).get(0)));
+                        Log.d("TEST","!!!!!!!!!!!!!!!!GetALL2: " + mAdapter.getAllitems());
+                    }
+                    mdialog.dismiss();
+                }
+            });
+            mdialog.show();
+
+        }
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getActivity().getBaseContext().INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

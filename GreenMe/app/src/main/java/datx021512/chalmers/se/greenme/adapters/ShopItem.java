@@ -3,32 +3,40 @@ package datx021512.chalmers.se.greenme.adapters;
 
 public class ShopItem {
 
-
-    private int quantity;
     private String mName;
     private double mCO2;
     private double mQuantity;
     private int mEco;
+    private double mWeight;
 
-    public ShopItem(String name, double c02, double quantity, int mEco) {
+    public ShopItem(String name, double c02, double quantity, int eco) {
         this.mName = name;
         this.mCO2 = c02;
         this.mQuantity = quantity;
-        this.mEco = mEco;
+        this.mEco = eco;
     }
 
     public ShopItem(String name, double c02, String date)
     {
         this.mName = name;
         this.mCO2 = c02;
-        this.quantity =1;
+        this.mQuantity = 1;
         this.date = date;
     }
-    public ShopItem(String name,int amount, double c02)
+    //OCR
+    public ShopItem(String name,int amount, double weight, double co2)
     {
         this.mName = name;
-        this.mCO2 = c02;
-        this.quantity =amount;
+        this.mQuantity = amount;
+        this.mWeight = weight;
+        this.mCO2 = co2;
+    }
+
+    public ShopItem(String name,int amount, double co2)
+    {
+        this.mName = name;
+        this.mQuantity = amount;
+        this.mCO2 = co2;
     }
 
     public ShopItem(String text, double c02) {
@@ -72,5 +80,13 @@ public class ShopItem {
 
     public void setQuantity(double quantity) {
         this.mQuantity = quantity;
+    }
+
+    public double getWeight() {
+        return this.mWeight;
+    }
+
+    public void setWeight(double weight) {
+        this.mWeight = weight;
     }
 }

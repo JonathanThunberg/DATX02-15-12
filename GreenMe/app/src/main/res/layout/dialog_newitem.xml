@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF">
     <EditText
         android:id="@+id/username"
         android:inputType="textEmailAddress"
@@ -11,7 +12,7 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
-        android:hint="+@string/Name" />
+        android:hint="@string/newItemName" />
     <EditText
         android:id="@+id/userimpact"
         android:inputType="number"
@@ -22,5 +23,5 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif"
-        android:hint="+@string/impact kg/(kg co2)"/>
+        android:hint="@string/user_impact"/>
 </LinearLayout>
