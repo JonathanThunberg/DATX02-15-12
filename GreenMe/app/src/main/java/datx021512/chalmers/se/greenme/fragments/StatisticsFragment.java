@@ -15,6 +15,7 @@ import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,15 +59,25 @@ public class StatisticsFragment extends Fragment {
                 series1Numbers[index+1] = (series1Numbers[index+1].doubleValue())+ls.get(i).getmCO2();
             }else{
                 series1Numbers[2*i+1] = ls.get(i).getmCO2();
-            }   series1Numbers[2*i] =Integer.parseInt(ls.get(i).getDate().split("/")[0]) ;
-        }
-        for(int i=0; i<series1Numbers.length;i++){
-            if(series1Numbers[i] == null){
-                for(int j=i+1; j<series1Numbers.length; j++){
-                    series1Numbers[i+(j-i)]=series1Numbers[j];
-                }
+                series1Numbers[2*i] =Integer.parseInt(ls.get(i).getDate().split("/")[0]) ;
             }
         }
+
+        List<Number> list = new ArrayList<Number>();
+        for(Number s : series1Numbers) {
+            if(s != null) {
+                list.add(s);
+            }
+        }
+        series1Numbers = list.toArray(new Number[list.size()]);
+
+        /** for(int i=0; i<series1Numbers.length;i++){
+             if(series1Numbers[i] == null){
+                 for(int j=i+1; j<series1Numbers.length; j++){
+                     series1Numbers[i+(j-i)]=series1Numbers[j];
+                 }
+             }
+         }*/
 
         for(Number s: series1Numbers){
             Log.d("Stat", "stat: " + s);

@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 //.addConnectionCallbacks(this)
-                //.addOnConnectionFailedListener(this)
+               // .addOnConnectionFailedListener(this) todo fix this
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API)

@@ -34,7 +34,7 @@ public class ShoppingListsAdapter extends RecyclerView.Adapter<ShoppingListsAdap
 
     public boolean contains(String s){
         for(ShopItem i: mListData){
-            if(i.getmName().equals(s)){
+            if(i.getmName().equals(s) || i.getmName().replaceAll("\\s","").equals(s)){
                 return true;
             }
         }
