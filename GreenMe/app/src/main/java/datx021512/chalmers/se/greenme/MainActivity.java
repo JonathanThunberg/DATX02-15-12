@@ -53,8 +53,8 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
         navigationDrawerFragment.setup(R.id.fragment_drawer,(DrawerLayout) findViewById(R.id.drawer), toolBar);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
+                //.addConnectionCallbacks(this)
+               // .addOnConnectionFailedListener(this) todo fix this
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API)
@@ -126,8 +126,13 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
 
     @Override
     public void onBackPressed() {
+        Fragment f = getFragmentManager().findFragmentById(R.id.container);
         if (navigationDrawerFragment.isDrawerOpen())
             navigationDrawerFragment.closeDrawer();
+        else if(f instanceof ShoppingFragment){
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, new ShoppingListsFragment()).commit();
+        }
         else
             super.onBackPressed();
     }

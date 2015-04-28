@@ -4,11 +4,18 @@ package datx021512.chalmers.se.greenme.adapters;
 public class ShopItem {
 
 
-    private int quantity;
+   // private int quantity;
     private String mName;
     private double mCO2;
     private double mQuantity;
     private int mEco;
+
+    public ShopItem(String name, double c02, double amount)
+    {
+        this.mName = name;
+        this.mCO2 = c02;
+        this.mQuantity =amount;
+    }
 
     public ShopItem(String name, double c02, double quantity, int mEco) {
         this.mName = name;
@@ -21,14 +28,14 @@ public class ShopItem {
     {
         this.mName = name;
         this.mCO2 = c02;
-        this.quantity =1;
+        this.mQuantity =1;
         this.date = date;
     }
     public ShopItem(String name,int amount, double c02)
     {
         this.mName = name;
         this.mCO2 = c02;
-        this.quantity =amount;
+        this.mQuantity =amount;
     }
 
     public ShopItem(String text, double c02) {
