@@ -22,11 +22,11 @@ public class LoginActivity extends Activity implements
     private boolean mSignInClicked;
     private ConnectionResult mConnectionResult;
     private boolean mIntentInProgress;
-    String TAG = "Testing";
+    String TAG = "Login";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d(TAG, "Nu är vi i onCreate");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -94,10 +94,10 @@ public class LoginActivity extends Activity implements
 
     @Override
     public void onConnected(Bundle connectionHint) {
+        Log.d(TAG,"onConnected");
         mSignInClicked = false;
         //Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, MainActivity.class);
-        Log.d(TAG,"onconnected");
         startActivity(intent);
         this.finish();
 }

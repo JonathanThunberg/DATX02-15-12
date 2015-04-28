@@ -17,13 +17,18 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 
+
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.leaderboard.Leaderboards;
+import com.google.android.gms.games.GamesStatusCodes;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -38,34 +43,46 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import datx021512.chalmers.se.greenme.MainActivity;
 import datx021512.chalmers.se.greenme.R;
 import datx021512.chalmers.se.greenme.adapters.ShopItem;
 import datx021512.chalmers.se.greenme.adapters.ShoppingAdapter;
+import datx021512.chalmers.se.greenme.database.DatabaseHelper;
 import datx021512.chalmers.se.greenme.ocr.IntentIntegrator;
 import datx021512.chalmers.se.greenme.ocr.IntentResult;
-import datx021512.chalmers.se.greenme.database.databaseHelper;
 
 
-public class ShoppingFragment extends Fragment implements View.OnClickListener {
+public class ShoppingFragment extends Fragment implements View.OnClickListener{
     private AutoCompleteTextView textView;
     private RecyclerView mRecycleView;
     private ShoppingAdapter mAdapter;
     private ImageButton mOCRButton;
     private ImageButton mAddButton;
-    private databaseHelper db;
+    private DatabaseHelper db;
     private View rootView;
+    private MainActivity mainActivity;
+    private String name;
+    public String TAG = "ShoppingFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
-
+        mainActivity = (MainActivity)getActivity();
 
         ArrayList<ShopItem> items = new ArrayList<ShopItem>();
         mAdapter = new ShoppingAdapter(rootView);
+        db = new DatabaseHelper(rootView.getContext());
+        Bundle args = getArguments();
+        if (args  != null && args.containsKey("Shopping_Name")){
+            this.name = args.getString("Shopping_Name");
+        }
+        mAdapter = new ShoppingAdapter(db.getSavedList(name), rootView);
         mAddButton = (ImageButton) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);
         mOCRButton = (ImageButton) rootView.findViewById(R.id.OCR_add);
+        mOCRButton.setOnClickListener(this);
+        mOCRButton = (ImageButton) rootView.findViewById(R.id.upload_button);
         mOCRButton.setOnClickListener(this);
         mRecycleView = (RecyclerView) rootView.findViewById(R.id.recyclerShoppingItems);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -77,7 +94,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
 
 
 
-        db = new databaseHelper(rootView.getContext());
+
         ArrayList<String> categories = db.getCategories();
         ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.select_dialog_item, categories);
 
@@ -95,10 +112,10 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                 if (textView.getText() != null) {
                     final String text = textView.getText().toString();
                     if (text != null && text.trim().length() > 0) {
-                       if (/*db.getImpact(text).size() == 1 &&*/ db.getImpactName(text).get(0).equals(text) ) {
-                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),1);
-
-                           } else {
+                       if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
+                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),1,(db.getEco(text).get(0)));
+                               Log.d("TEST","!!!!!!!!!!!!!!!!GetALL1: " + mAdapter.getAllitems());
+                       } else {
                                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                                LayoutInflater inflater = getActivity().getLayoutInflater();
                                View convertView = (View) inflater.inflate(R.layout.list_alert, null);
@@ -116,7 +133,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                                        if(position==0){
                                             createNewItem(text);
                                        }else{
-                                            addItemToList(db.getImpactName(text).get(position-1), Double.parseDouble(db.getImpact(text).get(position-1)),1);
+                                            addItemToList(db.getImpactName(text).get(position-1), Double.parseDouble(db.getImpact(text).get(position-1)),1,(db.getEco(text).get(position-1)));
+                                           Log.d("TEST","!!!!!!!!!!!!!!!!GetALL2: " + mAdapter.getAllitems());
                                        }
                                        mdialog.dismiss();
                                    }
@@ -139,8 +157,19 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                 integrator.addExtra("PROMPT_MESSAGE", "Skanna din vara");
                 integrator.initiateScan();
                 break;
+            case R.id.upload_button:
+                Log.d("GREEN", "upload button pushed");
+                updateLeaderboard();
+                break;
         }
     }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        db.saveList(mAdapter.getAllitems(),name);
+    }
+
 
     private void createNewItem(String text) {
             LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -149,6 +178,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                     convertView.findViewById(R.id.username);
             final EditText userImpact = (EditText)
                     convertView.findViewById(R.id.userimpact);
+            userInput.setText(text);
 
             final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
             alertDialog.setPositiveButton("Create", new DialogInterface.OnClickListener() {
@@ -156,7 +186,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                     String text = userInput.getText().toString();
                     String text2 = userImpact.getText().toString();
                     db.createNewItem(text, Integer.parseInt(text2));
-                    addItemToList(text, Double.parseDouble(text2),1);
+                    addItemToList(text, Double.parseDouble(text2),1,0); //TODO create a checkbox to see if the new item is Ekologic instead of the last int (0)
 
                 }
             })
@@ -175,9 +205,11 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
             mdialog.show();
         }
 
-    public void addItemToList(String text,double position, double quant){
+
+    public void addItemToList(String text,double position, double quant, int eco){
         if(!mAdapter.contains(text)) {
-            mAdapter.addItem(new ShopItem(text, position, quant));
+           //if(eco == null)
+            mAdapter.addItem(new ShopItem(text, position, quant, eco));
             textView.setText("");
             updateTotal();
         }
@@ -188,6 +220,41 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         TextView textTotal = (TextView) getActivity().findViewById(R.id.text_total);
         textTotal.setText(total+" kg/co2");
 
+    }
+    public void updateLeaderboard(){
+        final int newEco = mAdapter.getNewEco();
+        Log.d(TAG,"det vi ska lägga till är: " + newEco);
+
+
+        Games.Leaderboards.submitScoreImmediate(mainActivity.getmGoogleApiClient(),mainActivity.getResources()
+                .getString(R.string.Leaderboard_Ekologiskt),0)
+                .setResultCallback(new ResultCallback<Leaderboards.SubmitScoreResult>() {
+
+                    @Override
+                    public void onResult(Leaderboards.SubmitScoreResult submitScoreResult) {
+
+                        if (submitScoreResult.getStatus().getStatusCode() == GamesStatusCodes.STATUS_OK) {
+
+                            Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mainActivity.getmGoogleApiClient(),
+                                    mainActivity.getResources()
+                                            .getString(R.string.Leaderboard_Ekologiskt),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL)
+                                    .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+
+                                        @Override
+                                        public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                                            Long currScore = loadPlayerScoreResult.getScore().getRawScore();
+                                            Long score = currScore + newEco;
+                                            Log.d(TAG,score.toString());
+                                            Games.Leaderboards.submitScore(mainActivity.getmGoogleApiClient(),
+                                                    mainActivity.getResources().getString(R.string.Leaderboard_Ekologiskt), score);
+                                        }
+                                    });
+                        }
+                        else{
+                            Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. " );
+                        }
+                    }
+                });
     }
 
     @Override
@@ -223,7 +290,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
                         numWeight /= 1000;
                     }
                     Log.d("OCR","Inside: " + numWeight);
-                    addItemToList(text,1337,numWeight);
+                    addItemToList(text,1337,numWeight,1);
 //                    ShopItem item = new ShopItem(text,1337,1);
 //                    mAdapter.addItem(item);
 //                    mAdapter.notifyDataSetChanged();
@@ -249,6 +316,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
             Toast.makeText(getActivity(), "Kunde ej hitta streckkod!", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     public String JSONToString(String result)
     {
@@ -293,7 +361,6 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener {
         }
         return null;
     }
-
     public String checkIfInDb(String scanned)
     {
         return db.getImpactName(scanned).get(0);
