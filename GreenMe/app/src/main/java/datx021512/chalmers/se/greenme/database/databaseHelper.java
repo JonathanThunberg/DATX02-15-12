@@ -1,11 +1,14 @@
 package datx021512.chalmers.se.greenme.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -38,17 +41,22 @@ public class databaseHelper extends SQLiteAssetHelper {
         ArrayList<String> mArrayList = new ArrayList<>();
         categories.moveToFirst();
         while(!categories.isAfterLast()){
-            mArrayList.add((categories.getString(categories.getColumnIndex("NAME")) + "   " +
+            if(!mArrayList.contains((categories.getString(categories.getColumnIndex("NAME"))))){
+                    mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+            }
+
+                    /**+ "   " +
                     categories.getString(categories.getColumnIndex("COUNTRY"))+ "   Ekologisk: " +
                     categories.getString(categories.getColumnIndex("EKOLOGICAL"))+ "   " +
-                    categories.getString(categories.getColumnIndex("IMPACT")))); //add the item
+                    categories.getString(categories.getColumnIndex("IMPACT")))); //add the item**/
             categories.moveToNext();
         }
 
         categories = getMeanCategories();
         categories.moveToFirst();
         while(!categories.isAfterLast()){
-            mArrayList.add((categories.getString(categories.getColumnIndex("NAME")) + "   " + categories.getString(categories.getColumnIndex("IMPACT")))); //add the item
+            mArrayList.add((categories.getString(categories.getColumnIndex("NAME")) ));
+                    //+ "   " + categories.getString(categories.getColumnIndex("IMPACT")))); //add the item
             categories.moveToNext();
         }
 
@@ -80,5 +88,88 @@ public class databaseHelper extends SQLiteAssetHelper {
         c.moveToFirst();
         return c;
     }
+    public Cursor getImpactFromDatabase(String sqlTables,String s){
+          SQLiteDatabase db = getReadableDatabase();
+          Cursor c = db.rawQuery("SELECT NAME,IMPACT FROM "+sqlTables+" WHERE NAME LIKE '%"+s+"%'", null);
 
+          SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+          String [] sqlSelect = {"IMPACT"};
+          qb.setTables(sqlTables);
+          String []selectionArgs = {s + "%"};
+//          Cursor c = qb.query(db, sqlSelect, null, selectionArgs,
+  //                null, null, null);
+          c.moveToFirst();
+          return c;
+    }
+
+
+    public ArrayList<String> getImpact(String st){
+        ArrayList<String> mArrayList = new ArrayList<>();
+        for(String s :st.split("\\s+")) {
+            Cursor categories = getImpactFromDatabase("vegetableCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT"))));
+                categories.moveToNext();
+            }
+
+            categories = getImpactFromDatabase("meanCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT"))));
+                categories.moveToNext();
+            }
+            categories = getImpactFromDatabase("OwnCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT"))));
+                categories.moveToNext();
+            }
+        }
+        return mArrayList;
+    }
+
+    public ArrayList<String> getImpactName(String st){
+        ArrayList<String> mArrayList = new ArrayList<>();
+        for(String s :st.split("\\s+")) {
+            Cursor categories = getImpactFromDatabase("vegetableCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+                categories.moveToNext();
+            }
+            categories = getImpactFromDatabase("meanCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+                categories.moveToNext();
+            }
+            categories = getImpactFromDatabase("OwnCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+                categories.moveToNext();
+            }
+        }
+        return mArrayList;
+    }
+
+    public void createNewItem(String text, double text2) {
+        SQLiteDatabase db = getWritableDatabase();
+      /*  db.execSQL("INSERT INTO "
+                + "OwnCategories"
+                + "(NAME, IMPACT)"
+                + " VALUES ('"+text+"', "+text2+");");
+    */
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "OwnCategories" + "(NAME VARCHAR, IMPACT DOUBLE);";
+        db.execSQL(CREATE_CONTACTS_TABLE);
+        db.close();
+        db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("NAME", text);
+        values.put("IMPACT", text2);
+        db.insert("OwnCategories", null, values);
+        db.close();
+
+    }
 }

@@ -1,18 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:id="@+id/verticalLayout">
 
     <TextView
         android:id="@+id/text_item"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:maxLines="1"
         android:padding="4dp"
-        android:text="Item" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Item"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"/>
+
+<LinearLayout
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@null">
+
+
+    <TextView
+        android:id="@+id/text_co2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="0.36"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:maxLines="1"/>
+
+    <ImageButton
+        android:id="@+id/button_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="4dp"
+        android:background="@null"
+        android:src="@drawable/ic_action_add" />
+
+    <TextView
+        android:id="@+id/text_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="0.30"
+        android:maxLines="1"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+    <ImageButton
+        android:id="@+id/button_minus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="4dp"
+        android:background="@null"
+        android:src="@drawable/ic_action_minus" />
 
     <ImageButton
         android:id="@+id/button_delete"
@@ -21,6 +69,9 @@
         android:layout_gravity="center"
         android:layout_margin="4dp"
         android:background="@null"
-        android:src="@drawable/ic_action_remove" />
+        android:src="@android:drawable/ic_menu_delete"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"/>
 
+</LinearLayout>
 </LinearLayout>

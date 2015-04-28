@@ -6,5 +6,6 @@
     <string name="action_save">Spara</string>
     <string name="drawer_open">Menu opened</string>
     <string name="drawer_close">Menu closed</string>
+    <string name="text_dialog">temp</string>
 
 </resources>
