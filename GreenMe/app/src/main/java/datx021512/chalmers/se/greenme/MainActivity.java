@@ -19,8 +19,10 @@ import datx021512.chalmers.se.greenme.fragments.PlayFragment;
 import datx021512.chalmers.se.greenme.fragments.ShoppingFragment;
 import datx021512.chalmers.se.greenme.fragments.StatisticsFragment;
 import datx021512.chalmers.se.greenme.fragments.TravelFragment;
+import datx021512.chalmers.se.greenme.fragments.VehicleFragment;
 import datx021512.chalmers.se.greenme.navigation.NavCallback;
 import datx021512.chalmers.se.greenme.navigation.NavFragment;
+import datx021512.chalmers.se.greenme.fragments.VehicleFragment;
 
 
 public class MainActivity extends ActionBarActivity implements NavCallback {
@@ -74,7 +76,7 @@ public class MainActivity extends ActionBarActivity implements NavCallback {
                 fragment = new ShoppingFragment();
                 break;
             case 2:
-                fragment = new TravelFragment();
+                fragment = new VehicleFragment();
                 break;
             case 3:
                 fragment = new StatisticsFragment();
