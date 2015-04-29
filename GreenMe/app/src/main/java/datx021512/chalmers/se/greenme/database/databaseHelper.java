@@ -307,5 +307,14 @@ public class DatabaseHelper extends SQLiteAssetHelper {
             db.close();
             return c;
     }
+    public int getTotalImpact () {
+        int total = 0;
+        ArrayList<ShopItem> shopinglists = getShoppingLists();
+
+        for (ShopItem s: shopinglists) {
+            total += s.getmCO2();
+        }
+        return total;
+    }
 
 }
