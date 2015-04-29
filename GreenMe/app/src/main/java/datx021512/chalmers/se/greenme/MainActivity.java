@@ -110,7 +110,6 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
                 }
 
                 Intent intent = new Intent(this, LoginActivity.class);
-                Log.d(TAG,"Intenten är:" + intent);
                 startActivity(intent);
                 this.finish();
             default:
@@ -126,6 +125,7 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
 
     @Override
     public void onBackPressed() {
+        Log.d(TAG,"BackButton pressed ");
         if (navigationDrawerFragment.isDrawerOpen())
             navigationDrawerFragment.closeDrawer();
         else

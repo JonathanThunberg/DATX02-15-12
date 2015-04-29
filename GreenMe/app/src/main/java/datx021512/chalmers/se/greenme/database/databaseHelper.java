@@ -152,9 +152,10 @@ public class DatabaseHelper extends SQLiteAssetHelper {
     }
 
         public ArrayList<Integer> getEco (String st){
-        ArrayList<Integer> mArrayList = new ArrayList<>();
-        Log.d("TEST","!!!! Inuti GetEco()");
+            ArrayList<Integer> mArrayList = new ArrayList<>();
+            Log.d("TEST","!!!! Inuti GetEco()");
             Cursor categories = getEcoFromDatabase("vegetableCategories", st);
+            Log.d("TEST", "Funkar detta?");
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
                 mArrayList.add((categories.getInt(categories.getColumnIndex("EKOLOGICAL"))));
