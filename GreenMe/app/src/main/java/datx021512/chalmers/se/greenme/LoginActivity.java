@@ -25,15 +25,13 @@ public class LoginActivity extends Activity implements
     String TAG = "Login";
 
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "Nu är vi i onCreate");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
-               // .addApi(Games.API)
-               // .addScope(Games.SCOPE_GAMES)
                 .build();
     }
 

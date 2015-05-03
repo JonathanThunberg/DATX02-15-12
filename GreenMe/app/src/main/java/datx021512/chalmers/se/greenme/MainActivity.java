@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -99,7 +100,7 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
                             RC_UNUSED);
                 }
                 else{
-                    Log.d(TAG,"Cant show Leaderboard because user is not connected");
+                    Toast.makeText(this, "Kan inte visa Topplistor, saknar anslutning till Google games", Toast.LENGTH_LONG).show();
                 }
                 break;
             case 5:
