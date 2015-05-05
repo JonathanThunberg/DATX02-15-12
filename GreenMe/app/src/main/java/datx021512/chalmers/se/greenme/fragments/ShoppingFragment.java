@@ -315,15 +315,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         switch (item.getItemId()) {
             case R.id.action_save:
                 Toast.makeText(getActivity(),"Sparar listan",Toast.LENGTH_SHORT).show();
-                String ser = SerializeObject.objectToString(mAdapter.getAllitems());
-                if (ser != null && !ser.equalsIgnoreCase(""))
-                {
-                    SerializeObject.WriteList(getActivity(), ser, "myList.dat");
-                }
-                else
-                {
-                    SerializeObject.WriteList(getActivity(), "", "myList.dat");
-                }
+
                 return true;
             case R.id.action_load:
                 Toast.makeText(getActivity(),"Laddar in en lista",Toast.LENGTH_SHORT).show();
