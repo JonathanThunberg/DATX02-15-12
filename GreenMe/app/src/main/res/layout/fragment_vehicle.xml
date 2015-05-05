@@ -66,11 +66,11 @@
 
     <ImageButton
         android:id="@+id/carButton"
+        android:src="@drawable/car_button"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/car_button"
         android:layout_centerVertical="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"/>
 
     <ImageButton
          android:id="@+id/walkingButton"
@@ -110,6 +110,39 @@
         android:layout_marginTop="27dp"
         android:textColor="#ffffff"
         android:background="#00897B"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/smallestCar"
+        android:src="@drawable/minst"
+        android:layout_below="@+id/carButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="27dp" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/smallerCar"
+        android:src="@drawable/mindre"
+        android:layout_alignTop="@+id/smallestCar"
+        android:layout_toEndOf="@+id/smallestCar" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/biggerCar"
+        android:src="@drawable/storre"
+        android:layout_alignBottom="@+id/smallerCar"
+        android:layout_toEndOf="@+id/smallerCar" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/biggestCar"
+        android:src="@drawable/storst"
+        android:layout_below="@+id/walkingButton"
+        android:layout_toStartOf="@+id/bikingButton" />
 
 
 </RelativeLayout>

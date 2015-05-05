@@ -31,6 +31,10 @@ public class VehicleFragment extends Fragment {
     ImageButton busButton;
     ImageButton carButton;
     ImageButton trainButton;
+    ImageButton smallestCarButton;
+    ImageButton smallerCarButton;
+    ImageButton biggerCarButton;
+    ImageButton biggestCarButton;
     private DatabaseHelper db;
     TextView manualTextView;
     TextView automaticTextView;
@@ -48,29 +52,49 @@ public class VehicleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        getActivity().setTitle("Fordonstyp");
+        getActivity().setTitle("Logga resa");
         View rootView = inflater.inflate(R.layout.fragment_vehicle, container, false);
 
         busButton = (ImageButton) rootView.findViewById(R.id.busButton);
         busButton.setOnClickListener(myButtonListener);
         trainButton = (ImageButton) rootView.findViewById(R.id.trainButton);
         trainButton.setOnClickListener(myButtonListener);
-        carButton = (ImageButton) rootView.findViewById(R.id.carButton);
-        carButton.setOnClickListener(myButtonListener);
+       // carButton = (ImageButton) rootView.findViewById(R.id.carButton);
+       // carButton.setOnClickListener(myButtonListener);
         bikingButton = (ImageButton) rootView.findViewById(R.id.bikingButton);
         bikingButton.setOnClickListener(myButtonListener);
         walkingButton = (ImageButton) rootView.findViewById(R.id.walkingButton);
         walkingButton.setOnClickListener(myButtonListener);
 
+        smallestCarButton=(ImageButton) rootView.findViewById(R.id.smallestCar);
+        smallestCarButton.setOnClickListener(myButtonListener);
+        smallestCarButton.setVisibility(View.INVISIBLE);
+
+        smallerCarButton=(ImageButton) rootView.findViewById(R.id.smallerCar);
+        smallerCarButton.setOnClickListener(myButtonListener);
+        smallerCarButton.setVisibility(View.INVISIBLE);
+
+        biggerCarButton=(ImageButton) rootView.findViewById(R.id.biggerCar);
+        biggerCarButton.setOnClickListener(myButtonListener);
+        biggerCarButton.setVisibility(View.INVISIBLE);
+
+        biggestCarButton=(ImageButton) rootView.findViewById(R.id.biggestCar);
+        biggestCarButton.setOnClickListener(myButtonListener);
+        biggestCarButton.setVisibility(View.INVISIBLE);
+
+
         manualTextView=(TextView) rootView.findViewById(R.id.manualTextView);
         automaticTextView=(TextView) rootView.findViewById(R.id.automaticTextView);
         inputSwitch=(Switch) rootView.findViewById(R.id.inputSwitch);
         addButton=(Button) rootView.findViewById(R.id.addButton);
+        addButton.setOnClickListener(myButtonListener);
         addButton.setVisibility(View.INVISIBLE);
         kmTextView=(TextView) rootView.findViewById(R.id.kmTextView);
         kmTextView.setVisibility(View.INVISIBLE);
         kilometerInput=(EditText) rootView.findViewById(R.id.kilometerInput);
         kilometerInput.setVisibility(View.INVISIBLE);
+
+
 
 
         inputSwitch.setOnCheckedChangeListener(switchListener);
@@ -85,6 +109,15 @@ public class VehicleFragment extends Fragment {
                 addButton.setVisibility(View.VISIBLE);
                 kmTextView.setVisibility(View.VISIBLE);
                 kilometerInput.setVisibility(View.VISIBLE);
+                getActivity().setTitle("Lägg till antal kilometer");
+
+                if(buttonClicked){
+                    busButton.setAlpha(0f);
+                    carButton.setAlpha(0f);
+                    bikingButton.setAlpha(0f);
+                    walkingButton.setAlpha(0f);
+                    carButton.setAlpha(0f);
+                }
             }else{
                 addButton.setVisibility(View.INVISIBLE);
                 kmTextView.setVisibility(View.INVISIBLE);
@@ -111,6 +144,14 @@ public class VehicleFragment extends Fragment {
                         fragmentTransaction.commit();
                         getActivity().setTitle("Buss");
 
+                    }else if(buttonClicked){
+                        trainButton.setAlpha(1f);
+                        carButton.setAlpha(1f);
+                        bikingButton.setAlpha(1f);
+                        walkingButton.setAlpha(1f);
+                        busButton.setAlpha(1f);
+                        buttonClicked=false;
+
                     }else{
                         trainButton.setAlpha(0.5f);
                         carButton.setAlpha(0.5f);
@@ -131,6 +172,14 @@ public class VehicleFragment extends Fragment {
                         fragmentTransaction.replace(R.id.container, newFragment);
                         fragmentTransaction.commit();
                         getActivity().setTitle("Tåg");
+
+                    }else if(buttonClicked){
+                        busButton.setAlpha(1f);
+                        carButton.setAlpha(1f);
+                        bikingButton.setAlpha(1f);
+                        walkingButton.setAlpha(1f);
+                        trainButton.setAlpha(1f);
+                        buttonClicked=false;
                     }else{
                         busButton.setAlpha(0.5f);
                         carButton.setAlpha(0.5f);
@@ -140,24 +189,45 @@ public class VehicleFragment extends Fragment {
                     }
                     break;
 
-                case R.id.carButton:
+                /*case R.id.carButton:
                     if(!inputSwitch.isChecked()) {
                         fragmentTransaction.replace(R.id.container, newFragment);
                         fragmentTransaction.commit();
+                    }else if(buttonClicked){
+                        busButton.setAlpha(1f);
+                        trainButton.setAlpha(1f);
+                        bikingButton.setAlpha(1f);
+                        walkingButton.setAlpha(1f);
+                        carButton.setAlpha(1f);
+                        buttonClicked=false;
                     }else{
                         busButton.setAlpha(0.5f);
                         trainButton.setAlpha(0.5f);
                         bikingButton.setAlpha(0.5f);
                         walkingButton.setAlpha(0.5f);
+                        carButton.setAlpha(0.5f);
+                        smallestCarButton.setVisibility(View.VISIBLE);
+                        smallerCarButton.setVisibility(View.VISIBLE);
+                        biggerCarButton.setVisibility(View.VISIBLE);
+                        biggestCarButton.setVisibility(View.VISIBLE);
+
+
                         buttonClicked=true;
                     }
-                    break;
+                    break;*/
 
                 case R.id.bikingButton:
                     if(!inputSwitch.isChecked()) {
                         fragmentTransaction.replace(R.id.container, newFragment);
                         fragmentTransaction.commit();
                         getActivity().setTitle("Cykel");
+                    }else if(buttonClicked){
+                        busButton.setAlpha(1f);
+                        carButton.setAlpha(1f);
+                        trainButton.setAlpha(1f);
+                        walkingButton.setAlpha(1f);
+                        bikingButton.setAlpha(1f);
+                        buttonClicked=false;
                     }else{
                         busButton.setAlpha(0.5f);
                         carButton.setAlpha(0.5f);
@@ -172,6 +242,13 @@ public class VehicleFragment extends Fragment {
                         fragmentTransaction.replace(R.id.container, newFragment);
                         fragmentTransaction.commit();
                         getActivity().setTitle("Gång");
+                    }else if(buttonClicked){
+                        busButton.setAlpha(1f);
+                        carButton.setAlpha(1f);
+                        bikingButton.setAlpha(1f);
+                        trainButton.setAlpha(1f);
+                        walkingButton.setAlpha(1f);
+                        buttonClicked=false;
                     }else{
                         busButton.setAlpha(0.5f);
                         carButton.setAlpha(0.5f);
@@ -188,6 +265,8 @@ public class VehicleFragment extends Fragment {
 
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
+                    }else{
+
                     }
 
                 default:
