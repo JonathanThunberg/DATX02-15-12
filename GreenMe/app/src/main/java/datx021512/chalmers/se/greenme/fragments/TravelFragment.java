@@ -33,26 +33,28 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.location.LocationServices;
 
 
+import datx021512.chalmers.se.greenme.MainActivity;
 import datx021512.chalmers.se.greenme.R;
 
 public class TravelFragment extends Fragment implements OnMapReadyCallback{
-    private static final String TAG = "test";
+    private static final String TAG = "TravelFragment";
 
     private MapView mapView;
     private GoogleMap map;
     private boolean isButtonPressed = true;
     private  Button mapButton;
     private TextView textView;
-    private Location location;
-
+    private MainActivity mainActivity;
     private LocationManager locationManager = null;
     private Location previousLocation = null;
     private double totalDistance;
-
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 250; // 250 meters
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minutes
+    private GoogleApiClient mGoogleApiClient;
+
 
         @Override
     public void onAttach(Activity activity){
@@ -61,6 +63,9 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+
+
+
         //todo change view
         View rootView = inflater.inflate(R.layout.fragment_travel, container, false);
 
@@ -79,6 +84,9 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
 
         }
 
+        mainActivity = (MainActivity)getActivity();
+        mGoogleApiClient = mainActivity.getmGoogleApiClient();
+        previousLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         mapView= (MapView)rootView.findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
@@ -92,19 +100,17 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
 
-/*        CameraPosition position= new  CameraPosition.Builder().
-                target(myPosition).zoom(17).bearing(19).tilt(30).build();
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(position));
-        map.addMarker(new
-                MarkerOptions().position(myPosition).title("You are here!"));*/
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(57.708870,11.974560),10);
+        double myLatitude = previousLocation.getLatitude();
+        double myLongitude = previousLocation.getLongitude();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude,myLongitude),10);
         map.animateCamera(cameraUpdate);
 
         mapButton=(Button)rootView.findViewById(R.id.mapbutton);
         mapButton.setText("START");
 
         textView=(TextView)rootView.findViewById(R.id.textView);
+        textView.setVisibility(View.INVISIBLE);
 
         mapButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -112,22 +118,27 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
             {
                 // Enable or disable gps
                 if (isButtonPressed) {
+                    isButtonPressed = false;
+                    map.clear();
+                    totalDistance = 0;
+                    mapButton.setText("STOP");
                     startTracking();
+
                 }else{
-                    stopTracking();
+                    isButtonPressed = true;
                     mapButton.setText("START");
+                    stopTracking();
                 }
-                isButtonPressed = !isButtonPressed;
             }
         });
-
-
 
         return rootView;
     }
 
+
     public void startTracking() {
-        mapButton.setText("STOP");
+
+        textView.setVisibility(View.VISIBLE);
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
@@ -137,13 +148,30 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER
                 , MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, locationListener); // Gps location
 
-        //add marker to your current location
+        previousLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        Log.d(TAG,previousLocation.toString());
+
+        // Getting latitude of the current location
+        double latitude = previousLocation.getLatitude();
+        // Getting longitude of the current location
+        double longitude = previousLocation.getLongitude();
+
+        // Creating a LatLng object for the current location
+        LatLng myPosition = new LatLng(latitude, longitude);
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(myPosition,17);
+        map.animateCamera(cameraUpdate);
+
+
+        map.addMarker(new MarkerOptions().position(myPosition).title("Start"));
+
 
     }
 
     public void stopTracking(){
         locationManager.removeUpdates(locationListener);
-
+        map.clear();
     }
 
     @Override
@@ -169,43 +197,49 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
 
     }
     private LocationListener locationListener = new LocationListener() {
+
+        /*TODO Linjer
+           Använda Polylines för att lägga till linje kanske? Risk att linjen går genom hus.
+           Antingen så går det genom hus och visar rätt sträcka eller
+           så visar den fel sträcka och ser bra ut eller så måste vi uppdatera oftare.
+        */
+
         @Override
         public void onLocationChanged(Location newLocation)
         {
-            if(location!=null) {
-                // Getting latitude of the current location
-                double latitude = location.getLatitude();
+            Log.d(TAG, "Location är changed" + newLocation);
 
-                // Getting longitude of the current location
-                double longitude = location.getLongitude();
+            float [] result = new float[3];
+            String prefix;
+            long reworkedDistance;
 
-                // Creating a LatLng object for the current location
-                LatLng myPosition = new LatLng(latitude, longitude);
-                map.addMarker(new MarkerOptions().position(myPosition).title("Start"));
-            }
+            // Getting latitude of the current location
+            double newLatitude = newLocation.getLatitude();
+            // Getting longitude of the current location
+            double newLongitude = newLocation.getLongitude();
 
-            if (previousLocation != null)
-            {
-                double latitude = newLocation.getLatitude() + previousLocation.getLatitude();
-                latitude *= latitude;
-                Log.d(TAG, "latitude: " + latitude);
-                double longitude = newLocation.getLongitude() + previousLocation.getLongitude();
-                longitude *= longitude;
-                Log.d(TAG, "longitude: " + longitude);
-                double altitude = newLocation.getAltitude() + previousLocation.getAltitude();
-                altitude *= altitude;
-                Log.d(TAG, "altitude: " + altitude);
-                totalDistance += Math.sqrt(latitude + longitude + altitude);
-            }
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(newLatitude,newLongitude),17);
+            map.animateCamera(cameraUpdate);
+
+            Location.distanceBetween(previousLocation.getLatitude(),previousLocation.getLongitude(),
+                    newLatitude,newLongitude,result);
+
+            totalDistance += result[0];
 
             previousLocation = newLocation;
-
+            if (totalDistance > 1000) {
+                reworkedDistance = Math.round(totalDistance);
+                 reworkedDistance /= 1000;
+                prefix = " Km";
+            }
+            else {
+                reworkedDistance = Math.round(totalDistance);
+                prefix = " m";
+            }
             Log.d(TAG, "totaldistance: "+ totalDistance);
-            textView.setText("totdist" + totalDistance);
-
+            textView.setText("Sträcka: " + reworkedDistance + prefix); //TODO Byta ut det till Co2? Roligare kanske? Lite annorlunda.
 
         }
-
 
         @Override
         public void onProviderDisabled(String provider) {}

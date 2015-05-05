@@ -59,8 +59,8 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
-                //.addApi(Games.API)
-                //.addScope(Games.SCOPE_GAMES)
+     //           .addApi(Games.API)
+     //           .addScope(Games.SCOPE_GAMES)
                 .addApi(LocationServices.API)
                 .build();
 
