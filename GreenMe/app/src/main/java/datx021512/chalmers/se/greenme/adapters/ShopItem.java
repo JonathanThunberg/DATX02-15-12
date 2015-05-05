@@ -1,7 +1,9 @@
 package datx021512.chalmers.se.greenme.adapters;
 
 
-public class ShopItem {
+import java.io.Serializable;
+
+public class ShopItem implements Serializable {
 
     private String mName;
     private double mCO2;
@@ -90,10 +92,16 @@ public class ShopItem {
     }
 
     public double getWeight() {
-        return this.mWeight;
+        return this.mWeight==0?this.mQuantity:this.mWeight;
     }
 
     public void setWeight(double weight) {
         this.mWeight = weight;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "";
     }
 }

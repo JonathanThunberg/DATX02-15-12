@@ -53,9 +53,9 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
     @Override
     public void onBindViewHolder(ListViewHolder viewHolder, final int position) {
         ShopItem data = mListData.get(position);
-        viewHolder.textItem.setText(data.getmName());
+        viewHolder.textItem.setText(data.getmName() + " X " + (int)data.getQuantity());
         viewHolder.textCO2.setText(Double.toString(data.getmCO2())+" kg/co2");
-        viewHolder.textQuantity.setText(Double.toString(data.getQuantity())+" kg");
+        viewHolder.textQuantity.setText(Double.toString(data.getWeight())+" kg");
         viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,6 +123,13 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
         mListData.remove(position);
         notifyDataSetChanged();
         notifyItemRemoved(position);
+    }
+
+    public void removeAllItems()
+    {
+        mListData.clear();
+        notifyDataSetChanged();
+
     }
 
     @Override

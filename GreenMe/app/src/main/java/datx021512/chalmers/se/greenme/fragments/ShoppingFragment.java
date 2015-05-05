@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -45,6 +46,7 @@ import java.util.ArrayList;
 
 import datx021512.chalmers.se.greenme.MainActivity;
 import datx021512.chalmers.se.greenme.R;
+import datx021512.chalmers.se.greenme.adapters.SerializeObject;
 import datx021512.chalmers.se.greenme.adapters.ShopItem;
 import datx021512.chalmers.se.greenme.adapters.ShoppingAdapter;
 import datx021512.chalmers.se.greenme.database.DatabaseHelper;
@@ -211,6 +213,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         final EditText userInput = (EditText) convertView.findViewById(R.id.username);
         final EditText userImpact = (EditText) convertView.findViewById(R.id.userimpact);
         userInput.setText(text);
+        userImpact.setHint("skriv in kg/co2 värde");
 
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setPositiveButton("Create", new DialogInterface.OnClickListener()
@@ -302,8 +305,46 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.shopping_menu, menu);
         super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                Toast.makeText(getActivity(),"Sparar listan",Toast.LENGTH_SHORT).show();
+                String ser = SerializeObject.objectToString(mAdapter.getAllitems());
+                if (ser != null && !ser.equalsIgnoreCase(""))
+                {
+                    SerializeObject.WriteList(getActivity(), ser, "myList.dat");
+                }
+                else
+                {
+                    SerializeObject.WriteList(getActivity(), "", "myList.dat");
+                }
+                return true;
+            case R.id.action_load:
+                Toast.makeText(getActivity(),"Laddar in en lista",Toast.LENGTH_SHORT).show();
+                String ser2 = SerializeObject.ReadList(getActivity(), "mylist.dat");
+                if (ser2 != null && !ser2.equalsIgnoreCase(""))
+                {
+                    Object obj = SerializeObject.stringToObject(ser2);
+                    if (obj instanceof ArrayList)
+                    {
+                        // Do something
+                        //give = (ArrayList<String>)obj;
+                    }
+                }
+                return true;
+            case R.id.action_reset:
+                Toast.makeText(getActivity(),"Rensar listan",Toast.LENGTH_SHORT).show();
+                mAdapter.removeAllItems();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -311,9 +352,10 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         super.onActivityResult(request, result, i);
         IntentResult scan = IntentIntegrator.parseActivityResult(request, result, i);
         String read = scan.getContents();
+        Log.d("OCR","read: " + read);
         String URL = "http://api.ica.se/api/upclookup/?upc=";
         String text = "";
-        if (scan!=null) {
+        if (scan!=null && read != null) {
             Log.d("OCR","ocr: " + read);
             try{
                 text = JSONToString(getFromInternetz(URL + read));
@@ -351,11 +393,6 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
                     Log.d("OCR","Inside: " + numWeight);
                     checkDbForItem(text,numWeight);
-                    //addOCRToList(text, 1, numWeight);
-//                    ShopItem item = new ShopItem(text,1337,1);
-//                    mAdapter.addItem(item);
-//                    mAdapter.notifyDataSetChanged();
-//                    updateTotal();
                 }
                 else
                     Toast.makeText(getActivity(), "Produkten hittades ej!", Toast.LENGTH_SHORT).show();
@@ -433,6 +470,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
             addOCRToList(db.getImpactName(text).get(0), 1, weight, Double.parseDouble(db.getImpact(text).get(0)));
             Log.d("SHOPPING","!!!!!!!!!!!!!!!!GetALL1: " + mAdapter.getAllitems());
+            Log.d("TEST1","Weight: " + weight);
         } else {
             final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
             LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -453,6 +491,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                     }else{
                         addOCRToList(db.getImpactName(inputText).get(0), 1, weight, Double.parseDouble(db.getImpact(inputText).get(0)));
                         Log.d("TEST","!!!!!!!!!!!!!!!!GetALL2: " + mAdapter.getAllitems());
+                        Log.d("TEST2","Weight: " + weight);
                     }
                     mdialog.dismiss();
                 }

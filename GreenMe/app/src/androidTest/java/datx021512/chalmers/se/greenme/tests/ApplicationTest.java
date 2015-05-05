@@ -1,4 +1,4 @@
-package se.chalmers.greenme.base;
+package datx021512.chalmers.se.greenme.tests;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
