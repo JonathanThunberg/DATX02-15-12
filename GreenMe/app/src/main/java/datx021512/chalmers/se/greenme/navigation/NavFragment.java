@@ -140,6 +140,11 @@ public class NavFragment extends Fragment implements NavCallback {
                 && drawerLayout.isDrawerOpen(drawerFragmentContainerView);
     }
 
+    public boolean isDrawerClosed()
+    {
+        return drawerLayout == null;
+    }
+
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         selectItem(position);

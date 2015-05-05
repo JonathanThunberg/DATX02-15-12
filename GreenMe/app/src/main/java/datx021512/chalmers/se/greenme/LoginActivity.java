@@ -32,8 +32,8 @@ public class LoginActivity extends Activity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
-               // .addApi(Games.API)
-               // .addScope(Games.SCOPE_GAMES)
+                .addApi(Games.API)
+                .addScope(Games.SCOPE_GAMES)
                 .build();
     }
 

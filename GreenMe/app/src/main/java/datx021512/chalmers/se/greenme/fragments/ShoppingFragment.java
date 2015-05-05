@@ -319,16 +319,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                 return true;
             case R.id.action_load:
                 Toast.makeText(getActivity(),"Laddar in en lista",Toast.LENGTH_SHORT).show();
-                String ser2 = SerializeObject.ReadList(getActivity(), "mylist.dat");
-                if (ser2 != null && !ser2.equalsIgnoreCase(""))
-                {
-                    Object obj = SerializeObject.stringToObject(ser2);
-                    if (obj instanceof ArrayList)
-                    {
-                        // Do something
-                        //give = (ArrayList<String>)obj;
-                    }
-                }
+
                 return true;
             case R.id.action_reset:
                 Toast.makeText(getActivity(),"Rensar listan",Toast.LENGTH_SHORT).show();
