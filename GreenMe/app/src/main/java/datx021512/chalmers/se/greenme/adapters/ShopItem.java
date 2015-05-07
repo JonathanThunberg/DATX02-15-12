@@ -4,7 +4,16 @@ package datx021512.chalmers.se.greenme.adapters;
 public class ShopItem {
 
 
-   // private int quantity;
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    private String country;
+    // private int quantity;
     private String mName;
     private double mCO2;
     private double mQuantity;
@@ -41,6 +50,14 @@ public class ShopItem {
     public ShopItem(String text, double c02) {
         this.mName = text;
         this.mCO2 = c02;
+    }
+
+    public ShopItem(String text, double c02, String country, double quant, int eco) {
+        this.mName = text;
+        this.mCO2 = c02;
+        this.mQuantity = quant;
+        this.country = country;
+        this.mEco = eco;
     }
 
     public String getDate() {
