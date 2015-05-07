@@ -160,17 +160,17 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         public ArrayList<Integer> getEco (String st){
             ArrayList<Integer> mArrayList = new ArrayList<>();
             Log.d("TEST","!!!! Inuti GetEco()");
-
-//            Cursor categories = getEcoFromDatabase("vegetableCategories", st);
-//            categories.moveToFirst();
-//            while (!categories.isAfterLast()) {
-//                mArrayList.add((categories.getInt(categories.getColumnIndex("EKOLOGICAL"))));
-//                categories.moveToNext();
-//            }
-            //The item is no Eco so set it.
-            if (mArrayList.size() == 0) {
-                mArrayList.add(0);
+            Cursor categories = getEcoFromDatabase("vegetableCategories", st);
+            Log.d("TEST", "Funkar detta?");
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getInt(categories.getColumnIndex("EKOLOGICAL"))));
+                categories.moveToNext();
             }
+        //The item is no Eco so set it.
+        if (mArrayList.size() == 0) {
+            mArrayList.add(0);
+        }
 
         return mArrayList;
     }
@@ -306,6 +306,15 @@ public class DatabaseHelper extends SQLiteAssetHelper {
             c.moveToFirst();
             db.close();
             return c;
+    }
+    public int getTotalImpact () {
+        int total = 0;
+        ArrayList<ShopItem> shopinglists = getShoppingLists();
+
+        for (ShopItem s: shopinglists) {
+            total += s.getmCO2();
+        }
+        return total;
     }
 
 }

@@ -10,6 +10,7 @@ import android.view.View;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.plus.Plus;
 
 
@@ -25,8 +26,8 @@ public class LoginActivity extends Activity implements
     String TAG = "Login";
 
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "Nu är vi i onCreate");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -34,6 +35,7 @@ public class LoginActivity extends Activity implements
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API)
                 .addScope(Games.SCOPE_GAMES)
+                .addApi(LocationServices.API)
                 .build();
     }
 

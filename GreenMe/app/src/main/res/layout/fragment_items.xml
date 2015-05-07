@@ -1,18 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white" >
+    android:background="@drawable/background_fade_green"
+    android:weightSum="1">
 
-    <TextView
-        android:id="@+id/txt"
+    <LinearLayout
+        android:id="@+id/higherLinearLayout"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp">
+
+        <TextView
+            android:id="@+id/txt"
+            android:layout_width="fill_parent"
+            android:layout_height="35dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="Du har förbrukat:"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="30dp"/>
+
+        <TextView
+            android:id="@+id/text_total_home"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:textSize="30dp"
+            android:gravity="center"
+            android:text="0 kg/co2"
+            android:textStyle="bold"
+            android:background="@drawable/border"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lowerLinearLayout"
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/higherLinearLayout"
+        android:layout_centerHorizontal="true">
 
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        />
+        <ImageButton
+            android:id="@+id/button_grocery_bag"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/grocery_bag"
+            android:layout_gravity="center_horizontal" />
+
+        <ImageButton
+            android:id="@+id/button_transport_icon"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/transport_icon"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
 
 </RelativeLayout>

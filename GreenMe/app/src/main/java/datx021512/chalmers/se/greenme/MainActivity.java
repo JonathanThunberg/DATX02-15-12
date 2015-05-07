@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -54,7 +55,7 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this) //todo fix this
+                .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API)
@@ -99,7 +100,7 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
                             RC_UNUSED);
                 }
                 else{
-                    Log.d(TAG,"Cant show Leaderboard because user is not connected");
+                    Toast.makeText(this, "Kan inte visa Topplistor, saknar anslutning till Google games", Toast.LENGTH_LONG).show();
                 }
                 break;
             case 5:
@@ -110,7 +111,6 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
                 }
 
                 Intent intent = new Intent(this, LoginActivity.class);
-                Log.d(TAG,"Intenten är:" + intent);
                 startActivity(intent);
                 this.finish();
             default:
@@ -126,19 +126,24 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
 
     @Override
     public void onBackPressed() {
+        Log.d(TAG,"BackButton pressed ");
+        Fragment f = getFragmentManager().findFragmentById(R.id.container);
+
         if (navigationDrawerFragment.isDrawerOpen())
             navigationDrawerFragment.closeDrawer();
+        else if(f instanceof ShoppingFragment){
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, new ShoppingListsFragment()).commit();
+        }
         else
             super.onBackPressed();
     }
 
     @Override
     protected void onPause() {
-        // TODO Auto-generated method stub
         Log.d(TAG,"onPause()");
         super.onPause();
 
-        // finish();
     }
 
     @Override
