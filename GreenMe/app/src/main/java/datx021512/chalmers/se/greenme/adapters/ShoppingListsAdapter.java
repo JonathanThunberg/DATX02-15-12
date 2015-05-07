@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -73,6 +74,8 @@ public class ShoppingListsAdapter extends RecyclerView.Adapter<ShoppingListsAdap
                 fragmentManager.beginTransaction().replace(R.id.container,sh).commit();
             }
         });
+
+
         if(position%2==0){
             viewHolder.linearLayout.setBackgroundColor(Color.LTGRAY);
         }else {
@@ -133,6 +136,8 @@ public class ShoppingListsAdapter extends RecyclerView.Adapter<ShoppingListsAdap
             buttonDelete = (ImageButton) itemView.findViewById(R.id.button_Lists_delete);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.verticalListsLayout);
             textDate =  (TextView) itemView.findViewById(R.id.text_Lists_Date);
+
+
         }
     }
 }

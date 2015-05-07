@@ -8,15 +8,18 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -77,6 +80,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         if (args  != null && args.containsKey("Shopping_Name")){
             this.name = args.getString("Shopping_Name");
         }
+        getActivity().setTitle(name);
         mAdapter = new ShoppingAdapter(db.getSavedList(name), rootView);
         mAddButton = (ImageButton) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);
@@ -100,6 +104,17 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
         textView = (AutoCompleteTextView) rootView.findViewById(R.id.text_input);
         textView.setAdapter(itemsAdapter);
+        textView.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((actionId == KeyEvent.KEYCODE_ENTER) || actionId == EditorInfo.IME_ACTION_DONE) {
+                    addNewItem();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         this.rootView = rootView;
         return rootView;
     }
@@ -109,47 +124,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         switch (v.getId()) {
             case R.id.add_text:
                 Log.d("GREEN", "Add button pressed!");
-                if (textView.getText() != null) {
-                    final String text = textView.getText().toString();
-                    if (text != null && text.trim().length() > 0) {
-                       if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
-                               addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),1,(db.getEco(text).get(0)));
-                               Log.d("TEST","!!!!!!!!!!!!!!!!GetALL1: " + mAdapter.getAllitems());
-                       } else {
-                               final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-                               LayoutInflater inflater = getActivity().getLayoutInflater();
-                               View convertView = (View) inflater.inflate(R.layout.list_alert, null);
-                               alertDialog.setView(convertView);
-                               alertDialog.setTitle("Menade du detta?");
-                               ListView lv = (ListView) convertView.findViewById(R.id.listView1);
-                               ArrayList<String> suggestions = new ArrayList<>();
-                               suggestions.add("Skapa nytt objekt");
-                               suggestions.addAll(db.getImpactName(text));
-                               ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,suggestions );
-                               lv.setAdapter(arrayAdapter);
-                               final AlertDialog mdialog = alertDialog.create();
-                               lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                       if(position==0){
-                                            createNewItem(text);
-                                       }else{
-                                            addItemToList(db.getImpactName(text).get(position-1), Double.parseDouble(db.getImpact(text).get(position-1)),1,(db.getEco(text).get(position-1)));
-                                           Log.d("TEST","!!!!!!!!!!!!!!!!GetALL2: " + mAdapter.getAllitems());
-                                       }
-                                       mdialog.dismiss();
-                                   }
-                               });
-                               mdialog.show();
-
-                           }
-                           View view = getActivity().getCurrentFocus();
-                            if (view != null) {
-                                InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getActivity().getBaseContext().INPUT_METHOD_SERVICE);
-                                inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                            }
-                       }
-                    }
-
+                addNewItem();
                 break;
             case R.id.OCR_add:
                 Log.d("GREEN","OCR button pushed");
@@ -162,6 +137,50 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                 updateLeaderboard();
                 break;
         }
+    }
+
+    private void addNewItem() {
+        if (textView.getText() != null) {
+            final String text = textView.getText().toString();
+            if (text != null && text.trim().length() > 0) {
+                if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
+                    addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),"",1,(db.getEco(text).get(0)));
+                    Log.d("TEST","!!!!!!!!!!!!!!!!GetALL1: " + mAdapter.getAllitems());
+                } else {
+                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                    View convertView = (View) inflater.inflate(R.layout.list_alert, null);
+                    alertDialog.setView(convertView);
+                    alertDialog.setTitle("Menade du detta?");
+                    ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+                    ArrayList<String> suggestions = new ArrayList<>();
+                    suggestions.add("Skapa nytt objekt");
+                    suggestions.addAll(db.getImpactName(text));
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,suggestions );
+                    lv.setAdapter(arrayAdapter);
+                    final AlertDialog mdialog = alertDialog.create();
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            if(position==0){
+                                createNewItem(text);
+                            }else{
+                                addItemToList(db.getImpactName(text).get(position-1), Double.parseDouble(db.getImpact(text).get(position-1)),"",1,(db.getEco(text).get(position-1)));
+                                Log.d("TEST","!!!!!!!!!!!!!!!!GetALL2: " + mAdapter.getAllitems());
+                            }
+                            mdialog.dismiss();
+                        }
+                    });
+                    mdialog.show();
+
+                }
+                View view = getActivity().getCurrentFocus();
+                if (view != null) {
+                    InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getActivity().getBaseContext().INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+            }
+        }
+
     }
 
     @Override
@@ -178,6 +197,10 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                     convertView.findViewById(R.id.username);
             final EditText userImpact = (EditText)
                     convertView.findViewById(R.id.userimpact);
+            final EditText userCountry = (EditText)
+                convertView.findViewById(R.id.usercountry);
+            final CheckBox userEkological = (CheckBox)
+                convertView.findViewById(R.id.userEkological);
             userInput.setText(text);
 
             final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
@@ -185,8 +208,14 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                 public void onClick(DialogInterface dialog, int id) {
                     String text = userInput.getText().toString();
                     String text2 = userImpact.getText().toString();
+                    String county = userCountry.getText().toString();
+                    int eco = 0;
                     db.createNewItem(text, Integer.parseInt(text2));
-                    addItemToList(text, Double.parseDouble(text2),1,0); //TODO create a checkbox to see if the new item is Ekologic instead of the last int (0)
+                    if (((CheckBox) userEkological).isChecked()) {
+                        eco = 1;
+
+                    }
+                    addItemToList(text, Double.parseDouble(text2),county,1,eco);
 
                 }
             })
@@ -206,10 +235,10 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         }
 
 
-    public void addItemToList(String text,double position, double quant, int eco){
+    public void addItemToList(String text,double position,String country, double quant, int eco){
         if(!mAdapter.contains(text)) {
            //if(eco == null)
-            mAdapter.addItem(new ShopItem(text, position, quant, eco));
+            mAdapter.addItem(new ShopItem(text, position,country, quant, eco));
             textView.setText("");
             updateTotal();
         }
@@ -290,7 +319,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                         numWeight /= 1000;
                     }
                     Log.d("OCR","Inside: " + numWeight);
-                    addItemToList(text,1337,numWeight,1);
+                    addItemToList(text,1337,"",numWeight,1);
 //                    ShopItem item = new ShopItem(text,1337,1);
 //                    mAdapter.addItem(item);
 //                    mAdapter.notifyDataSetChanged();
