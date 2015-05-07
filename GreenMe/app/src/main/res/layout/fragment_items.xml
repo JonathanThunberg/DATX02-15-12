@@ -43,29 +43,66 @@
 
     </LinearLayout>
 
+
     <LinearLayout
-        android:id="@+id/lowerLinearLayout"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_below="@+id/higherLinearLayout"
         android:layout_centerHorizontal="true">
 
-        <ImageButton
-            android:id="@+id/button_grocery_bag"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/grocery_bag"
-            android:layout_gravity="center_horizontal" />
+        <LinearLayout
+            android:id="@+id/lowerLinearLayouttwo"
+            android:orientation="horizontal"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
-        <ImageButton
-            android:id="@+id/button_transport_icon"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/transport_icon"
-            android:layout_gravity="center_horizontal" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:text="Logga Mat"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:text="Logga Transport"
+                android:textStyle="bold"
+                android:layout_marginLeft="85dp"
+                android:textColor="@android:color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lowerLinearLayout"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            >
+
+            <ImageButton
+                android:id="@+id/button_grocery_bag"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/grocery_bag"
+                android:layout_gravity="center_horizontal" />
+
+            <ImageButton
+                android:id="@+id/button_transport_icon"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/transport_icon"
+                android:layout_gravity="center_horizontal" />
+
+
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>
