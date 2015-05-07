@@ -71,7 +71,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
         mainActivity = (MainActivity)getActivity();
-
+        mainActivity.setTitle("Shopping Lista");
         ArrayList<ShopItem> items = new ArrayList<ShopItem>();
         mAdapter = new ShoppingAdapter(rootView);
         db = new DatabaseHelper(rootView.getContext());
