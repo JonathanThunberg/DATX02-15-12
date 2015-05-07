@@ -12,10 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
@@ -26,35 +23,41 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.location.LocationServices;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import datx021512.chalmers.se.greenme.MainActivity;
 import datx021512.chalmers.se.greenme.R;
+import datx021512.chalmers.se.greenme.database.DatabaseHelper;
 
 public class TravelFragment extends Fragment implements OnMapReadyCallback{
     private static final String TAG = "TravelFragment";
 
+    private double totalused;
     private MapView mapView;
     private GoogleMap map;
     private boolean isButtonPressed = true;
     private  Button mapButton;
-    private TextView textView;
+    private TextView text_usedtot;
+    private TextView text_distancetot;
     private MainActivity mainActivity;
     private LocationManager locationManager = null;
     private Location previousLocation = null;
     private double totalDistance;
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 250; // 250 meters
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minutes
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 25; // 25 meters
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 20 * 1; // 20 sec
     private GoogleApiClient mGoogleApiClient;
-
+    private PolylineOptions polylineOpti;
+    private Polyline poly;
+    private DatabaseHelper db;
+    private double vehicle;
 
         @Override
     public void onAttach(Activity activity){
@@ -69,7 +72,12 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         //todo change view
         View rootView = inflater.inflate(R.layout.fragment_travel, container, false);
 
-        int statusCode = com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getActivity());
+        Bundle args = getArguments();
+        if (args  != null && args.containsKey("Vehicle")){ //TODO Match with VehicleFragment passed
+           this.vehicle = args.getDouble("Vehicle");
+        }
+
+       /* int statusCode = com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getActivity());
         switch (statusCode) {
             case ConnectionResult.SUCCESS:
                 Toast.makeText(this.getActivity(), "SUCCESS", Toast.LENGTH_SHORT).show();
@@ -83,6 +91,9 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
             default: Toast.makeText(this.getActivity(), "Play Service result " + statusCode, Toast.LENGTH_SHORT).show();
 
         }
+            */
+
+        db = new DatabaseHelper(rootView.getContext());
 
         mainActivity = (MainActivity)getActivity();
         mGoogleApiClient = mainActivity.getmGoogleApiClient();
@@ -109,8 +120,13 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         mapButton=(Button)rootView.findViewById(R.id.mapbutton);
         mapButton.setText("START");
 
-        textView=(TextView)rootView.findViewById(R.id.textView);
-        textView.setVisibility(View.INVISIBLE);
+        text_distancetot =(TextView)rootView.findViewById(R.id.text_distancetot);
+        text_distancetot.setVisibility(View.INVISIBLE);
+
+        text_usedtot =(TextView)rootView.findViewById(R.id.text_usedtot);
+        text_usedtot.setVisibility(View.INVISIBLE);
+
+
 
         mapButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -120,7 +136,10 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
                 if (isButtonPressed) {
                     isButtonPressed = false;
                     map.clear();
+                    /*        poly.remove(); Kanske använda
+                         map.clear();*/
                     totalDistance = 0;
+                    totalused = 0;
                     mapButton.setText("STOP");
                     startTracking();
 
@@ -138,7 +157,8 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
 
     public void startTracking() {
 
-        textView.setVisibility(View.VISIBLE);
+        text_usedtot.setVisibility(View.VISIBLE);
+        text_distancetot.setVisibility(View.VISIBLE);
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
@@ -155,6 +175,7 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         // Getting latitude of the current location
         double latitude = previousLocation.getLatitude();
         // Getting longitude of the current location
+
         double longitude = previousLocation.getLongitude();
 
         // Creating a LatLng object for the current location
@@ -166,12 +187,23 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
 
         map.addMarker(new MarkerOptions().position(myPosition).title("Start"));
 
+        polylineOpti = new PolylineOptions()
+                .add(myPosition)
+                .color(Color.RED);
 
+        poly = map.addPolyline(polylineOpti);
     }
 
     public void stopTracking(){
         locationManager.removeUpdates(locationListener);
-        map.clear();
+
+        LatLng prevLatLng = new LatLng(previousLocation.getLatitude(),previousLocation.getLongitude());
+
+        map.addMarker(new MarkerOptions().position(prevLatLng).title("Mål"));
+
+        SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+        db.saveTravelUsed(totalused,date.format(new Date()) );
+
     }
 
     @Override
@@ -198,47 +230,49 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
     }
     private LocationListener locationListener = new LocationListener() {
 
-        /*TODO Linjer
-           Använda Polylines för att lägga till linje kanske? Risk att linjen går genom hus.
-           Antingen så går det genom hus och visar rätt sträcka eller
-           så visar den fel sträcka och ser bra ut eller så måste vi uppdatera oftare.
-        */
-
         @Override
         public void onLocationChanged(Location newLocation)
         {
             Log.d(TAG, "Location är changed" + newLocation);
+         //   Toast.makeText(getActivity(),"Location är changed: " + newLocation, Toast.LENGTH_LONG).show();
 
             float [] result = new float[3];
-            String prefix;
-            long reworkedDistance;
 
             // Getting latitude of the current location
             double newLatitude = newLocation.getLatitude();
             // Getting longitude of the current location
             double newLongitude = newLocation.getLongitude();
 
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(newLatitude,newLongitude),17);
+            LatLng newLatLng = new LatLng(newLatitude,newLongitude);
+
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLatLng,17);
             map.animateCamera(cameraUpdate);
 
-            Location.distanceBetween(previousLocation.getLatitude(),previousLocation.getLongitude(),
-                    newLatitude,newLongitude,result);
+            Location.distanceBetween(previousLocation.getLatitude(), previousLocation.getLongitude(),
+                    newLatitude, newLongitude, result);
 
             totalDistance += result[0];
 
-            previousLocation = newLocation;
+            polylineOpti.add(newLatLng);
+            poly.remove();
+            poly = map.addPolyline(polylineOpti);
+
+
             if (totalDistance > 1000) {
-                reworkedDistance = Math.round(totalDistance);
-                 reworkedDistance /= 1000;
-                prefix = " Km";
+                double reworkedDistanceKm = Math.round(totalDistance/100)/10;
+                text_distancetot.setText("Sträcka: " + reworkedDistanceKm + " Km");
             }
             else {
-                reworkedDistance = Math.round(totalDistance);
-                prefix = " m";
+                long reworkedDistanceM = Math.round(totalDistance);
+                text_distancetot.setText("Sträcka: " + reworkedDistanceM + " m");
             }
-            Log.d(TAG, "totaldistance: "+ totalDistance);
-            textView.setText("Sträcka: " + reworkedDistance + prefix); //TODO Byta ut det till Co2? Roligare kanske? Lite annorlunda.
 
+            totalused = totalDistance*vehicle;
+
+            text_usedtot.setText(totalused + " Kg CO2");
+            Log.d(TAG, "totaldistance: " + totalDistance);
+
+            previousLocation = newLocation;
         }
 
         @Override

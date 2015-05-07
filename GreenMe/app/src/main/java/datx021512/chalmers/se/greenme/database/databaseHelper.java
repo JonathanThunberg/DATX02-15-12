@@ -307,4 +307,20 @@ public class DatabaseHelper extends SQLiteAssetHelper {
             return c;
     }
 
+    public void saveTravelUsed(double totalused, String date) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "TRAVELUSED" + "(DATE VARCHAR, TOTALUSED DOUBLE)";
+        db.execSQL(CREATE_CONTACTS_TABLE);
+        db.close();
+
+        db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("DATE",date);
+        values.put("TOTALUSED", totalused);
+        db.insert("TRAVELUSED", null, values);
+        db.close();
+
+
+    }
 }

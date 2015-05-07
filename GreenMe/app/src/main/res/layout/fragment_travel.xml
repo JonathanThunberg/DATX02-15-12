@@ -9,21 +9,28 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
 
-    <Button android:id="@+id/mapbutton"
-        android:layout_width="230dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="400dp"
-        android:layout_centerHorizontal="true"
-        android:textColor="#ffffff"
-        android:background="#d34836"/>
 
-    <TextView
+    <TextView android:id="@+id/text_usedtot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/textView"
-        android:layout_alignBottom="@+id/mapbutton"
+        android:layout_marginTop="320dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="90dp" />
+        android:layout_marginBottom="1dp" />
 
+    <TextView android:id="@+id/text_distancetot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@+id/text_usedtot"
+        android:layout_marginBottom="20dp"
+        android:layout_alignRight="@+id/text_usedtot" />
+
+    <Button android:id="@+id/mapbutton"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/text_distancetot"
+        android:textColor="#ffffff"
+        android:background="#d34836"/>
 </RelativeLayout>
