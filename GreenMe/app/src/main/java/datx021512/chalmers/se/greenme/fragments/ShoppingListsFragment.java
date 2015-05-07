@@ -6,12 +6,15 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -49,10 +52,20 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
 
         setHasOptionsMenu(true);
 
-
-
+        getActivity().setTitle("Dina Listor");
         textView = (AutoCompleteTextView)
                 rootView.findViewById(R.id.text_input);
+
+        textView.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((actionId == KeyEvent.KEYCODE_ENTER)||actionId == EditorInfo.IME_ACTION_DONE) {
+                    addNewList();
+                    return true;
+                }
+                return false;
+            }
+        });
         return rootView;
     }
 
@@ -60,18 +73,23 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_text:
-                if (textView.getText() != null && !mAdapter.contains(textView.getText().toString()) && !mAdapter.contains(textView.getText().toString().replaceAll("\\s",""))) {
-                    SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
-                    createNewList(textView.getText().toString(), date.format(new Date()));
-
-                        View view = getActivity().getCurrentFocus();
-                        if (view != null) {
-                            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getActivity().getBaseContext().INPUT_METHOD_SERVICE);
-                            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                        }
-                    }
-                }
+                addNewList();
         }
+    }
+
+    private void addNewList() {
+        if (textView.getText() != null && !mAdapter.contains(textView.getText().toString()) && !mAdapter.contains(textView.getText().toString().replaceAll("\\s",""))) {
+            SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+            createNewList(textView.getText().toString(), date.format(new Date()));
+
+            View view = getActivity().getCurrentFocus();
+            if (view != null) {
+                InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getActivity().getBaseContext().INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }
+
+    }
 
     private void createNewList(String s, String format) {
         FragmentManager fragmentManager = getFragmentManager();

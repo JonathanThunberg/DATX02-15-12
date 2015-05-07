@@ -29,6 +29,7 @@ public class StatisticsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //here you can accses R or in on Created with view
+        getActivity().setTitle("Statistik");
         return inflater.inflate(R.layout.fragment_overview, container, false);
     }
 
@@ -59,7 +60,7 @@ public class StatisticsFragment extends Fragment {
                 series1Numbers[index+1] = (series1Numbers[index+1].doubleValue())+ls.get(i).getmCO2();
             }else{
                 series1Numbers[2*i+1] = ls.get(i).getmCO2();
-                series1Numbers[2*i] =Integer.parseInt(ls.get(i).getDate().split("/")[0]) ;
+                series1Numbers[2 * i] = Integer.parseInt(ls.get(i).getDate().split("/")[0]) ;
             }
         }
 
