@@ -29,7 +29,7 @@ public class MovingBackground extends SurfaceView implements
         super(context);
 
         backGround = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.background2temp);
+                R.drawable.signin_background);
 
         Bitmap tmplogo = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.kandidatloga);
@@ -49,16 +49,6 @@ public class MovingBackground extends SurfaceView implements
         login_left = 0;
         login_top = 0;
 
-        //logo = Bitmap.createBitmap(image,0,500,291,493);
-
-
-        /*android:layout_width="189dp"
-        android:layout_height="150dp"*/
-
-
-        //button = BitmapFactory.decodeResource(context.getResources(),
-        //        com.google.android.gms.common.SignInButton);
-
         //  If this view doesn't do any drawing on its own, set this flag to allow further optimizations.
         setWillNotDraw(false);
     }
@@ -67,7 +57,6 @@ public class MovingBackground extends SurfaceView implements
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //  Log.d(TAG,"onDraw() " + canvas.toString());
         super.onDraw(canvas);
         doDrawRunning(canvas);
         //invalidate the whole view
@@ -101,7 +90,6 @@ public class MovingBackground extends SurfaceView implements
     private double ix = -1;
 
     private void doDrawRunning(Canvas canvas) {
-        // Log.d(TAG,"onDrawRunning()");
 
         login_left = this.getWidth()/2-loginButton.getWidth()/2;
         login_top = getHeight()/4+logo.getHeight()+loginButton.getHeight()/2;

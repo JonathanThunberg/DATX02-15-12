@@ -6,7 +6,6 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.Window;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -76,13 +75,6 @@ public class LoginActivity extends Activity implements
             }
         }
     }
-   /* public void onClick(View view) {
-        if (view.getId() == R.id.sign_in_button
-                && !mGoogleApiClient.isConnecting()) {
-            mSignInClicked = true;
-            resolveSignInError();
-        }
-    }*/
 
     public void onConnectionFailed(ConnectionResult result) {
         Log.d(TAG,"Onconnectionfailed");
@@ -95,7 +87,6 @@ public class LoginActivity extends Activity implements
 
             setContentView(background);
 
-            //findViewById(R.id.sign_in_button).setOnClickListener(this);
 
             if (mSignInClicked) {
                 // The user has already clicked 'sign-in' so we attempt to resolve all
