@@ -5,29 +5,35 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.plus.Plus;
+import datx021512.chalmers.se.greenme.login.MovingBackground;
 
 
 
 public class LoginActivity extends Activity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
 
     private static final int RC_SIGN_IN = 0;
     private GoogleApiClient mGoogleApiClient;
     private boolean mSignInClicked;
     private ConnectionResult mConnectionResult;
     private boolean mIntentInProgress;
+    MovingBackground background;
     String TAG = "Login";
 
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -70,13 +76,13 @@ public class LoginActivity extends Activity implements
             }
         }
     }
-    public void onClick(View view) {
+   /* public void onClick(View view) {
         if (view.getId() == R.id.sign_in_button
                 && !mGoogleApiClient.isConnecting()) {
             mSignInClicked = true;
             resolveSignInError();
         }
-    }
+    }*/
 
     public void onConnectionFailed(ConnectionResult result) {
         Log.d(TAG,"Onconnectionfailed");
@@ -84,8 +90,13 @@ public class LoginActivity extends Activity implements
             // Store the ConnectionResult so that we can use it later when the user clicks
             // 'sign-in'.
             mConnectionResult = result;
-            setContentView(R.layout.signin_main);
-            findViewById(R.id.sign_in_button).setOnClickListener(this);
+
+            background = new MovingBackground(this);
+
+            setContentView(background);
+
+            //findViewById(R.id.sign_in_button).setOnClickListener(this);
+
             if (mSignInClicked) {
                 // The user has already clicked 'sign-in' so we attempt to resolve all
                 // errors until the user is signed in, or they cancel.
@@ -120,5 +131,21 @@ public class LoginActivity extends Activity implements
                 mGoogleApiClient.connect();
             }
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int loginLeft = background.getLoginLeft();
+        int loginbuttonWidth = background.getLoginButtonWidth();
+        int loginTop = background.getLoginTop();
+        int loginbuttonHeight = background.getLoginButtonHeight();
+
+        if (event.getX()>loginLeft && event.getX()<(loginLeft+loginbuttonWidth)&&
+                event.getY()>loginTop && event.getY()<(loginTop+loginbuttonHeight) && !mGoogleApiClient.isConnecting()) {
+
+            mSignInClicked = true;
+            resolveSignInError();
+        }
+        return super.onTouchEvent(event);
     }
 }
