@@ -64,6 +64,8 @@ public class VehicleFragment extends Fragment {
     private double walkingCarbon = 0;
     private double bikingCarbon = 0;
 
+    private VehicleType vehicleType;
+
 
 
     @Override
@@ -127,34 +129,29 @@ public class VehicleFragment extends Fragment {
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if(inputSwitch.isChecked()) {
-                getActivity().setTitle("Lägg till antal kilometer");
+        if(inputSwitch.isChecked()) {
+            getActivity().setTitle("Lägg till antal kilometer");
 
-                addButton.setVisibility(View.VISIBLE);
-                kmTextView.setVisibility(View.VISIBLE);
-                kilometerInput.setVisibility(View.VISIBLE);
+            addButton.setVisibility(View.VISIBLE);
+            kmTextView.setVisibility(View.VISIBLE);
+            kilometerInput.setVisibility(View.VISIBLE);
 
-                for(ImageButton i: buttonList){
-                    i.setAlpha(1f);
-                }
-
-
-
-
-            }else{
-                getActivity().setTitle("Välj fordonstyp");
-
-                addButton.setVisibility(View.INVISIBLE);
-                kmTextView.setVisibility(View.INVISIBLE);
-                kilometerInput.setVisibility(View.INVISIBLE);
-                for(ImageButton i: buttonList){
-                    i.setAlpha(1f);
-                }
-                for(Button i:carTypeButtonList){
-                    i.setAlpha(0f);
-                }
-
+            for(ImageButton i: buttonList){
+                i.setAlpha(1f);
             }
+            carTypeInvisible();
+        }else{
+            getActivity().setTitle("Välj fordonstyp");
+
+            addButton.setVisibility(View.INVISIBLE);
+            kmTextView.setVisibility(View.INVISIBLE);
+            kilometerInput.setVisibility(View.INVISIBLE);
+            for(ImageButton i: buttonList){
+                i.setAlpha(1f);
+            }
+            carTypeInvisible();
+
+        }
         }
     };
 
@@ -170,56 +167,61 @@ public class VehicleFragment extends Fragment {
                         getActivity().setTitle("Buss");
                     }else{
                         vehicleTransparent(busButton);
-                        carTypeInvisible(busButton);
+                        vehicleType = VehicleType.BUS;
                     }
-                    if(carTypeVisible){
-                        carTypeInvisible(busButton);
-                    }
+                    carTypeInvisible();
 
                     break;
 
                 case R.id.trainButton:
                     if(!inputSwitch.isChecked()) {
-
                         getActivity().setTitle("Tåg");
                         nextFragment(trainCarbon);
 
                     }else{
                         vehicleTransparent(trainButton);
-                        carTypeInvisible(trainButton);
+                        vehicleType = VehicleType.TRAIN;
                     }
-                    if(carTypeVisible){
-                        carTypeInvisible(trainButton);
-                    }
+                    carTypeInvisible();
                     break;
 
                 case R.id.carButton:
-                    if(!inputSwitch.isChecked()) {
-                        carTypeVisible(carButton);
-                        switch (v.getId()) {
-                            case R.id.smallestCar:
-                                allButtonsTransparent(smallestCarButton);
-                                nextFragment(smallestCarCarbon);
-                                break;
-                            case R.id.smallerCar:
-                                allButtonsTransparent(smallerCarButton);
-                                nextFragment(smallerCarCarbon);
-                                break;
-                            case R.id.biggerCar:
-                                allButtonsTransparent(biggerCarButton);
-                                nextFragment(biggerCarCarbon);
-                                break;
-                            case R.id.biggestCar:
-                                allButtonsTransparent(biggestCarButton);
-                                nextFragment(biggestCarCarbon);
-                                break;
-                            default:
-                                break;
-                        }
-                    }else{
+                    carTypeVisible();
+                    vehicleTransparent(carButton);
+                    carNoTransparent();
+                    vehicleType = null;
+                    break;
 
-                        carTypeVisible(carButton);
-                        vehicleTransparent(carButton);
+                case R.id.smallestCar:
+                    if(!inputSwitch.isChecked()) {
+                        nextFragment(smallestCarCarbon);
+                    }else{
+                        vehicleType = VehicleType.SMALLESTCAR;
+                        carTransparent(smallestCarButton);
+                    }
+                    break;
+                case R.id.smallerCar:
+                    if(!inputSwitch.isChecked()) {
+                        nextFragment(smallerCarCarbon);
+                    }else{
+                        vehicleType = VehicleType.SMALLERCAR;
+                        carTransparent(smallerCarButton);
+                    }
+                    break;
+                case R.id.biggerCar:
+                    if(!inputSwitch.isChecked()) {
+                        nextFragment(biggerCarCarbon);
+                    }else{
+                        vehicleType = VehicleType.BIGGERCAR;
+                        carTransparent(biggerCarButton);
+                    }
+                    break;
+                case R.id.biggestCar:
+                    if(!inputSwitch.isChecked()) {
+                        nextFragment(biggestCarCarbon);
+                    }else{
+                        vehicleType = VehicleType.BIGGESTCAR;
+                        carTransparent(biggestCarButton);
                     }
                     break;
 
@@ -231,12 +233,9 @@ public class VehicleFragment extends Fragment {
 
                     }else{
                         vehicleTransparent(bikingButton);
-                        carTypeInvisible(bikingButton);
-
+                        vehicleType = VehicleType.BIKE;
                     }
-                    if(carTypeVisible){
-                        carTypeInvisible(bikingButton);
-                    }
+                    carTypeInvisible();
                     break;
 
                 case R.id.walkingButton:
@@ -245,64 +244,81 @@ public class VehicleFragment extends Fragment {
                         getActivity().setTitle("Gång");
                     }else{
                         vehicleTransparent(walkingButton);
-                        carTypeInvisible(walkingButton);
+                        vehicleType = VehicleType.WALK;
                     }
-                    if(carTypeVisible){
-                        carTypeInvisible(walkingButton);
-                    }
+                    carTypeInvisible();
                     break;
                 case R.id.addButton:
-                    if(inputSwitch.isChecked() && !buttonClicked){
+                    if(vehicleType == null){
                         Context context = getActivity().getApplicationContext();
                         CharSequence text = "Du måste välja fordonstyp";
                         int duration = Toast.LENGTH_SHORT;
 
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
-                    }else{
-                        switch(v.getId()){
-                            case R.id.biggestCar:
-                                double totalImpact=Integer.parseInt(kilometerInput.getText().toString())* biggestCarCarbon;
-                                Context context = getActivity().getApplicationContext();
-                                CharSequence text = "totalt: " + totalImpact;
-                                int duration = Toast.LENGTH_SHORT;
+                    }else if(kilometerInput.getText() == null){
+                        Context context = getActivity().getApplicationContext();
+                        CharSequence text = "Du måste skriva in hur långt du åkt";
+                        int duration = Toast.LENGTH_SHORT;
 
-                                Toast toast = Toast.makeText(context, text, duration);
-                                toast.show();
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                    }else{
+                        double temp=0;
+                        switch (vehicleType){
+                            case WALK:
+                                temp = walkingCarbon;
+                                break;
+                            case TRAIN:
+                                temp = trainCarbon;
+                                break;
+                            case BUS:
+                                temp = busCarbon;
+                                break;
+                            case BIKE:
+                                temp = bikingCarbon;
+                                break;
+                            case BIGGERCAR:
+                                temp = biggerCarCarbon;
+                                break;
+                            case BIGGESTCAR:
+                                temp = biggestCarCarbon;
+                                break;
+                            case SMALLERCAR:
+                                temp = smallerCarCarbon;
+                                break;
+                            case SMALLESTCAR:
+                                temp = smallestCarCarbon;
+                                break;
+
                         }
+                        double totalimpact = temp * Double.parseDouble(kilometerInput.getText().toString());
+
+
+                        Context context = getActivity().getApplicationContext();
+                        CharSequence text = "Denna resan har blivit tillagd och det blev "+totalimpact+" kg CO2" ;
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
                     }
 
-                default:
-
-                    break;
+                break;
             }
 
         }
     };
 
-    public void carTypeInvisible(ImageButton button){
-        for(ImageButton i:buttonList){
-            if(button!=i) {
-                for (Button j : carTypeButtonList) {
-                    j.setVisibility(View.INVISIBLE);
-                }
-                carTypeVisible = false;
-            }
-
-        }
+    public void carTypeInvisible(){
         for(Button i:carTypeButtonList){
                 i.setVisibility(View.INVISIBLE);
 
         }
     }
-    public void carTypeVisible(ImageButton button) {
-        if(button==carButton){
-            for (Button i : carTypeButtonList) {
+    public void carTypeVisible() {
+      for (Button i : carTypeButtonList) {
                 i.setVisibility(View.VISIBLE);
-            }
-            carTypeVisible= true;
         }
-
     }
     public void vehicleTransparent(ImageButton button){
         for(ImageButton i:buttonList){
@@ -315,31 +331,24 @@ public class VehicleFragment extends Fragment {
 
         }
     }
-    public void vehicleNonTransparent(ImageButton button){
-        for(ImageButton i:buttonList){
-            if(button!=i) {
-                i.setAlpha(1f);
-            }
-        }
-    }
-    public void vehicleFullTransparent(ImageButton button) {
-        for(ImageButton i:buttonList){
-            if(button!=i) {
-                i.setAlpha(0f);
-            }
-        }
-    }
-    public void allButtonsTransparent(Button button){
+
+
+    public void carTransparent(Button button){
         for(Button i:carTypeButtonList){
-            if(button!=i){
-                i.setAlpha(0f);
+            if(button!=i) {
+                i.setAlpha(0.5f);
             }
             if(button==i){
                 i.setAlpha(1f);
             }
-        }
+      }
     }
 
+    public void carNoTransparent(){
+        for(Button i:carTypeButtonList){
+              i.setAlpha(1f);
+        }
+    }
     public void nextFragment(Double id){
         FragmentManager fragmentManager = getFragmentManager();
         final Bundle bundle = new Bundle();
@@ -347,6 +356,10 @@ public class VehicleFragment extends Fragment {
         TravelFragment tf = new TravelFragment();
         tf.setArguments(bundle);
         fragmentManager.beginTransaction().replace(R.id.container,tf).commit();
+
+    }
+    private enum VehicleType{
+        TRAIN, BUS, BIKE, WALK, BIGGESTCAR,BIGGERCAR, SMALLESTCAR, SMALLERCAR
 
     }
 }
