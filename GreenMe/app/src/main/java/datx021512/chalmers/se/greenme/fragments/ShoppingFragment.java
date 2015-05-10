@@ -101,7 +101,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
 
         ArrayList<String> categories = db.getCategories();
-        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.select_dialog_item, categories);
+        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(rootView.getContext(), android.R.layout.select_dialog_item, categories);
 
         mAutoCompleteField = (AutoCompleteTextView) rootView.findViewById(R.id.text_input);
         mAutoCompleteField.setAdapter(itemsAdapter);
@@ -143,21 +143,21 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
     private void addNewItem() {
         if (mAutoCompleteField.getText() != null) {
             final String text = mAutoCompleteField.getText().toString();
-            if (text != null && text.trim().length() > 0) {
+            if (text.trim().length() > 0) {
                 if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
                     addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),"",1,(db.getEco(text).get(0)));
                     Log.d("TEST","!!!!!!!!!!!!!!!!GetALL1: " + mAdapter.getAllitems());
                 } else {
                     final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                     LayoutInflater inflater = getActivity().getLayoutInflater();
-                    View convertView = (View) inflater.inflate(R.layout.list_alert, null);
+                    View convertView = inflater.inflate(R.layout.list_alert, null);
                     alertDialog.setView(convertView);
                     alertDialog.setTitle("Menade du detta?");
                     ListView lv = (ListView) convertView.findViewById(R.id.listView1);
                     ArrayList<String> suggestions = new ArrayList<>();
                     suggestions.add("Skapa nytt objekt");
                     suggestions.addAll(db.getImpactName(text));
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,suggestions );
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1,suggestions );
                     lv.setAdapter(arrayAdapter);
                     final AlertDialog mdialog = alertDialog.create();
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -193,7 +193,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
     private void createNewItem(String text) {
             LayoutInflater inflater = getActivity().getLayoutInflater();
-            View convertView = (View) inflater.inflate(R.layout.dialog_newitem, null);
+            View convertView = inflater.inflate(R.layout.dialog_newitem, null);
             final EditText userInput = (EditText)
                     convertView.findViewById(R.id.username);
             final EditText userImpact = (EditText)
@@ -212,7 +212,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                     String county = userCountry.getText().toString();
                     int eco = 0;
                     db.createNewItem(text, Integer.parseInt(text2));
-                    if (((CheckBox) userEkological).isChecked()) {
+                    if ((userEkological).isChecked()) {
                         eco = 1;
 
                     }
@@ -360,7 +360,15 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
     public void onActivityResult(int request, int result, Intent i) {
         super.onActivityResult(request, result, i);
         IntentResult scan = IntentIntegrator.parseActivityResult(request, result, i);
-        String read = scan.getContents();
+        String read = null;
+        try
+        {
+            read = scan.getContents();
+        }
+        catch (NullPointerException ex){
+            Toast.makeText(getActivity(), "Kunde ej hitta streckkod!", Toast.LENGTH_SHORT).show();
+        }
+
         Log.d("OCR","read: " + read);
         String URL = "http://api.ica.se/api/upclookup/?upc=";
         String text = "";
@@ -368,7 +376,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
             Log.d("OCR","ocr: " + read);
             try{
                 text = JSONToString(getFromInternetz(URL + read));
-                if(text != "" && text != null && text != "null")
+                if(!text.equals("") && !text.equals(null) && !text.equals("null"))
                 {
                     String[] split = text.split(" ");
                     String last = split[split.length-1];
