@@ -139,6 +139,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                 updateLeaderboard();
                 break;
         }
+        mAdapter.notifyDataSetChanged();
     }
 
     private void addNewItem() {

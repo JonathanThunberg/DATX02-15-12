@@ -309,7 +309,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
 
     public void removeShoppingList(String s) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete("ShoppingListsview", "NAME='" + s+"'", null);
+        db.delete("ShoppingListsview", "NAME='" + s + "'", null);
         db.execSQL("delete from " + "Shoppingview" + s.replaceAll("\\s", ""));
         db.close();
     }

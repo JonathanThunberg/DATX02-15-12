@@ -132,8 +132,12 @@ public class StatisticsFragment extends Fragment {
                 new DecimalFormat("#####.##"));
         plot.getGraphWidget().setDomainLabelOrientation(-45);
         plot.calculateMinMaxVals();
-        plot.setDomainBoundaries(((plot.getCalculatedMinX().doubleValue()-10)),((int) plot.getCalculatedMaxX().doubleValue()+10), BoundaryMode.FIXED);
-        plot.setRangeBoundaries(Math.floor((double) plot.getCalculatedMinY().doubleValue()-10),Math.floor((double) plot.getCalculatedMaxY().doubleValue()+10), BoundaryMode.FIXED);
+        plot.setDomainBoundaries(((plot.getCalculatedMinX().doubleValue() - 2)), ((int) plot.getCalculatedMaxX().doubleValue() + 2), BoundaryMode.FIXED);
+        if((plot.getCalculatedMinY().doubleValue()-10) < 0){
+            plot.setRangeBoundaries(0, Math.floor((double) plot.getCalculatedMaxY().doubleValue()+10), BoundaryMode.FIXED);
+        }else{
+            plot.setRangeBoundaries(Math.floor((double) plot.getCalculatedMinY().doubleValue() - 10), Math.floor((double) plot.getCalculatedMaxY().doubleValue()+10), BoundaryMode.FIXED);
+        }
         plot.redraw();
     }
 }

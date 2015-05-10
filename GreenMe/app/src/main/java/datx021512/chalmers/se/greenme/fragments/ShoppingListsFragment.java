@@ -86,7 +86,7 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
     }
 
     private void addNewList() {
-        if (textView.getText() != null && !mAdapter.contains(textView.getText().toString()) && !mAdapter.contains(textView.getText().toString().replaceAll("\\s",""))) {
+        if (textView.getText().toString().trim().length() == 0 && !mAdapter.contains(textView.getText().toString()) && !mAdapter.contains(textView.getText().toString().replaceAll("\\s",""))) {
             SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
             createNewList(textView.getText().toString(), date.format(new Date()));
 

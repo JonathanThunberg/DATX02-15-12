@@ -24,8 +24,6 @@ import datx021512.chalmers.se.greenme.fragments.ShoppingListsFragment;
 public class ShoppingListsAdapter extends RecyclerView.Adapter<ShoppingListsAdapter.ListViewHolder>{
     private final ShoppingListsFragment shoppingListsFragment;
     private ArrayList<ShopItem> mListData = new ArrayList();
-    private View rootView;
-
 
 
     public ShoppingListsAdapter(ArrayList<ShopItem> shoppingLists, ShoppingListsFragment shoppingListsFragment) {
