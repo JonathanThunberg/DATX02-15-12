@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -55,7 +56,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
     public void onBindViewHolder(ListViewHolder viewHolder, final int position) {
         ShopItem data = mListData.get(position);
         viewHolder.textItem.setText(data.getmName());
-        viewHolder.textCO2.setText(Double.toString(data.getmCO2())+" kg/co2");
+        viewHolder.textCO2.setText(Double.toString(data.getmCO2())+" kg/kg co2");
         viewHolder.textQuantity.setText(Double.toString(data.getQuantity())+" kg");
         viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,8 +92,8 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
             notifyDataSetChanged();
         }
         Double total = getTotalImpact();
-        TextView textTotal = (TextView) rootView.findViewById(R.id.text_total);
-        textTotal.setText(total + " kg/co2");
+        Button textTotal = (Button) rootView.findViewById(R.id.total_text);
+        textTotal.setText("  "+Math.round(total*1000)/1000.0+"Kg Co2");
     }
 
 
@@ -103,8 +104,8 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
             mListData.add(position, temp);
             notifyDataSetChanged();
         Double total = getTotalImpact();
-        TextView textTotal = (TextView) rootView.findViewById(R.id.text_total);
-        textTotal.setText(total+" kg/co2");
+        Button textTotal = (Button) rootView.findViewById(R.id.total_text);
+        textTotal.setText("  "+Math.round(total*1000)/1000.0+"Kg Co2");
     }
 
     public void addItem(ShopItem item) {

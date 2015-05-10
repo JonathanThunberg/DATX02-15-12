@@ -1,6 +1,7 @@
 package datx021512.chalmers.se.greenme.fragments;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import com.androidplot.xy.PointLabelFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
+import com.androidplot.xy.XYStepMode;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -37,6 +39,26 @@ public class StatisticsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState){
 
         plot = (XYPlot) view.findViewById(R.id.mySimpleXYPlot);
+
+        //This gets rid of the gray grid
+        plot.getGraphWidget().getGridBackgroundPaint().setColor(Color.TRANSPARENT);
+
+//This gets rid of the black border (up to the graph) there is no black border around the labels
+        plot.getBackgroundPaint().setColor(Color.TRANSPARENT);
+
+//This gets rid of the black behind the graph
+        plot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
+
+//With a new release of AndroidPlot you have to also set the border paint
+        plot.getBorderPaint().setColor(Color.TRANSPARENT);
+
+        plot.getDomainLabelWidget().getLabelPaint().setColor(Color.BLACK);
+
+        plot.getRangeLabelWidget().getLabelPaint().setColor(Color.BLACK);
+
+        plot.getTitleWidget().getLabelPaint().setColor(Color.BLACK);
+
+        plot.setDomainStep(XYStepMode.INCREMENT_BY_VAL, 1);
 
         // initialize our XYPlot reference:
         DatabaseHelper db = new DatabaseHelper(view.getContext());
@@ -94,8 +116,8 @@ public class StatisticsFragment extends Fragment {
         // and configure it from xml:
         LineAndPointFormatter series1Format = new LineAndPointFormatter();
         series1Format.setPointLabelFormatter(new PointLabelFormatter());
-        series1Format.configure(getActivity().getApplicationContext(),R.xml.lpf1);
-
+        series1Format.configure(getActivity().getApplicationContext(), R.xml.lpf1);
+        series1Format.setPointLabelFormatter(new PointLabelFormatter(Color.BLACK));
         // add a new series' to the xyplot:
         plot.addSeries(series1, series1Format);
 

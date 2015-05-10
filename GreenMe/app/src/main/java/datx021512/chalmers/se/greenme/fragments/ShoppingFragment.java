@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -116,6 +117,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         });
 
         this.rootView = rootView;
+        updateTotal();
         return rootView;
     }
 
@@ -246,8 +248,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
     public void updateTotal(){
         Double total = mAdapter.getTotalImpact();
-        TextView textTotal = (TextView) getActivity().findViewById(R.id.text_total);
-        textTotal.setText(total+" kg/co2");
+        Button textTotal = (Button) rootView.findViewById(R.id.total_text);
+        textTotal.setText("  "+Math.round(total*1000)/1000.0+"kg co2");
 
     }
     public void updateLeaderboard(){

@@ -160,27 +160,43 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         public ArrayList<Integer> getEco (String st){
 
         ArrayList<Integer> mArrayList = new ArrayList<>();
-        Log.d("TEST", "!!!! Inuti GetEco()");
-            Cursor categories = getEcoFromDatabase("vegCategories", st);
+
+
+        for(String s :st.split("\\s+")) {
+            Cursor categories = getImpactFromDatabase("vegCategories", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
                 mArrayList.add((categories.getInt(categories.getColumnIndex("EKOLOGIC"))));
-            categories.moveToNext();
+                categories.moveToNext();
             }
-        //The item is no Eco so set it.
-        if (mArrayList.size() == 0) {
-            mArrayList.add(0);
+
+            categories = getImpactFromDatabase("meanCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add(0);
+                categories.moveToNext();
+            }
+            categories = getImpactFromDatabase("OwnCategories", s);
+            categories.moveToFirst();
+            while (!categories.isAfterLast()) {
+                mArrayList.add((categories.getInt(categories.getColumnIndex("EKOLOGIC"))));
+                categories.moveToNext();
+            }
         }
+
+
+
 
         return mArrayList;
     }
 
     public ArrayList<String> getImpactName(String st){
         ArrayList<String> mArrayList = new ArrayList<>();
+        String temp;
         for(String s :st.split("\\s+")) {
             Cursor categories = getImpactFromDatabase("vegCategories", s);
             categories.moveToFirst();
-            String temp;
+
             while (!categories.isAfterLast()) {
                 temp =categories.getString(categories.getColumnIndex("NAME"))+"  "+categories.getString(categories.getColumnIndex("COUNTRY"));
                 if(categories.getInt(categories.getColumnIndex("EKOLOGIC"))>=1) {
@@ -200,7 +216,11 @@ public class DatabaseHelper extends SQLiteAssetHelper {
             categories = getImpactFromDatabase("OwnCategories", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
-                mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
+                temp =categories.getString(categories.getColumnIndex("NAME"))+"  "+categories.getString(categories.getColumnIndex("COUNTRY"));
+                if(categories.getInt(categories.getColumnIndex("EKOLOGIC"))>=1) {
+                    temp += " Ekologisk";
+                }
+                mArrayList.add(temp);
                 categories.moveToNext();
             }
         }
