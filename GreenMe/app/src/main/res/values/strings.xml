@@ -7,6 +7,16 @@
     <string name="drawer_open">Menu opened</string>
     <string name="drawer_close">Menu closed</string>
     <string name="text_dialog">temp</string>
+    <!--<string name="switch_man">Manuell</string>
+    <string name="switch_auto">Automatisk</string>-->
+    <string name="text_auto">AUTOMATISK</string>
+    <string name="text_man">MANUELL</string>
+    <string name="km">KM</string>
+    <string name="add">Lägg till resa</string>
+    <string name="smallestCarButton_text">Mycket liten bil</string>
+    <string name="smallerCarButton_text"> Liten bil </string>
+    <string name="biggerCarButton_text">Mellanstor bil</string>
+    <string name="biggestCarButton_text">Stadsjeep</string>
     <string name="user_impact">Påverkan i Kg/CO2</string>
     <string name="newItemName">Produktnamn</string>
 

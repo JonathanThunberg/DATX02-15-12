@@ -40,8 +40,8 @@ public class MovingBackground extends SurfaceView implements
         int widthLogo = (int)Math.round(tmplogo.getWidth()*0.5);
         int heightLogo = (int)Math.round(tmplogo.getHeight()*0.5);
 
-        int widthLogin = (int)Math.round(tmplogin.getWidth()*0.6);
-        int heightLogin = (int)Math.round(tmplogin.getHeight()*0.5);
+        int widthLogin = (int)Math.round(tmplogin.getWidth()*0.65);
+        int heightLogin = (int)Math.round(tmplogin.getHeight()*0.6);
 
         logo = Bitmap.createScaledBitmap(tmplogo, widthLogo, heightLogo, false);
         loginButton = Bitmap.createScaledBitmap(tmplogin, widthLogin, heightLogin, false);
