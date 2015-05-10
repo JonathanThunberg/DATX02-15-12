@@ -14,8 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -77,22 +75,6 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
            this.vehicle = args.getDouble("Vehicle");
         }
 
-       /* int statusCode = com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getActivity());
-        switch (statusCode) {
-            case ConnectionResult.SUCCESS:
-                Toast.makeText(this.getActivity(), "SUCCESS", Toast.LENGTH_SHORT).show();
-                break;
-            case ConnectionResult.SERVICE_MISSING:
-                Toast.makeText(this.getActivity(), "SERVICE MISSING", Toast.LENGTH_SHORT).show();
-                break;
-            case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
-                Toast.makeText(this.getActivity(), "UPDATE REQUIRED", Toast.LENGTH_SHORT).show();
-                break;
-            default: Toast.makeText(this.getActivity(), "Play Service result " + statusCode, Toast.LENGTH_SHORT).show();
-
-        }
-            */
-
         db = new DatabaseHelper(rootView.getContext());
 
         mainActivity = (MainActivity)getActivity();
@@ -136,8 +118,6 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
                 if (isButtonPressed) {
                     isButtonPressed = false;
                     map.clear();
-                    /*        poly.remove(); Kanske använda
-                         map.clear();*/
                     totalDistance = 0;
                     totalused = 0;
                     mapButton.setText("STOP");
@@ -256,6 +236,8 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
             polylineOpti.add(newLatLng);
             poly.remove();
             poly = map.addPolyline(polylineOpti);
+            Log.d(TAG, "Multippel" + vehicle);
+            totalused = (totalDistance*vehicle)/1000;
 
 
             if (totalDistance > 1000) {
@@ -267,9 +249,17 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
                 text_distancetot.setText("Sträcka: " + reworkedDistanceM + " m");
             }
 
-            totalused = totalDistance*vehicle;
 
-            text_usedtot.setText(totalused + " Kg CO2");
+            if (totalused > 1000) {
+                double reworkedTotalUsedK= Math.round(totalused/100)/10;
+                text_usedtot.setText(reworkedTotalUsedK + " Kg C02");
+            }
+            else {
+                long reworkedTotalUsedM = Math.round(totalused);
+                text_usedtot.setText(reworkedTotalUsedM + " g CO2");
+            }
+
+
             Log.d(TAG, "totaldistance: " + totalDistance);
 
             previousLocation = newLocation;
