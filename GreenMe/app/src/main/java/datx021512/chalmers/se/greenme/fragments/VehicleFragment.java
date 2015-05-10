@@ -256,7 +256,7 @@ public class VehicleFragment extends Fragment {
 
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
-                    }else if(kilometerInput.getText() == null){
+                    }else if(kilometerInput.getText().toString().trim().length()==0){
                         Context context = getActivity().getApplicationContext();
                         CharSequence text = "Du måste skriva in hur långt du åkt";
                         int duration = Toast.LENGTH_SHORT;
