@@ -26,4 +26,8 @@
     <style name="Widget.DropDownItemLight" parent="@android:style/Widget.DropDownItem">
         <item name="android:colorBackground">@android:color/background_light</item>
     </style>
+    <style name="PopupListItemSelect">
+        <item name="android:colorBackground">@android:color/background_light</item>
+        <item name="android:colorForeground">@android:color/black</item>
+    </style>
 </resources>
