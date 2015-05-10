@@ -136,6 +136,9 @@ public class MainActivity extends ActionBarActivity implements NavCallback, Goog
         else if(f instanceof ShoppingFragment){
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.container, new ShoppingListsFragment()).commit();
+        }else if(f instanceof TravelFragment){
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, new VehicleFragment()).commit();
         }
         else
             super.onBackPressed();
