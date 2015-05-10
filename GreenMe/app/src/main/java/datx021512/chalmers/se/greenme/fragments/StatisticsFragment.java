@@ -1,6 +1,7 @@
 package datx021512.chalmers.se.greenme.fragments;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import com.androidplot.xy.PointLabelFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
+import com.androidplot.xy.XYStepMode;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -37,6 +39,26 @@ public class StatisticsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState){
 
         plot = (XYPlot) view.findViewById(R.id.mySimpleXYPlot);
+
+        //This gets rid of the gray grid
+        plot.getGraphWidget().getGridBackgroundPaint().setColor(Color.TRANSPARENT);
+
+//This gets rid of the black border (up to the graph) there is no black border around the labels
+        plot.getBackgroundPaint().setColor(Color.TRANSPARENT);
+
+//This gets rid of the black behind the graph
+        plot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
+
+//With a new release of AndroidPlot you have to also set the border paint
+        plot.getBorderPaint().setColor(Color.TRANSPARENT);
+
+        plot.getDomainLabelWidget().getLabelPaint().setColor(Color.BLACK);
+
+        plot.getRangeLabelWidget().getLabelPaint().setColor(Color.BLACK);
+
+        plot.getTitleWidget().getLabelPaint().setColor(Color.BLACK);
+
+        plot.setDomainStep(XYStepMode.INCREMENT_BY_VAL, 1);
 
         // initialize our XYPlot reference:
         DatabaseHelper db = new DatabaseHelper(view.getContext());
@@ -79,10 +101,28 @@ public class StatisticsFragment extends Fragment {
                  }
              }
          }*/
+        List<ShopItem> ds = db.getTravelUsed();
+        Number[] series2Numbers = new Number[ds.size()*2];
 
-        for(Number s: series1Numbers){
-            Log.d("Stat", "stat: " + s);
+        for(int i=0 ;i<ds.size();i++ ){
+            if(Arrays.asList(series2Numbers).contains(Integer.parseInt(ds.get(i).getmName().split("/")[0]))){
+                int index = Arrays.asList(series2Numbers).indexOf(Integer.parseInt(ds.get(i).getmName().split("/")[0]));
+                series2Numbers[index+1] = (series2Numbers[index+1].doubleValue())+ds.get(i).getmCO2();
+            }else{
+                series2Numbers[2*i+1] = ds.get(i).getmCO2();
+                series2Numbers[2 * i] = Integer.parseInt(ds.get(i).getmName().split("/")[0]) ;
+            }
         }
+
+        List<Number> list2 = new ArrayList<Number>();
+        for(Number s : series2Numbers) {
+            if(s != null) {
+                list2.add(s);
+            }
+        }
+
+        series2Numbers = list2.toArray(new Number[list2.size()]);
+
         // Turn the above arrays into XYSeries':
         XYSeries series1 = new SimpleXYSeries(
                 Arrays.asList(series1Numbers),
@@ -94,10 +134,28 @@ public class StatisticsFragment extends Fragment {
         // and configure it from xml:
         LineAndPointFormatter series1Format = new LineAndPointFormatter();
         series1Format.setPointLabelFormatter(new PointLabelFormatter());
-        series1Format.configure(getActivity().getApplicationContext(),R.xml.lpf1);
-
+        series1Format.configure(getActivity().getApplicationContext(), R.xml.lpf1);
+        series1Format.setPointLabelFormatter(new PointLabelFormatter(Color.BLACK));
         // add a new series' to the xyplot:
         plot.addSeries(series1, series1Format);
+
+
+
+        // Turn the above arrays into XYSeries':
+        XYSeries series2 = new SimpleXYSeries(
+                Arrays.asList(series2Numbers),
+                // SimpleXYSeries takes a List so turn our array into a List
+                SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, // Y_VALS_ONLY means use the element index as the x value
+                "Resa");                             // Set the display title of the series
+
+        // Create a formatter to use for drawing a series using LineAndPointRenderer
+        // and configure it from xml:
+        LineAndPointFormatter series2Format = new LineAndPointFormatter();
+        series2Format.setPointLabelFormatter(new PointLabelFormatter());
+        series2Format.configure(getActivity().getApplicationContext(), R.xml.lpf2);
+        series2Format.setPointLabelFormatter(new PointLabelFormatter(Color.BLACK));
+        // add a new series' to the xyplot:
+        plot.addSeries(series2, series2Format);
 
 
         // reduce the number of range labels
@@ -110,8 +168,12 @@ public class StatisticsFragment extends Fragment {
                 new DecimalFormat("#####.##"));
         plot.getGraphWidget().setDomainLabelOrientation(-45);
         plot.calculateMinMaxVals();
-        plot.setDomainBoundaries(((plot.getCalculatedMinX().doubleValue()-10)),((int) plot.getCalculatedMaxX().doubleValue()+10), BoundaryMode.FIXED);
-        plot.setRangeBoundaries(Math.floor((double) plot.getCalculatedMinY().doubleValue()-10),Math.floor((double) plot.getCalculatedMaxY().doubleValue()+10), BoundaryMode.FIXED);
+        plot.setDomainBoundaries(((plot.getCalculatedMinX().doubleValue() - 2)), ((int) plot.getCalculatedMaxX().doubleValue() + 2), BoundaryMode.FIXED);
+        if((plot.getCalculatedMinY().doubleValue()-10) < 0){
+            plot.setRangeBoundaries(0, Math.floor((double) plot.getCalculatedMaxY().doubleValue()+10), BoundaryMode.FIXED);
+        }else{
+            plot.setRangeBoundaries(Math.floor((double) plot.getCalculatedMinY().doubleValue() - 10), Math.floor((double) plot.getCalculatedMaxY().doubleValue()+10), BoundaryMode.FIXED);
+        }
         plot.redraw();
     }
 }

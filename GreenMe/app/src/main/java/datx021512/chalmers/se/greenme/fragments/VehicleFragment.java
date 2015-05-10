@@ -21,7 +21,9 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import datx021512.chalmers.se.greenme.R;
@@ -121,6 +123,8 @@ public class VehicleFragment extends Fragment {
         kilometerInput.setVisibility(View.INVISIBLE);
 
         inputSwitch.setOnCheckedChangeListener(switchListener);
+
+         db = new DatabaseHelper(rootView.getContext());
 
         return rootView;
     }
@@ -294,6 +298,9 @@ public class VehicleFragment extends Fragment {
                         }
                         double totalimpact = temp * Double.parseDouble(kilometerInput.getText().toString());
 
+                        String date = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+
+                        db.saveTravelUsed(totalimpact, date);
 
                         Context context = getActivity().getApplicationContext();
                         CharSequence text = "Denna resan har blivit tillagd och det blev "+totalimpact+" kg CO2" ;

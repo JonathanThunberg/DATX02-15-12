@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import datx021512.chalmers.se.greenme.R;
+import datx021512.chalmers.se.greenme.adapters.ShopItem;
 import datx021512.chalmers.se.greenme.adapters.ShoppingListsAdapter;
 import datx021512.chalmers.se.greenme.database.DatabaseHelper;
 
@@ -67,6 +69,12 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
                 return false;
             }
         });
+        Button totalText = (Button) rootView.findViewById(R.id.total_text_list);
+        double total=0;
+        for(ShopItem s :db.getShoppingLists()){
+            total+=s.getmCO2();
+        }
+        totalText.setText("  "+Math.round(total*1000)/1000.0+"Kg Co2");
         return rootView;
     }
 
@@ -79,7 +87,7 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
     }
 
     private void addNewList() {
-        if (textView.getText() != null && !mAdapter.contains(textView.getText().toString()) && !mAdapter.contains(textView.getText().toString().replaceAll("\\s",""))) {
+        if (textView.getText().toString().trim().length() != 0 && !mAdapter.contains(textView.getText().toString()) && !mAdapter.contains(textView.getText().toString().replaceAll("\\s",""))) {
             SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
             createNewList(textView.getText().toString(), date.format(new Date()));
 

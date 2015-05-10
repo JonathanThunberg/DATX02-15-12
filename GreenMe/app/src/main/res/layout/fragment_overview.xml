@@ -9,7 +9,7 @@
         android:layout_height="fill_parent"
         androidPlot.title="Co2 påverkan"
         androidPlot.domainLabel="Dag"
-        androidPlot.rangeLabel="Co2"
+        androidPlot.rangeLabel="Kg Co2"
         androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size"
         androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
         androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"

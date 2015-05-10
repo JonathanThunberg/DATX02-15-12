@@ -3,11 +3,20 @@ package datx021512.chalmers.se.greenme.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +30,7 @@ import datx021512.chalmers.se.greenme.R;
 public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListViewHolder>{
     private ArrayList<ShopItem> mListData = new ArrayList();
     private View rootView;
+    private final int NOTIFY_DELAY = 50;
 
 
     public ShoppingAdapter(View rootView)
@@ -54,9 +64,25 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
     @Override
     public void onBindViewHolder(ListViewHolder viewHolder, final int position) {
         ShopItem data = mListData.get(position);
-        viewHolder.textItem.setText(data.getmName() + " X " + (int)data.getQuantity());
-        viewHolder.textCO2.setText(Double.toString(data.getmCO2())+" kg/co2");
-        viewHolder.textQuantity.setText(Double.toString(data.getWeight())+" kg");
+
+        viewHolder.textItem.setText(data.getmName());
+        viewHolder.textCO2.setText(Math.round(data.getmCO2()*100.0)/100.0 + " kg/kg co2");
+        viewHolder.textQuantity.setText(Double.toString(data.getQuantity()));
+        viewHolder.textQuantity.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((actionId == KeyEvent.KEYCODE_ENTER) || actionId == EditorInfo.IME_ACTION_DONE) {
+                    changeQuantity(position,Double.parseDouble(v.getText().toString()));
+
+                    if (rootView != null) {
+                        InputMethodManager inputManager = (InputMethodManager) rootView.getContext().getSystemService(rootView.getContext().INPUT_METHOD_SERVICE);
+                        inputManager.hideSoftInputFromWindow(rootView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
         viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,13 +92,13 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
         viewHolder.buttonPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                increaseQuantity(position);
+                changeQuantity(position,mListData.get(position).getQuantity()+1);
             }
         });
         viewHolder.buttonMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                decreaseQuantity(position);
+                changeQuantity(position,mListData.get(position).getQuantity()-1);
             }
         });
         if(position%2==0){
@@ -82,32 +108,30 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
         }
     }
 
-    private void decreaseQuantity(int position) {
-        ShopItem temp = mListData.get(position);
-        if(temp.getQuantity()-1>0){
-            temp.setQuantity(temp.getQuantity()-1);
-            mListData.remove(position);
-            mListData.add(position, temp);
-            notifyDataSetChanged();
-        }
-        updateTotalImpact();
-    }
 
-
-    private void increaseQuantity(int position) {
+    public void changeQuantity(final int position,double newValue){
         ShopItem temp = mListData.get(position);
         temp.setQuantity(temp.getQuantity() + 1);
         mListData.remove(position);
         mListData.add(position, temp);
         notifyDataSetChanged();
-        updateTotalImpact();
+        updateTotalImpact(position);
     }
 
-    public void updateTotalImpact()
+    public void updateTotalImpact(final int position)
     {
         Double total = getTotalImpact();
-        TextView textTotal = (TextView) rootView.findViewById(R.id.text_total);
-        textTotal.setText(total+" kg/co2");
+        Button textTotal = (Button) rootView.findViewById(R.id.total_text);
+        textTotal.setText("  "+Math.round(total*1000)/1000.0+"Kg Co2");
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                notifyItemChanged(position);
+            }
+        }, NOTIFY_DELAY);
+
     }
 
     public void addItem(ShopItem item) {
@@ -121,20 +145,27 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
             mListData.remove(item);
             notifyItemRemoved(position);
         }
+        Double total = getTotalImpact();
+        Button textTotal = (Button) rootView.findViewById(R.id.total_text);
+        textTotal.setText("  " + Math.round(total * 1000) / 1000.0 + "Kg Co2");
     }
 
     public void removeItem(int position) {
         mListData.remove(position);
         notifyDataSetChanged();
         notifyItemRemoved(position);
-        updateTotalImpact();
+        Double total = getTotalImpact();
+        Button textTotal = (Button) rootView.findViewById(R.id.total_text);
+        textTotal.setText("  " + Math.round(total * 1000) / 1000.0 + "Kg Co2");
     }
 
     public void removeAllItems()
     {
         mListData.clear();
         notifyDataSetChanged();
-        updateTotalImpact();
+        Double total = getTotalImpact();
+        Button textTotal = (Button) rootView.findViewById(R.id.total_text);
+        textTotal.setText("  " + Math.round(total * 1000) / 1000.0 + "Kg Co2");
 
     }
 
@@ -169,7 +200,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
     public static class ListViewHolder extends RecyclerView.ViewHolder {
         TextView textItem;
         TextView textCO2;
-        TextView textQuantity;
+        EditText textQuantity;
         ImageButton buttonDelete;
         ImageButton buttonPlus;
         ImageButton buttonMinus;
@@ -181,7 +212,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
             textCO2 = (TextView) itemView.findViewById(R.id.text_co2);
             buttonPlus = (ImageButton) itemView.findViewById(R.id.button_plus);
             buttonPlus.setColorFilter(Color.argb(255, 0, 255, 0));
-            textQuantity = (TextView) itemView.findViewById(R.id.text_quantity);
+            textQuantity = (EditText) itemView.findViewById(R.id.text_quantity);
             buttonMinus = (ImageButton) itemView.findViewById(R.id.button_minus);
             buttonMinus.setColorFilter(Color.argb(255, 255, 0, 0));
             buttonDelete = (ImageButton) itemView.findViewById(R.id.button_delete);
