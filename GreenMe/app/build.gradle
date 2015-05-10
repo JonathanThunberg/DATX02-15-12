@@ -28,4 +28,5 @@ dependencies {
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile "com.androidplot:androidplot-core:0.6.1"
+
 }

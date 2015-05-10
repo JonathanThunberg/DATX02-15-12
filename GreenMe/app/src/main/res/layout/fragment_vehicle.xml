@@ -1,0 +1,161 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_vehicle"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="datx021512.chalmers.se.greenme.fragments.VehicleFragment">
+
+    <TextView
+        android:id="@+id/automaticTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/text_auto"
+        android:textColor="@color/colorPrimary"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="41dp" />
+        <!--android:textColor="#00897B"-->
+
+
+    <TextView
+        android:id="@+id/manualTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/text_man"
+        android:textColor="@color/colorPrimary"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="51dp" />
+    <!--        android:textColor="#00897B"-->
+
+    <Switch
+        android:id="@+id/inputSwitch"
+        android:textOff=""
+        android:textOn=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:id="@+id/trainButton"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:src="@drawable/train_b"
+        android:layout_below="@+id/inputSwitch"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="31dp" />
+
+    <ImageButton
+        android:id="@+id/busButton"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:src="@drawable/bus_b"
+        android:layout_alignTop="@+id/trainButton"
+        android:layout_centerHorizontal="true" />
+
+
+    <ImageButton
+        android:id="@+id/bikingButton"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:src="@drawable/biking_b"
+        android:layout_alignTop="@+id/busButton"
+        android:layout_alignStart="@+id/manualTextView" />
+
+    <ImageButton
+        android:id="@+id/carButton"
+        android:src="@drawable/car_b"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_below="@+id/trainButton"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+         android:id="@+id/walkingButton"
+         android:layout_width="110dp"
+         android:layout_height="110dp"
+         android:src="@drawable/walking_b"
+        android:layout_alignTop="@+id/carButton"
+        android:layout_alignStart="@+id/busButton" />
+
+    <Button
+        android:id="@+id/smallestCar"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/smallestCarButton_text"
+        android:drawableLeft="@drawable/minst"
+        android:layout_above="@+id/biggerCar"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/inputSwitch" />
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/smallerCar"
+        android:text="@string/smallerCarButton_text"
+        android:drawableLeft="@drawable/minst"
+        android:layout_alignTop="@+id/smallestCar"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/inputSwitch" />
+
+    <Button
+        android:id="@+id/biggerCar"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/biggerCarButton_text"
+        android:drawableLeft="@drawable/minst"
+        android:layout_above="@+id/kilometerInput"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/smallestCar" />
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/biggestCar"
+        android:text="@string/biggestCarButton_text"
+        android:drawableLeft="@drawable/minst"
+        android:layout_below="@+id/smallerCar"
+        android:layout_alignStart="@+id/smallerCar"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/kilometerInput"
+        android:layout_alignBottom="@+id/kmTextView"
+        android:layout_alignStart="@+id/addButton"
+        android:layout_alignEnd="@+id/addButton" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/km"
+        android:id="@+id/kmTextView"
+        android:textColor="@color/colorPrimary"
+        android:fontFamily="sans-serif-light"
+        android:layout_above="@+id/addButton"
+        android:layout_toEndOf="@+id/addButton"
+        android:layout_marginBottom="31dp" />
+    <!--        android:textColor="#00897B"-->
+
+    <Button
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:text="@string/add"
+        android:id="@+id/addButton"
+        android:textColor="#ffffff"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+    <!--        android:background="#00897B"-->
+
+
+
+</RelativeLayout>
