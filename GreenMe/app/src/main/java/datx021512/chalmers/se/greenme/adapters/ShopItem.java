@@ -1,28 +1,44 @@
 package datx021512.chalmers.se.greenme.adapters;
 
 
-import java.io.Serializable;
+public class ShopItem {
 
-public class ShopItem implements Serializable {
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    private String country;
+    // private int quantity;
     private String mName;
     private double mCO2;
     private double mQuantity;
     private int mEco;
     private double mWeight;
 
-    public ShopItem(String name, double c02, double quantity, int eco) {
+    public ShopItem(String name, double c02, double amount)
+    {
+        this.mName = name;
+        this.mCO2 = c02;
+        this.mQuantity =amount;
+    }
+
+    public ShopItem(String name, double c02, double quantity, int mEco) {
         this.mName = name;
         this.mCO2 = c02;
         this.mQuantity = quantity;
-        this.mEco = eco;
+        this.mEco = mEco;
     }
 
     public ShopItem(String name, double c02, String date)
     {
         this.mName = name;
         this.mCO2 = c02;
-        this.mQuantity = 1;
+        this.mQuantity =1;
         this.date = date;
     }
     //OCR
@@ -51,6 +67,14 @@ public class ShopItem implements Serializable {
     public ShopItem(String text, double c02) {
         this.mName = text;
         this.mCO2 = c02;
+    }
+
+    public ShopItem(String text, double c02, String country, double quant, int eco) {
+        this.mName = text;
+        this.mCO2 = c02;
+        this.mQuantity = quant;
+        this.country = country;
+        this.mEco = eco;
     }
 
     public String getDate() {
