@@ -13,5 +13,9 @@
     <string name="text_man">MANUELL</string>
     <string name="km">KM</string>
     <string name="add">Lägg till resa</string>
+    <string name="smallestCarButton_text">Mycket liten bil</string>
+    <string name="smallerCarButton_text"> Liten bil </string>
+    <string name="biggerCarButton_text">Mellanstor bil</string>
+    <string name="biggestCarButton_text">Stadsjeep</string>
 
 </resources>

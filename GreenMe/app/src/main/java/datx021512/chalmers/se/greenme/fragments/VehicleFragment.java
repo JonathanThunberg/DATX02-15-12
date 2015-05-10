@@ -34,10 +34,10 @@ public class VehicleFragment extends Fragment {
     ImageButton busButton;
     ImageButton carButton;
     ImageButton trainButton;
-    ImageButton smallestCarButton;
-    ImageButton smallerCarButton;
-    ImageButton biggerCarButton;
-    ImageButton biggestCarButton;
+    Button smallestCarButton;
+    Button smallerCarButton;
+    Button biggerCarButton;
+    Button biggestCarButton;
     private DatabaseHelper db;
     TextView manualTextView;
     TextView automaticTextView;
@@ -50,7 +50,19 @@ public class VehicleFragment extends Fragment {
     private static final int SHORT_DELAY = 2000;
     boolean carTypeVisible=false;
     private ArrayList<ImageButton> buttonList= new ArrayList<ImageButton>();
-    private ArrayList<ImageButton> carTypeButtonList=new ArrayList<ImageButton>();
+    private ArrayList<Button> carTypeButtonList=new ArrayList<Button>();
+
+    private double smallestCarCarbon = 158.12;
+    private double smallerCarCarbon = 190.28;
+    private double biggerCarCarbon = 230.48;
+    private double biggestCarCarbon = 270.68;
+
+    private double busCarbon = 60.68;
+
+    private double trainCarbon = 0.01;
+
+    private double walkingCarbon = 0;
+    private double bikingCarbon = 0;
 
 
 
@@ -67,10 +79,10 @@ public class VehicleFragment extends Fragment {
         bikingButton = (ImageButton) rootView.findViewById(R.id.bikingButton);
         walkingButton = (ImageButton) rootView.findViewById(R.id.walkingButton);
 
-        smallestCarButton=(ImageButton) rootView.findViewById(R.id.smallestCar);
-        smallerCarButton=(ImageButton) rootView.findViewById(R.id.smallerCar);
-        biggerCarButton=(ImageButton) rootView.findViewById(R.id.biggerCar);
-        biggestCarButton=(ImageButton) rootView.findViewById(R.id.biggestCar);
+        smallestCarButton=(Button) rootView.findViewById(R.id.smallestCar);
+        smallerCarButton=(Button) rootView.findViewById(R.id.smallerCar);
+        biggerCarButton=(Button) rootView.findViewById(R.id.biggerCar);
+        biggestCarButton=(Button) rootView.findViewById(R.id.biggestCar);
 
         manualTextView=(TextView) rootView.findViewById(R.id.manualTextView);
         automaticTextView=(TextView) rootView.findViewById(R.id.automaticTextView);
@@ -91,7 +103,7 @@ public class VehicleFragment extends Fragment {
             i.setOnClickListener(myButtonListener);
         }
 
-        for(ImageButton i:carTypeButtonList){
+        for(Button i:carTypeButtonList){
             i.setOnClickListener(myButtonListener);
             i.setVisibility(View.INVISIBLE);
         }
@@ -127,6 +139,8 @@ public class VehicleFragment extends Fragment {
                 }
 
 
+
+
             }else{
                 getActivity().setTitle("Välj fordonstyp");
 
@@ -135,7 +149,9 @@ public class VehicleFragment extends Fragment {
                 kilometerInput.setVisibility(View.INVISIBLE);
                 for(ImageButton i: buttonList){
                     i.setAlpha(1f);
-                    
+                }
+                for(Button i:carTypeButtonList){
+                    i.setAlpha(0f);
                 }
 
             }
@@ -146,80 +162,93 @@ public class VehicleFragment extends Fragment {
         @Override
         public void onClick(View v) {
 
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager
-                    .beginTransaction();
-            TravelFragment newFragment = new TravelFragment();
-
-
-
             switch (v.getId()) {
 
                 case R.id.busButton:
                     if(!inputSwitch.isChecked()) {
-                        fragmentTransaction.replace(R.id.container, newFragment);
-                        fragmentTransaction.commit();
+                        nextFragment(busCarbon);
                         getActivity().setTitle("Buss");
-
                     }else{
                         vehicleTransparent(busButton);
+                        carTypeInvisible(busButton);
+                    }
+                    if(carTypeVisible){
+                        carTypeInvisible(busButton);
                     }
 
                     break;
 
                 case R.id.trainButton:
                     if(!inputSwitch.isChecked()) {
-                        fragmentTransaction.replace(R.id.container, newFragment);
-                        fragmentTransaction.commit();
+
                         getActivity().setTitle("Tåg");
+                        nextFragment(trainCarbon);
 
                     }else{
                         vehicleTransparent(trainButton);
+                        carTypeInvisible(trainButton);
                     }
+                    if(carTypeVisible){
+                        carTypeInvisible(trainButton);
+                    }
+                    break;
 
                 case R.id.carButton:
                     if(!inputSwitch.isChecked()) {
-                        fragmentTransaction.replace(R.id.container, newFragment);
-                        fragmentTransaction.commit();
-                    }else{
                         carTypeVisible(carButton);
-                        switch(v.getId()){
+                        switch (v.getId()) {
                             case R.id.smallestCar:
                                 allButtonsTransparent(smallestCarButton);
-
+                                nextFragment(smallestCarCarbon);
                                 break;
                             case R.id.smallerCar:
                                 allButtonsTransparent(smallerCarButton);
+                                nextFragment(smallerCarCarbon);
                                 break;
                             case R.id.biggerCar:
                                 allButtonsTransparent(biggerCarButton);
+                                nextFragment(biggerCarCarbon);
                                 break;
-                            case R.id. biggestCar:
+                            case R.id.biggestCar:
                                 allButtonsTransparent(biggestCarButton);
+                                nextFragment(biggestCarCarbon);
                                 break;
                             default:
                                 break;
                         }
+                    }else{
+
+                        carTypeVisible(carButton);
+                        vehicleTransparent(carButton);
                     }
                     break;
 
                 case R.id.bikingButton:
                     if(!inputSwitch.isChecked()) {
-                        fragmentTransaction.replace(R.id.container, newFragment);
-                        fragmentTransaction.commit();
+                        nextFragment(bikingCarbon);
                         getActivity().setTitle("Cykel");
+
+
                     }else{
                         vehicleTransparent(bikingButton);
+                        carTypeInvisible(bikingButton);
+
+                    }
+                    if(carTypeVisible){
+                        carTypeInvisible(bikingButton);
                     }
                     break;
 
                 case R.id.walkingButton:
                     if(!inputSwitch.isChecked()) {
-                        fragmentTransaction.replace(R.id.container, newFragment);
-                        fragmentTransaction.commit();
+                        nextFragment(walkingCarbon);
                         getActivity().setTitle("Gång");
                     }else{
                         vehicleTransparent(walkingButton);
+                        carTypeInvisible(walkingButton);
+                    }
+                    if(carTypeVisible){
+                        carTypeInvisible(walkingButton);
                     }
                     break;
                 case R.id.addButton:
@@ -231,7 +260,16 @@ public class VehicleFragment extends Fragment {
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
                     }else{
+                        switch(v.getId()){
+                            case R.id.biggestCar:
+                                double totalImpact=Integer.parseInt(kilometerInput.getText().toString())* biggestCarCarbon;
+                                Context context = getActivity().getApplicationContext();
+                                CharSequence text = "totalt: " + totalImpact;
+                                int duration = Toast.LENGTH_SHORT;
 
+                                Toast toast = Toast.makeText(context, text, duration);
+                                toast.show();
+                        }
                     }
 
                 default:
@@ -243,19 +281,28 @@ public class VehicleFragment extends Fragment {
     };
 
     public void carTypeInvisible(ImageButton button){
-        for(ImageButton i:carTypeButtonList){
-
+        for(ImageButton i:buttonList){
             if(button!=i) {
-                i.setVisibility(View.INVISIBLE);
+                for (Button j : carTypeButtonList) {
+                    j.setVisibility(View.INVISIBLE);
+                }
+                carTypeVisible = false;
             }
+
+        }
+        for(Button i:carTypeButtonList){
+                i.setVisibility(View.INVISIBLE);
+
         }
     }
     public void carTypeVisible(ImageButton button) {
-        for (ImageButton i : carTypeButtonList) {
-            if(button!=i) {
+        if(button==carButton){
+            for (Button i : carTypeButtonList) {
                 i.setVisibility(View.VISIBLE);
             }
+            carTypeVisible= true;
         }
+
     }
     public void vehicleTransparent(ImageButton button){
         for(ImageButton i:buttonList){
@@ -282,8 +329,8 @@ public class VehicleFragment extends Fragment {
             }
         }
     }
-    public void allButtonsTransparent(ImageButton button){
-        for(ImageButton i:carTypeButtonList){
+    public void allButtonsTransparent(Button button){
+        for(Button i:carTypeButtonList){
             if(button!=i){
                 i.setAlpha(0f);
             }
@@ -291,5 +338,15 @@ public class VehicleFragment extends Fragment {
                 i.setAlpha(1f);
             }
         }
+    }
+
+    public void nextFragment(Double id){
+        FragmentManager fragmentManager = getFragmentManager();
+        final Bundle bundle = new Bundle();
+        bundle.putDouble("Vehicle", id);
+        TravelFragment tf = new TravelFragment();
+        tf.setArguments(bundle);
+        fragmentManager.beginTransaction().replace(R.id.container,tf).commit();
+
     }
 }
