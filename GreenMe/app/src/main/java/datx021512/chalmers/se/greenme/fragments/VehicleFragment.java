@@ -172,6 +172,9 @@ public class VehicleFragment extends Fragment {
                         vehicleTransparent(busButton);
                         carTypeInvisible(busButton);
                     }
+                    if(carTypeVisible){
+                        carTypeInvisible(busButton);
+                    }
 
                     break;
 
@@ -183,6 +186,9 @@ public class VehicleFragment extends Fragment {
 
                     }else{
                         vehicleTransparent(trainButton);
+                        carTypeInvisible(trainButton);
+                    }
+                    if(carTypeVisible){
                         carTypeInvisible(trainButton);
                     }
                     break;
@@ -228,6 +234,9 @@ public class VehicleFragment extends Fragment {
                         carTypeInvisible(bikingButton);
 
                     }
+                    if(carTypeVisible){
+                        carTypeInvisible(bikingButton);
+                    }
                     break;
 
                 case R.id.walkingButton:
@@ -237,7 +246,9 @@ public class VehicleFragment extends Fragment {
                     }else{
                         vehicleTransparent(walkingButton);
                         carTypeInvisible(walkingButton);
-
+                    }
+                    if(carTypeVisible){
+                        carTypeInvisible(walkingButton);
                     }
                     break;
                 case R.id.addButton:
@@ -275,6 +286,7 @@ public class VehicleFragment extends Fragment {
                 for (Button j : carTypeButtonList) {
                     j.setVisibility(View.INVISIBLE);
                 }
+                carTypeVisible = false;
             }
 
         }
@@ -286,8 +298,9 @@ public class VehicleFragment extends Fragment {
     public void carTypeVisible(ImageButton button) {
         if(button==carButton){
             for (Button i : carTypeButtonList) {
-                    i.setVisibility(View.VISIBLE);
+                i.setVisibility(View.VISIBLE);
             }
+            carTypeVisible= true;
         }
 
     }
