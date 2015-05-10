@@ -250,7 +250,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         textTotal.setText(total+" kg/co2");
 
     }
-    public void updateLeaderboard(){
+    private void updateLeaderboard(){
         final int newEco = mAdapter.getNewEco();
         Log.d(TAG,"det vi ska lägga till är: " + newEco);
 

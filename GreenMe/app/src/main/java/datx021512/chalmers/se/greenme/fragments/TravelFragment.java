@@ -15,6 +15,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesStatusCodes;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -181,6 +186,10 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
 
         map.addMarker(new MarkerOptions().position(prevLatLng).title("Mål"));
 
+        if (vehicle == 0) {
+            updateLeaderboard();
+        }
+
         SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
         db.saveTravelUsed(totalused,date.format(new Date()) );
 
@@ -208,6 +217,7 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
     public void onMapReady(GoogleMap googleMap) {
 
     }
+
     private LocationListener locationListener = new LocationListener() {
 
         @Override
@@ -249,7 +259,6 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
                 text_distancetot.setText("Sträcka: " + reworkedDistanceM + " m");
             }
 
-
             if (totalused > 1000) {
                 double reworkedTotalUsedK= Math.round(totalused/100)/10;
                 text_usedtot.setText(reworkedTotalUsedK + " Kg C02");
@@ -274,4 +283,40 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {}
     };
+
+    private void updateLeaderboard(){
+
+        final long newScore = Math.round(totalDistance);
+        Games.Leaderboards.submitScoreImmediate(mainActivity.getmGoogleApiClient(),mainActivity.getResources()
+                .getString(R.string.Leaderboard_Transport),0)
+                .setResultCallback(new ResultCallback<Leaderboards.SubmitScoreResult>() {
+
+                    @Override
+                    public void onResult(Leaderboards.SubmitScoreResult submitScoreResult) {
+
+                        if (submitScoreResult.getStatus().getStatusCode() == GamesStatusCodes.STATUS_OK) {
+
+                            Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mainActivity.getmGoogleApiClient(),
+                                    mainActivity.getResources()
+                                            .getString(R.string.Leaderboard_Transport), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL)
+                                    .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+
+                                        @Override
+                                        public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                                            Long currScore = loadPlayerScoreResult.getScore().getRawScore();
+                                            Long score = currScore + newScore;
+                                            Log.d(TAG,score.toString());
+                                            Games.Leaderboards.submitScore(mainActivity.getmGoogleApiClient(),
+                                                    mainActivity.getResources().getString(R.string.Leaderboard_Transport), score);
+                                        }
+                                    });
+                        }
+                        else{
+                            Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. " );
+                        }
+                    }
+                });
+    }
+
+
 }
