@@ -18,6 +18,7 @@ public class ShopItem {
     private double mCO2;
     private double mQuantity;
     private int mEco;
+    private double mWeight;
 
     public ShopItem(String name, double c02, double amount)
     {
@@ -40,11 +41,20 @@ public class ShopItem {
         this.mQuantity =1;
         this.date = date;
     }
-    public ShopItem(String name,int amount, double c02)
+    //OCR
+    public ShopItem(String name,int amount, double weight, double co2)
     {
         this.mName = name;
-        this.mCO2 = c02;
-        this.mQuantity =amount;
+        this.mQuantity = amount;
+        this.mWeight = weight;
+        this.mCO2 = co2;
+    }
+
+    public ShopItem(String name,int amount, double co2)
+    {
+        this.mName = name;
+        this.mQuantity = amount;
+        this.mCO2 = co2;
     }
 
     public ShopItem(String text, double c02) {
@@ -96,5 +106,19 @@ public class ShopItem {
 
     public void setQuantity(double quantity) {
         this.mQuantity = quantity;
+    }
+
+    public double getWeight() {
+        return this.mWeight==0?this.mQuantity:this.mWeight;
+    }
+
+    public void setWeight(double weight) {
+        this.mWeight = weight;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "";
     }
 }

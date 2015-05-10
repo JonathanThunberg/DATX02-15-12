@@ -38,6 +38,7 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
         db = new DatabaseHelper(rootView.getContext());
         mAdapter = new ShoppingListsAdapter(db.getShoppingLists(),this);
 
+        getActivity().setTitle("Shopping Listor");
 
         mAddButton = (ImageButton) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);

@@ -139,4 +139,8 @@ public class LoginActivity extends Activity implements
         }
         return super.onTouchEvent(event);
     }
+    public GoogleApiClient getApiClient()
+    {
+        return this.mGoogleApiClient;
+    }
 }

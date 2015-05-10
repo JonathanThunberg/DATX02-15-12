@@ -54,9 +54,9 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
     @Override
     public void onBindViewHolder(ListViewHolder viewHolder, final int position) {
         ShopItem data = mListData.get(position);
-        viewHolder.textItem.setText(data.getmName());
+        viewHolder.textItem.setText(data.getmName() + " X " + (int)data.getQuantity());
         viewHolder.textCO2.setText(Double.toString(data.getmCO2())+" kg/co2");
-        viewHolder.textQuantity.setText(Double.toString(data.getQuantity())+" kg");
+        viewHolder.textQuantity.setText(Double.toString(data.getWeight())+" kg");
         viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,18 +90,21 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
             mListData.add(position, temp);
             notifyDataSetChanged();
         }
-        Double total = getTotalImpact();
-        TextView textTotal = (TextView) rootView.findViewById(R.id.text_total);
-        textTotal.setText(total + " kg/co2");
+        updateTotalImpact();
     }
 
 
     private void increaseQuantity(int position) {
         ShopItem temp = mListData.get(position);
-            temp.setQuantity(temp.getQuantity() + 1);
-            mListData.remove(position);
-            mListData.add(position, temp);
-            notifyDataSetChanged();
+        temp.setQuantity(temp.getQuantity() + 1);
+        mListData.remove(position);
+        mListData.add(position, temp);
+        notifyDataSetChanged();
+        updateTotalImpact();
+    }
+
+    public void updateTotalImpact()
+    {
         Double total = getTotalImpact();
         TextView textTotal = (TextView) rootView.findViewById(R.id.text_total);
         textTotal.setText(total+" kg/co2");
@@ -124,6 +127,15 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
         mListData.remove(position);
         notifyDataSetChanged();
         notifyItemRemoved(position);
+        updateTotalImpact();
+    }
+
+    public void removeAllItems()
+    {
+        mListData.clear();
+        notifyDataSetChanged();
+        updateTotalImpact();
+
     }
 
     @Override

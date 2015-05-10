@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -56,7 +57,7 @@ import datx021512.chalmers.se.greenme.ocr.IntentResult;
 
 
 public class ShoppingFragment extends Fragment implements View.OnClickListener{
-    private AutoCompleteTextView textView;
+    private AutoCompleteTextView mAutoCompleteField;
     private RecyclerView mRecycleView;
     private ShoppingAdapter mAdapter;
     private ImageButton mOCRButton;
@@ -72,7 +73,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
         mainActivity = (MainActivity)getActivity();
-
+        mainActivity.setTitle("Shopping Lista");
         ArrayList<ShopItem> items = new ArrayList<ShopItem>();
         mAdapter = new ShoppingAdapter(rootView);
         db = new DatabaseHelper(rootView.getContext());
@@ -102,9 +103,9 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         ArrayList<String> categories = db.getCategories();
         ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.select_dialog_item, categories);
 
-        textView = (AutoCompleteTextView) rootView.findViewById(R.id.text_input);
-        textView.setAdapter(itemsAdapter);
-        textView.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
+        mAutoCompleteField = (AutoCompleteTextView) rootView.findViewById(R.id.text_input);
+        mAutoCompleteField.setAdapter(itemsAdapter);
+        mAutoCompleteField.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((actionId == KeyEvent.KEYCODE_ENTER) || actionId == EditorInfo.IME_ACTION_DONE) {
@@ -140,8 +141,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
     }
 
     private void addNewItem() {
-        if (textView.getText() != null) {
-            final String text = textView.getText().toString();
+        if (mAutoCompleteField.getText() != null) {
+            final String text = mAutoCompleteField.getText().toString();
             if (text != null && text.trim().length() > 0) {
                 if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
                     addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),"",1,(db.getEco(text).get(0)));
@@ -234,12 +235,55 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
             mdialog.show();
         }
 
+    private void createNewOCRItem(String text, final double weight) {
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View convertView = inflater.inflate(R.layout.dialog_newitem_barcode, null);
+        final EditText userInput = (EditText) convertView.findViewById(R.id.barcode_input_name);
+        final EditText userImpact = (EditText) convertView.findViewById(R.id.userimpact_barcode);
+        userInput.setText(text);
+        //userImpact.setHint("skriv in kg/co2 värde");
+
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setPositiveButton("Create", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id) {
+                String text = userInput.getText().toString();
+                String text2 = userImpact.getText().toString();
+                db.createNewItem(text, Integer.parseInt(text2));
+                addOCRToList(text, 1, weight, Double.parseDouble(text2));
+
+            }
+        })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+
+        alertDialog.setView(convertView);
+        alertDialog.setTitle("Nytt Föremål");
+
+        final AlertDialog mdialog = alertDialog.create();
+
+        mdialog.show();
+    }
+
 
     public void addItemToList(String text,double position,String country, double quant, int eco){
         if(!mAdapter.contains(text)) {
            //if(eco == null)
             mAdapter.addItem(new ShopItem(text, position,country, quant, eco));
-            textView.setText("");
+            mAutoCompleteField.setText("");
+            updateTotal();
+        }
+    }
+
+    public void addOCRToList(String text, int amount, double weight, double co2)
+    {
+        if(!mAdapter.contains(text)) {
+            mAdapter.addItem(new ShopItem(text, amount, weight, co2));
+            mAutoCompleteField.setText("");
             updateTotal();
         }
     }
@@ -266,21 +310,20 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
                             Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mainActivity.getmGoogleApiClient(),
                                     mainActivity.getResources()
-                                            .getString(R.string.Leaderboard_Ekologiskt),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL)
+                                            .getString(R.string.Leaderboard_Ekologiskt), LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_SOCIAL)
                                     .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
 
                                         @Override
                                         public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
                                             Long currScore = loadPlayerScoreResult.getScore().getRawScore();
                                             Long score = currScore + newEco;
-                                            Log.d(TAG,score.toString());
+                                            Log.d(TAG, score.toString());
                                             Games.Leaderboards.submitScore(mainActivity.getmGoogleApiClient(),
                                                     mainActivity.getResources().getString(R.string.Leaderboard_Ekologiskt), score);
                                         }
                                     });
-                        }
-                        else{
-                            Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. " );
+                        } else {
+                            Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. ");
                         }
                     }
                 });
@@ -288,8 +331,29 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.shopping_menu, menu);
         super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                Toast.makeText(getActivity(),"Sparar listan",Toast.LENGTH_SHORT).show();
+
+                return true;
+            case R.id.action_load:
+                Toast.makeText(getActivity(),"Laddar in en lista",Toast.LENGTH_SHORT).show();
+
+                return true;
+            case R.id.action_reset:
+                Toast.makeText(getActivity(),"Rensar listan",Toast.LENGTH_SHORT).show();
+                mAdapter.removeAllItems();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -297,38 +361,52 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         super.onActivityResult(request, result, i);
         IntentResult scan = IntentIntegrator.parseActivityResult(request, result, i);
         String read = scan.getContents();
+        Log.d("OCR","read: " + read);
         String URL = "http://api.ica.se/api/upclookup/?upc=";
         String text = "";
-        if (scan!=null) {
+        if (scan!=null && read != null) {
             Log.d("OCR","ocr: " + read);
             try{
                 text = JSONToString(getFromInternetz(URL + read));
                 if(text != "" && text != null && text != "null")
                 {
                     String[] split = text.split(" ");
-                    String weight = split[split.length-1];
-                    String weight2 = weight.substring(weight.length()-2);
+                    String last = split[split.length-1];
+                    Log.d("OCR","Weight: " + last);
+                    String last2 = split[split.length-2];
+                    Log.d("OCR","Weight2: " + last2);
                     double numWeight = 0;
-                    if(weight.contains("kg")){
-                        weight = weight.replaceAll("[^\\d]", "");
-                        numWeight = Double.parseDouble(weight);
+                    if(last2.matches(".*\\d.*")){
+                        if(last.contains("kg")){
+                            numWeight = Double.parseDouble(last2);
+                        }
+                        else if(last.contains("g")){
+                            last2 = last2.replaceAll("[^\\d]", "");
+                            numWeight = Double.parseDouble(last2);
+                            numWeight /= 1000;
+                        }
                     }
-                    else if(weight.contains("g")){
-                        weight = weight.replaceAll("[^\\d]", "");
-                        numWeight = Double.parseDouble(weight);
-                        numWeight /= 1000;
+                    else
+                    {
+                        if(last.contains("kg")){
+                            last = last.replaceAll("[^\\d]", "");
+                            numWeight = Double.parseDouble(last);
+                        }
+                        else if(last.contains("g")){
+                            last = last.replaceAll("[^\\d]", "");
+                            numWeight = Double.parseDouble(last);
+                            numWeight /= 1000;
+                        }
                     }
+
+
                     Log.d("OCR","Inside: " + numWeight);
-                    addItemToList(text,1337,"",numWeight,1);
-//                    ShopItem item = new ShopItem(text,1337,1);
-//                    mAdapter.addItem(item);
-//                    mAdapter.notifyDataSetChanged();
-//                    updateTotal();
+                    checkDbForItem(text,numWeight);
                 }
                 else
                     Toast.makeText(getActivity(), "Produkten hittades ej!", Toast.LENGTH_SHORT).show();
 
-                //textView.setText(text);
+
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -393,5 +471,47 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
     public String checkIfInDb(String scanned)
     {
         return db.getImpactName(scanned).get(0);
+    }
+
+    public void checkDbForItem(String text, final double weight)
+    {
+        final String inputText = text;
+        if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
+            addOCRToList(db.getImpactName(text).get(0), 1, weight, Double.parseDouble(db.getImpact(text).get(0)));
+            Log.d("SHOPPING","!!!!!!!!!!!!!!!!GetALL1: " + mAdapter.getAllitems());
+            Log.d("TEST1","Weight: " + weight);
+        } else {
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View convertView = inflater.inflate(R.layout.list_alert, null);
+            alertDialog.setView(convertView);
+            alertDialog.setTitle("Menade du detta?");
+            ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+            ArrayList<String> suggestions = new ArrayList<>();
+            suggestions.add("Skapa nytt objekt");
+            suggestions.addAll(db.getImpactName(text));
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1,suggestions );
+            lv.setAdapter(arrayAdapter);
+            final AlertDialog mdialog = alertDialog.create();
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if(position==0){
+                        createNewOCRItem(inputText, weight);
+                    }else{
+                        addOCRToList(db.getImpactName(inputText).get(0), 1, weight, Double.parseDouble(db.getImpact(inputText).get(0)));
+                        Log.d("TEST","!!!!!!!!!!!!!!!!GetALL2: " + mAdapter.getAllitems());
+                        Log.d("TEST2","Weight: " + weight);
+                    }
+                    mdialog.dismiss();
+                }
+            });
+            mdialog.show();
+
+        }
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getActivity().getBaseContext().INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

@@ -1,32 +1,49 @@
 apply plugin: 'com.android.application'
 
 android {
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
-
     defaultConfig {
         applicationId "datx021512.chalmers.se.greenme"
         minSdkVersion 19
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+        testApplicationId "datx021512.chalmers.se.greenme.tests"
+        //testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+        }
+    }
+    productFlavors {
+    }
+    sourceSets {
+        // Espresso instrumentation tests
+        androidTest.setRoot('src/androidTest')
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:support-v13:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     compile 'com.android.support:appcompat-v7:22.0.0'
-    compile "com.androidplot:androidplot-core:0.6.1"
+    compile 'com.androidplot:androidplot-core:0.6.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.1'
+    androidTestCompile 'com.android.support.test:runner:0.2'
+    androidTestCompile 'com.android.support.test:rules:0.2'
+    androidTestCompile files('libs/espresso-contrib-1.1.jar')
 
 }
