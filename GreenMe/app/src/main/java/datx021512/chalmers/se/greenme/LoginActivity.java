@@ -121,4 +121,8 @@ public class LoginActivity extends Activity implements
             }
         }
     }
+    public GoogleApiClient getApiClient()
+    {
+        return this.mGoogleApiClient;
+    }
 }

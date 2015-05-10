@@ -46,7 +46,6 @@ import java.util.ArrayList;
 
 import datx021512.chalmers.se.greenme.MainActivity;
 import datx021512.chalmers.se.greenme.R;
-import datx021512.chalmers.se.greenme.adapters.SerializeObject;
 import datx021512.chalmers.se.greenme.adapters.ShopItem;
 import datx021512.chalmers.se.greenme.adapters.ShoppingAdapter;
 import datx021512.chalmers.se.greenme.database.DatabaseHelper;
@@ -55,7 +54,7 @@ import datx021512.chalmers.se.greenme.ocr.IntentResult;
 
 
 public class ShoppingFragment extends Fragment implements View.OnClickListener{
-    private AutoCompleteTextView textView;
+    private AutoCompleteTextView mAutoCompleteField;
     private RecyclerView mRecycleView;
     private ShoppingAdapter mAdapter;
     private ImageButton mOCRButton;
@@ -100,8 +99,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         ArrayList<String> categories = db.getCategories();
         ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.select_dialog_item, categories);
 
-        textView = (AutoCompleteTextView) rootView.findViewById(R.id.text_input);
-        textView.setAdapter(itemsAdapter);
+        mAutoCompleteField = (AutoCompleteTextView) rootView.findViewById(R.id.text_input);
+        mAutoCompleteField.setAdapter(itemsAdapter);
         this.rootView = rootView;
         return rootView;
     }
@@ -111,8 +110,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         switch (v.getId()) {
             case R.id.add_text:
                 Log.d("GREEN", "Add button pressed!");
-                if (textView.getText() != null) {
-                    final String text = textView.getText().toString();
+                if (mAutoCompleteField.getText() != null) {
+                    final String text = mAutoCompleteField.getText().toString();
                     if (text != null && text.trim().length() > 0) {
                        if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
                                addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),1,(db.getEco(text).get(0)));
@@ -200,7 +199,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
 
             alertDialog.setView(convertView);
-            alertDialog.setTitle("Nytt Föremål");
+        alertDialog.setTitle("Nytt Föremål");
 
             final AlertDialog mdialog = alertDialog.create();
 
@@ -226,10 +225,9 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
             }
         })
-        .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
             }
         });
 
@@ -247,7 +245,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         if(!mAdapter.contains(text)) {
            //if(eco == null)
             mAdapter.addItem(new ShopItem(text, position, quant, eco));
-            textView.setText("");
+            mAutoCompleteField.setText("");
             updateTotal();
         }
     }
@@ -256,7 +254,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
     {
         if(!mAdapter.contains(text)) {
             mAdapter.addItem(new ShopItem(text, amount, weight, co2));
-            textView.setText("");
+            mAutoCompleteField.setText("");
             updateTotal();
         }
     }
@@ -273,7 +271,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
 
         Games.Leaderboards.submitScoreImmediate(mainActivity.getmGoogleApiClient(),mainActivity.getResources()
-                .getString(R.string.Leaderboard_Ekologiskt),0)
+                .getString(R.string.Leaderboard_Ekologiskt), 0)
                 .setResultCallback(new ResultCallback<Leaderboards.SubmitScoreResult>() {
 
                     @Override
@@ -283,21 +281,20 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
                             Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mainActivity.getmGoogleApiClient(),
                                     mainActivity.getResources()
-                                            .getString(R.string.Leaderboard_Ekologiskt),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL)
+                                            .getString(R.string.Leaderboard_Ekologiskt), LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_SOCIAL)
                                     .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
 
                                         @Override
                                         public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
                                             Long currScore = loadPlayerScoreResult.getScore().getRawScore();
                                             Long score = currScore + newEco;
-                                            Log.d(TAG,score.toString());
+                                            Log.d(TAG, score.toString());
                                             Games.Leaderboards.submitScore(mainActivity.getmGoogleApiClient(),
                                                     mainActivity.getResources().getString(R.string.Leaderboard_Ekologiskt), score);
                                         }
                                     });
-                        }
-                        else{
-                            Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. " );
+                        } else {
+                            Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. ");
                         }
                     }
                 });
@@ -380,7 +377,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                 else
                     Toast.makeText(getActivity(), "Produkten hittades ej!", Toast.LENGTH_SHORT).show();
 
-                //textView.setText(text);
+
             }catch (Exception e){
                 e.printStackTrace();
             }
