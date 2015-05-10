@@ -50,13 +50,6 @@ public class ShopItem {
         this.mCO2 = co2;
     }
 
-    public ShopItem(String name,double amount, double co2)
-    {
-        this.mName = name;
-        this.mQuantity = amount;
-        this.mCO2 = co2;
-    }
-
     public ShopItem(String name,int amount, double co2)
     {
         this.mName = name;

@@ -103,9 +103,9 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         ArrayList<String> categories = db.getCategories();
         ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.select_dialog_item, categories);
 
-        textView = (AutoCompleteTextView) rootView.findViewById(R.id.text_input);
-        textView.setAdapter(itemsAdapter);
-        textView.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
+        mAutoCompleteField = (AutoCompleteTextView) rootView.findViewById(R.id.text_input);
+        mAutoCompleteField.setAdapter(itemsAdapter);
+        mAutoCompleteField.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((actionId == KeyEvent.KEYCODE_ENTER) || actionId == EditorInfo.IME_ACTION_DONE) {
@@ -141,8 +141,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
     }
 
     private void addNewItem() {
-        if (textView.getText() != null) {
-            final String text = textView.getText().toString();
+        if (mAutoCompleteField.getText() != null) {
+            final String text = mAutoCompleteField.getText().toString();
             if (text != null && text.trim().length() > 0) {
                 if (db.getImpact(text).size() == 1 && db.getImpactName(text).get(0).equals(text) ) {
                     addItemToList(db.getImpactName(text).get(0), Double.parseDouble(db.getImpact(text).get(0)),"",1,(db.getEco(text).get(0)));
@@ -237,17 +237,44 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
     private void createNewOCRItem(String text, final double weight) {
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View convertView = inflater.inflate(R.layout.dialog_newitem, null);
-        final EditText userInput = (EditText) convertView.findViewById(R.id.username);
-        final EditText userImpact = (EditText) convertView.findViewById(R.id.userimpact);
+        View convertView = inflater.inflate(R.layout.dialog_newitem_barcode, null);
+        final EditText userInput = (EditText) convertView.findViewById(R.id.barcode_input_name);
+        final EditText userImpact = (EditText) convertView.findViewById(R.id.userimpact_barcode);
         userInput.setText(text);
-        userImpact.setHint("skriv in kg/co2 värde");
+        //userImpact.setHint("skriv in kg/co2 värde");
+
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setPositiveButton("Create", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id) {
+                String text = userInput.getText().toString();
+                String text2 = userImpact.getText().toString();
+                db.createNewItem(text, Integer.parseInt(text2));
+                addOCRToList(text, 1, weight, Double.parseDouble(text2));
+
+            }
+        })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+
+        alertDialog.setView(convertView);
+        alertDialog.setTitle("Nytt Föremål");
+
+        final AlertDialog mdialog = alertDialog.create();
+
+        mdialog.show();
+    }
+
 
     public void addItemToList(String text,double position,String country, double quant, int eco){
         if(!mAdapter.contains(text)) {
            //if(eco == null)
             mAdapter.addItem(new ShopItem(text, position,country, quant, eco));
-            textView.setText("");
+            mAutoCompleteField.setText("");
             updateTotal();
         }
     }
@@ -283,21 +310,20 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
                             Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mainActivity.getmGoogleApiClient(),
                                     mainActivity.getResources()
-                                            .getString(R.string.Leaderboard_Ekologiskt),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL)
+                                            .getString(R.string.Leaderboard_Ekologiskt), LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_SOCIAL)
                                     .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
 
                                         @Override
                                         public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
                                             Long currScore = loadPlayerScoreResult.getScore().getRawScore();
                                             Long score = currScore + newEco;
-                                            Log.d(TAG,score.toString());
+                                            Log.d(TAG, score.toString());
                                             Games.Leaderboards.submitScore(mainActivity.getmGoogleApiClient(),
                                                     mainActivity.getResources().getString(R.string.Leaderboard_Ekologiskt), score);
                                         }
                                     });
-                        }
-                        else{
-                            Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. " );
+                        } else {
+                            Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. ");
                         }
                     }
                 });
@@ -305,7 +331,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.shopping_menu, menu);
         super.onCreateOptionsMenu(menu,inflater);
     }
 
@@ -375,11 +401,6 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
 
                     Log.d("OCR","Inside: " + numWeight);
-                    addItemToList(text,1337,"",numWeight,1);
-//                    ShopItem item = new ShopItem(text,1337,1);
-//                    mAdapter.addItem(item);
-//                    mAdapter.notifyDataSetChanged();
-//                    updateTotal();
                     checkDbForItem(text,numWeight);
                 }
                 else

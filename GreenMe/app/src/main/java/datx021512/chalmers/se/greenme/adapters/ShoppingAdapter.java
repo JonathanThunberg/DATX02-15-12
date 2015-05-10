@@ -90,18 +90,21 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
             mListData.add(position, temp);
             notifyDataSetChanged();
         }
-        Double total = getTotalImpact();
-        TextView textTotal = (TextView) rootView.findViewById(R.id.text_total);
-        textTotal.setText(total + " kg/co2");
+        updateTotalImpact();
     }
 
 
     private void increaseQuantity(int position) {
         ShopItem temp = mListData.get(position);
-            temp.setQuantity(temp.getQuantity() + 1);
-            mListData.remove(position);
-            mListData.add(position, temp);
-            notifyDataSetChanged();
+        temp.setQuantity(temp.getQuantity() + 1);
+        mListData.remove(position);
+        mListData.add(position, temp);
+        notifyDataSetChanged();
+        updateTotalImpact();
+    }
+
+    public void updateTotalImpact()
+    {
         Double total = getTotalImpact();
         TextView textTotal = (TextView) rootView.findViewById(R.id.text_total);
         textTotal.setText(total+" kg/co2");
@@ -124,12 +127,14 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
         mListData.remove(position);
         notifyDataSetChanged();
         notifyItemRemoved(position);
+        updateTotalImpact();
     }
 
     public void removeAllItems()
     {
         mListData.clear();
         notifyDataSetChanged();
+        updateTotalImpact();
 
     }
 
