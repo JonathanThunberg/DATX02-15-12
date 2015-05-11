@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -195,8 +196,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
 
     private void createNewItem(String text) {
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View convertView = inflater.inflate(R.layout.dialog_newitem, null);
+            //LayoutInflater inflater = getActivity().getLayoutInflater();
+            View convertView = View.inflate(new ContextThemeWrapper(getActivity(), R.style.AboutDialog), R.layout.dialog_newitem, null);
             final EditText userInput = (EditText)
                     convertView.findViewById(R.id.username);
             final EditText userImpact = (EditText)
@@ -207,7 +208,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                 convertView.findViewById(R.id.userEkological);
             userInput.setText(text);
 
-            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AboutDialog));
             alertDialog.setPositiveButton("Create", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     String text = userInput.getText().toString();
