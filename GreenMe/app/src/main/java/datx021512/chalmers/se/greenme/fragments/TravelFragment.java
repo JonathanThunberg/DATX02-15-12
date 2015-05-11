@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
@@ -155,8 +157,6 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
 
         previousLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-        Log.d(TAG,previousLocation.toString());
-
         // Getting latitude of the current location
         double latitude = previousLocation.getLatitude();
         // Getting longitude of the current location
@@ -223,7 +223,6 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         @Override
         public void onLocationChanged(Location newLocation)
         {
-            Log.d(TAG, "Location är changed" + newLocation);
          //   Toast.makeText(getActivity(),"Location är changed: " + newLocation, Toast.LENGTH_LONG).show();
 
             float [] result = new float[3];
@@ -246,7 +245,6 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
             polylineOpti.add(newLatLng);
             poly.remove();
             poly = map.addPolyline(polylineOpti);
-            Log.d(TAG, "Multippel" + vehicle);
             totalused = (totalDistance*vehicle)/1000;
 
 
@@ -305,14 +303,13 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
                                         public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
                                             Long currScore = loadPlayerScoreResult.getScore().getRawScore();
                                             Long score = currScore + newScore;
-                                            Log.d(TAG,score.toString());
                                             Games.Leaderboards.submitScore(mainActivity.getmGoogleApiClient(),
                                                     mainActivity.getResources().getString(R.string.Leaderboard_Transport), score);
                                         }
                                     });
                         }
                         else{
-                            Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. " );
+                            Toast.makeText(getActivity(), "Något gick fel", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

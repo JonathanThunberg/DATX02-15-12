@@ -51,7 +51,7 @@ public class Home extends Fragment implements View.OnClickListener{
                 fragmentManager.beginTransaction().replace(R.id.container, (new ShoppingListsFragment())).commit();
                 break;
             case R.id.button_transport_icon:
-                fragmentManager.beginTransaction().replace(R.id.container, (new TravelFragment())).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, (new VehicleFragment())).commit();
                 break;
 
         }

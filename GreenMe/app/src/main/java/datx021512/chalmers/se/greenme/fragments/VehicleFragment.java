@@ -2,9 +2,7 @@ package datx021512.chalmers.se.greenme.fragments;
 
 
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -19,18 +17,24 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesStatusCodes;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.games.leaderboard.Leaderboards;
+
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import datx021512.chalmers.se.greenme.R;
 import datx021512.chalmers.se.greenme.database.DatabaseHelper;
+import datx021512.chalmers.se.greenme.MainActivity;
 
 public class VehicleFragment extends Fragment {
 
+    MainActivity mainActivity;
     ImageButton walkingButton;
     ImageButton bikingButton;
     ImageButton busButton;
@@ -47,7 +51,7 @@ public class VehicleFragment extends Fragment {
     Button addButton;
     TextView kmTextView;
     EditText kilometerInput;
-    private static final String TAG="debug";
+    private static final String TAG= "Vehicle";
     boolean buttonClicked= false;
     private static final int SHORT_DELAY = 2000;
     boolean carTypeVisible=false;
@@ -75,6 +79,7 @@ public class VehicleFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         getActivity().setTitle("Logga resa");
+        mainActivity = (MainActivity)getActivity();
         View rootView = inflater.inflate(R.layout.fragment_vehicle, container, false);
 
         busButton = (ImageButton) rootView.findViewById(R.id.busButton);
@@ -296,6 +301,9 @@ public class VehicleFragment extends Fragment {
                                 break;
 
                         }
+                        if (temp == 0) {
+                            updateLeaderboard();
+                        }
                         double totalimpact = temp * Double.parseDouble(kilometerInput.getText().toString());
 
                         String date = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
@@ -368,5 +376,39 @@ public class VehicleFragment extends Fragment {
     private enum VehicleType{
         TRAIN, BUS, BIKE, WALK, BIGGESTCAR,BIGGERCAR, SMALLESTCAR, SMALLERCAR
 
+    }
+    private void updateLeaderboard(){
+        double tmp = Double.parseDouble(kilometerInput.getText().toString())*1000;
+        final long newScore = Math.round(tmp);
+
+        Games.Leaderboards.submitScoreImmediate(mainActivity.getmGoogleApiClient(),mainActivity.getResources()
+                .getString(R.string.Leaderboard_Transport),0)
+                .setResultCallback(new ResultCallback<Leaderboards.SubmitScoreResult>() {
+
+                    @Override
+                    public void onResult(Leaderboards.SubmitScoreResult submitScoreResult) {
+
+                        if (submitScoreResult.getStatus().getStatusCode() == GamesStatusCodes.STATUS_OK) {
+
+                            Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mainActivity.getmGoogleApiClient(),
+                                    mainActivity.getResources()
+                                            .getString(R.string.Leaderboard_Transport), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL)
+                                    .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+
+                                        @Override
+                                        public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                                            Long currScore = loadPlayerScoreResult.getScore().getRawScore();
+                                            Long score = currScore + newScore;
+                                            Log.d(TAG,score.toString());
+                                            Games.Leaderboards.submitScore(mainActivity.getmGoogleApiClient(),
+                                                    mainActivity.getResources().getString(R.string.Leaderboard_Transport), score);
+                                        }
+                                    });
+                        }
+                        else{
+                            Toast.makeText(getActivity(),"Något gick fel",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

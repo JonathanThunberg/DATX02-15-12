@@ -325,8 +325,9 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                                                     mainActivity.getResources().getString(R.string.Leaderboard_Ekologiskt), score);
                                         }
                                     });
+                            Toast.makeText(getActivity(),"Topplistan uppdaterad",Toast.LENGTH_SHORT).show();
                         } else {
-                            Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. ");
+                            Toast.makeText(getActivity(),"Något gick fel",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -342,14 +343,14 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case R.id.action_save:
+           /* case R.id.action_save:
                 Toast.makeText(getActivity(),"Sparar listan",Toast.LENGTH_SHORT).show();
 
                 return true;
             case R.id.action_load:
                 Toast.makeText(getActivity(),"Laddar in en lista",Toast.LENGTH_SHORT).show();
 
-                return true;
+                return true; */
             case R.id.action_reset:
                 Toast.makeText(getActivity(),"Rensar listan",Toast.LENGTH_SHORT).show();
                 mAdapter.removeAllItems();
