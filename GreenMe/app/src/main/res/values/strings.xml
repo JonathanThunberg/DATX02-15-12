@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">GreenMe</string>
     <string name="action_settings">Inställningar</string>
-    <string name="action_reset">Rensa</string>
+    <string name="action_reset">Rensa listan</string>
     <string name="action_open">Öppna</string>
     <string name="action_save">Spara</string>
     <string name="drawer_open">Menu opened</string>
