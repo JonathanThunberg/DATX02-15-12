@@ -380,7 +380,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         if (scan!=null && read != null) {
             Log.d("OCR","ocr: " + read);
             try{
-                text = JSONToString(getFromInternetz(URL + read));
+                text = JSONToString(getResultFromICA(URL + read));
                 if(!text.equals("") && !text.equals(null) && !text.equals("null"))
                 {
                     String[] split = text.split(" ");
@@ -454,7 +454,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         return null;
     }
 
-    public String getFromInternetz(String url)
+    public String getResultFromICA(String url)
     {
         try {
             DefaultHttpClient httpClient = new DefaultHttpClient();

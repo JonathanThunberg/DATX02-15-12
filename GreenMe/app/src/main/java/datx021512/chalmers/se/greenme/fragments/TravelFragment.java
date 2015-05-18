@@ -107,7 +107,7 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         map.animateCamera(cameraUpdate);
 
         mapButton=(Button)rootView.findViewById(R.id.mapbutton);
-        mapButton.setText("START");
+        mapButton.setText("STARTA");
 
         text_distancetot =(TextView)rootView.findViewById(R.id.text_distancetot);
         text_distancetot.setVisibility(View.INVISIBLE);
@@ -127,12 +127,12 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
                     map.clear();
                     totalDistance = 0;
                     totalused = 0;
-                    mapButton.setText("STOP");
+                    mapButton.setText("STOPPA");
                     startTracking();
 
                 }else{
                     isButtonPressed = true;
-                    mapButton.setText("START");
+                    mapButton.setText("STARTA");
                     stopTracking();
                 }
             }
@@ -170,7 +170,7 @@ public class TravelFragment extends Fragment implements OnMapReadyCallback{
         map.animateCamera(cameraUpdate);
 
 
-        map.addMarker(new MarkerOptions().position(myPosition).title("Start"));
+        map.addMarker(new MarkerOptions().position(myPosition).title("Starta"));
 
         polylineOpti = new PolylineOptions()
                 .add(myPosition)

@@ -66,7 +66,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
         ShopItem data = mListData.get(position);
 
         viewHolder.textItem.setText(data.getmName());
-        viewHolder.textCO2.setText(Math.round(data.getmCO2()*100.0)/100.0 + " kg/kg co2");
+        viewHolder.textCO2.setText((mListData.get(position).getQuantity()*Math.round(data.getmCO2()*100.0))/100.0 + "kg co2");
         viewHolder.textQuantity.setText(Double.toString(data.getQuantity()));
         viewHolder.textQuantity.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -111,7 +111,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ListVi
 
     public void changeQuantity(final int position,double newValue){
         ShopItem temp = mListData.get(position);
-        temp.setQuantity(temp.getQuantity() + 1);
+        temp.setQuantity(newValue);
         mListData.remove(position);
         mListData.add(position, temp);
         notifyDataSetChanged();
