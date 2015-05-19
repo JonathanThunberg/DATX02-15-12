@@ -38,9 +38,7 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
 
         View rootView = inflater.inflate(R.layout.fragment_shopping_list, container, false);
         db = new DatabaseHelper(rootView.getContext());
-        mAdapter = new ShoppingListsAdapter(db.getShoppingLists(),this);
-
-        getActivity().setTitle("Shopping Listor");
+        mAdapter = new ShoppingListsAdapter(db.getShoppingLists(),this,(Button) rootView.findViewById(R.id.total_text_list));
 
         mAddButton = (ImageButton) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);
@@ -55,7 +53,7 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
 
         setHasOptionsMenu(true);
 
-        getActivity().setTitle("Dina Listor");
+        getActivity().setTitle("Dina Inköpslistor");
         textView = (AutoCompleteTextView)
                 rootView.findViewById(R.id.text_input);
 
