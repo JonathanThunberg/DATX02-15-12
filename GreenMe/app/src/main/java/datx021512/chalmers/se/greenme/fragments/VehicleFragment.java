@@ -256,13 +256,22 @@ public class VehicleFragment extends Fragment {
 
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
-                    }else if(kilometerInput.getText().toString().trim().length()==0){
+                    }else if(kilometerInput.getText().toString().trim().length()==0) {
+
                         Context context = getActivity().getApplicationContext();
                         CharSequence text = "Du måste skriva in hur långt du åkt";
                         int duration = Toast.LENGTH_SHORT;
 
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
+                    }else if(kilometerInput.getText().toString().equals("0")){
+                        Context context = getActivity().getApplicationContext();
+                        CharSequence text = "Du måste rest längre än 0 KM";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                        kilometerInput.getText().clear();
                     }else{
                         double temp=0;
                         switch (vehicleType){
@@ -301,11 +310,11 @@ public class VehicleFragment extends Fragment {
 
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
+                        kilometerInput.getText().clear();
                     }
 
                 break;
             }
-
         }
     };
 
@@ -331,7 +340,6 @@ public class VehicleFragment extends Fragment {
 
         }
     }
-
 
     public void carTransparent(Button button){
         for(Button i:carTypeButtonList){
