@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,12 +24,19 @@ import datx021512.chalmers.se.greenme.fragments.ShoppingListsFragment;
 
 public class ShoppingListsAdapter extends RecyclerView.Adapter<ShoppingListsAdapter.ListViewHolder>{
     private final ShoppingListsFragment shoppingListsFragment;
+    private Button totalText;
     private ArrayList<ShopItem> mListData = new ArrayList();
 
 
     public ShoppingListsAdapter(ArrayList<ShopItem> shoppingLists, ShoppingListsFragment shoppingListsFragment) {
         mListData = shoppingLists;
         this.shoppingListsFragment = shoppingListsFragment;
+    }
+
+    public ShoppingListsAdapter(ArrayList<ShopItem> shoppingLists, ShoppingListsFragment shoppingListsFragment, Button viewById) {
+        mListData = shoppingLists;
+        this.shoppingListsFragment = shoppingListsFragment;
+        totalText = viewById;
     }
 
     public boolean contains(String s){
@@ -100,6 +108,11 @@ public class ShoppingListsAdapter extends RecyclerView.Adapter<ShoppingListsAdap
         mListData.remove(position);
         notifyDataSetChanged();
         notifyItemRemoved(position);
+        double total=0;
+        for(ShopItem s :mListData){
+            total+=s.getmCO2();
+        }
+        totalText.setText("  " + Math.round(total * 1000) / 1000.0 + "Kg Co2");
     }
 
     @Override

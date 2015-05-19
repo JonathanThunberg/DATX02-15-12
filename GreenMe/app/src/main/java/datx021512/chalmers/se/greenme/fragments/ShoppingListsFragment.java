@@ -38,7 +38,7 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
 
         View rootView = inflater.inflate(R.layout.fragment_shopping_list, container, false);
         db = new DatabaseHelper(rootView.getContext());
-        mAdapter = new ShoppingListsAdapter(db.getShoppingLists(),this);
+        mAdapter = new ShoppingListsAdapter(db.getShoppingLists(),this,(Button) rootView.findViewById(R.id.total_text_list));
 
         getActivity().setTitle("Shopping Listor");
 
