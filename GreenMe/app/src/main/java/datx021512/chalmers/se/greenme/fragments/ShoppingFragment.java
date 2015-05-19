@@ -499,7 +499,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
             View convertView = inflater.inflate(R.layout.list_alert, null);
             alertDialog.setView(convertView);
             alertDialog.setTitle("Menade du detta?");
-            ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+            ListView lv = (ListView) convertView.findViewById(R.id.listViewOCR);
             ArrayList<String> suggestions = new ArrayList<>();
             suggestions.add("Skapa nytt objekt");
             suggestions.addAll(db.getImpactName(text));
