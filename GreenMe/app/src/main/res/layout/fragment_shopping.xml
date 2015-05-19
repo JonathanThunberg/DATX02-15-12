@@ -24,7 +24,8 @@
             android:completionThreshold="2"
             android:textColor="#ff000000"
             android:imeOptions="actionDone"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:background="@drawable/abc_edit_text_material" />
 
         <ImageButton
             android:id="@+id/add_text"
