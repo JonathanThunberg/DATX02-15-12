@@ -40,8 +40,6 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
         db = new DatabaseHelper(rootView.getContext());
         mAdapter = new ShoppingListsAdapter(db.getShoppingLists(),this);
 
-        getActivity().setTitle("Shopping Listor");
-
         mAddButton = (ImageButton) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);
 
@@ -55,7 +53,7 @@ public class ShoppingListsFragment extends Fragment implements View.OnClickListe
 
         setHasOptionsMenu(true);
 
-        getActivity().setTitle("Dina Listor");
+        getActivity().setTitle("Dina Inköpslistor");
         textView = (AutoCompleteTextView)
                 rootView.findViewById(R.id.text_input);
 

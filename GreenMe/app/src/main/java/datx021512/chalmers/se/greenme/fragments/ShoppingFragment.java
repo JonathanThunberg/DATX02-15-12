@@ -75,7 +75,6 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
         mainActivity = (MainActivity)getActivity();
-        mainActivity.setTitle("Shopping Lista");
         ArrayList<ShopItem> items = new ArrayList<ShopItem>();
         mAdapter = new ShoppingAdapter(rootView);
         db = new DatabaseHelper(rootView.getContext());
@@ -83,7 +82,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         if (args  != null && args.containsKey("Shopping_Name")){
             this.name = args.getString("Shopping_Name");
         }
-        getActivity().setTitle(name);
+        getActivity().setTitle("Varulista - "+name);
         mAdapter = new ShoppingAdapter(db.getSavedList(name), rootView);
         mAddButton = (ImageButton) rootView.findViewById(R.id.add_text);
         mAddButton.setOnClickListener(this);

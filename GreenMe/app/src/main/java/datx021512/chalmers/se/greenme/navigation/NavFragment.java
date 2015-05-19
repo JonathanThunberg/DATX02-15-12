@@ -108,7 +108,7 @@ public class NavFragment extends Fragment implements NavCallback {
         List<NavItem> items = new ArrayList<NavItem>();
         items.add(new NavItem("Hem ", getResources().getDrawable(
                 R.drawable.ic_home_grey600_48dp)));
-        items.add(new NavItem("Shopping Lista", getResources().getDrawable(
+        items.add(new NavItem("Inköpslistor", getResources().getDrawable(
                 R.drawable.ic_shopping_cart_grey600_48dp)));
         items.add(new NavItem("Resa", getResources().getDrawable(
                 R.drawable.ic_directions_car_grey600_48dp)));
