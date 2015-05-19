@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -79,6 +80,7 @@ public class LoginActivity extends Activity implements
     public void onConnectionFailed(ConnectionResult result) {
         Log.d(TAG,"Onconnectionfailed");
         if (!mIntentInProgress) {
+            Toast.makeText(this, "Det gick inte att ansluta till Google Games", Toast.LENGTH_LONG).show();
             // Store the ConnectionResult so that we can use it later when the user clicks
             // 'sign-in'.
             mConnectionResult = result;

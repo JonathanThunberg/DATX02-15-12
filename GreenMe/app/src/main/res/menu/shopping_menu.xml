@@ -3,8 +3,19 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="datx021512.chalmers.se.greenme.MainActivity">
+   <!-- <item
+        android:id="@+id/action_save"
+        android:title="@string/action_save"
+        android:icon="@drawable/ic_action_save"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_load"
+        android:title="@string/action_open"
+        android:icon="@drawable/ic_menu_archive"
+        app:showAsAction="ifRoom" /> -->
     <item
         android:id="@+id/action_reset"
         android:title="@string/action_reset"
-        app:showAsAction="always|withText" />
+        android:icon="@drawable/ic_action_remove"
+        app:showAsAction="ifRoom" />
 </menu>

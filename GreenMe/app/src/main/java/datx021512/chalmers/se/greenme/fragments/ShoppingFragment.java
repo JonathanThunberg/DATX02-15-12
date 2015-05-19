@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -195,8 +196,8 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
 
 
     private void createNewItem(String text) {
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View convertView = inflater.inflate(R.layout.dialog_newitem, null);
+            //LayoutInflater inflater = getActivity().getLayoutInflater();
+            View convertView = View.inflate(new ContextThemeWrapper(getActivity(), R.style.AboutDialog), R.layout.dialog_newitem, null);
             final EditText userInput = (EditText)
                     convertView.findViewById(R.id.username);
             final EditText userImpact = (EditText)
@@ -207,7 +208,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                 convertView.findViewById(R.id.userEkological);
             userInput.setText(text);
 
-            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AboutDialog));
             alertDialog.setPositiveButton("Create", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     String text = userInput.getText().toString();
@@ -325,8 +326,9 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                                                     mainActivity.getResources().getString(R.string.Leaderboard_Ekologiskt), score);
                                         }
                                     });
+                            Toast.makeText(getActivity(),"Topplistan uppdaterad",Toast.LENGTH_SHORT).show();
                         } else {
-                            Log.d("GREEN", " Something went wrong, the LeaderboardStatus is not OK. ");
+                            Toast.makeText(getActivity(),"Något gick fel",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -342,6 +344,14 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
+           /* case R.id.action_save:
+                Toast.makeText(getActivity(),"Sparar listan",Toast.LENGTH_SHORT).show();
+
+                return true;
+            case R.id.action_load:
+                Toast.makeText(getActivity(),"Laddar in en lista",Toast.LENGTH_SHORT).show();
+
+                return true; */
             case R.id.action_reset:
                 Toast.makeText(getActivity(),"Rensar listan",Toast.LENGTH_SHORT).show();
                 mAdapter.removeAllItems();
@@ -370,7 +380,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         if (scan!=null && read != null) {
             Log.d("OCR","ocr: " + read);
             try{
-                text = JSONToString(getFromInternetz(URL + read));
+                text = JSONToString(getResultFromICA(URL + read));
                 if(!text.equals("") && !text.equals(null) && !text.equals("null"))
                 {
                     String[] split = text.split(" ");
@@ -444,7 +454,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
         return null;
     }
 
-    public String getFromInternetz(String url)
+    public String getResultFromICA(String url)
     {
         try {
             DefaultHttpClient httpClient = new DefaultHttpClient();
