@@ -214,7 +214,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
                     String text2 = userImpact.getText().toString();
                     String county = userCountry.getText().toString();
                     int eco = 0;
-                    db.createNewItem(text, Integer.parseInt(text2));
+                    db.createNewItem(text, Integer.parseInt(text2),county);
                     if ((userEkological).isChecked()) {
                         eco = 1;
 
@@ -252,7 +252,7 @@ public class ShoppingFragment extends Fragment implements View.OnClickListener{
             public void onClick(DialogInterface dialog, int id) {
                 String text = userInput.getText().toString();
                 String text2 = userImpact.getText().toString();
-                db.createNewItem(text, Integer.parseInt(text2));
+                db.createNewItem(text, Integer.parseInt(text2),"");
                 addOCRToList(text, 1, weight, Double.parseDouble(text2));
 
             }

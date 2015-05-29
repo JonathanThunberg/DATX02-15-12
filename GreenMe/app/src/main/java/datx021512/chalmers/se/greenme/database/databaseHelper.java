@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         SQLiteDatabase db = getWritableDatabase();
         String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "ShoppingListsview" + "(NAME VARCHAR,DATE VARCHAR, AMOUNT DOUBLE);";
         db.execSQL(CREATE_CONTACTS_TABLE);
-        CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "OwnCategories" + "(NAME VARCHAR, IMPACT DOUBLE, STANDARDWEIGHT DOUBLE);";
+        CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "OwnCategories" + "(NAME VARCHAR, IMPACT DOUBLE, EKOLOGIC INTEGER, COUNTRY VARCHAR);";
         db.execSQL(CREATE_CONTACTS_TABLE);
         CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "TRAVELUSED" + "(DATE VARCHAR, TOTALUSED DOUBLE)";
         db.execSQL(CREATE_CONTACTS_TABLE);
@@ -130,7 +130,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
     public ArrayList<String> getImpact(String st){
 
         SQLiteDatabase db = getWritableDatabase();
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "OwnCategories" + "(NAME VARCHAR, IMPACT DOUBLE, EKOLOGIC INTEGER);";
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "OwnCategories" + "(NAME VARCHAR, IMPACT DOUBLE, EKOLOGIC INTEGER, COUNTRY VARCHAR);";
         db.execSQL(CREATE_CONTACTS_TABLE);
         db.close();
 
@@ -229,11 +229,12 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         return mArrayList;
     }
 
-    public void createNewItem(String text, double text2) {
+    public void createNewItem(String text, double text2,String county) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("NAME", text);
         values.put("IMPACT", text2);
+        values.put("COUNTRY",county);
         db.insert("OwnCategories", null, values);
         db.close();
     }
