@@ -24,11 +24,11 @@ public class DatabaseHelper extends SQLiteAssetHelper {
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         SQLiteDatabase db = getWritableDatabase();
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "ShoppingListsview" + "(NAME VARCHAR,DATE VARCHAR, AMOUNT DOUBLE);";
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "shopping_list" + "(NAME VARCHAR,DATE VARCHAR, AMOUNT DOUBLE);";
         db.execSQL(CREATE_CONTACTS_TABLE);
-        CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "OwnCategories" + "(NAME VARCHAR, IMPACT DOUBLE, EKOLOGIC INTEGER, COUNTRY VARCHAR);";
+        CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "own_food" + "(NAME VARCHAR, IMPACT DOUBLE, EKOLOGIC INTEGER, COUNTRY VARCHAR);";
         db.execSQL(CREATE_CONTACTS_TABLE);
-        CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "TRAVELUSED" + "(DATE VARCHAR, TOTALUSED DOUBLE)";
+        CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "travel_used" + "(DATE VARCHAR, TOTALUSED DOUBLE)";
         db.execSQL(CREATE_CONTACTS_TABLE);
         db.close();
     }
@@ -79,7 +79,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String [] sqlSelect = {"NAME", "IMPACT"};
-        String sqlTables = "meanCategories";
+        String sqlTables = "food";
         qb.setTables(sqlTables);
         Cursor c = qb.query(db, sqlSelect, null, null,
                 null, null, null);
@@ -92,7 +92,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String [] sqlSelect = {"NAME","COUNTRY","IMPACT","EKOLOGIC"};
-        String sqlTables = "vegCategories";
+        String sqlTables = "vegtable";
         qb.setTables(sqlTables);
         Cursor c = qb.query(db, sqlSelect, null, null,
                 null, null, null);
@@ -130,26 +130,26 @@ public class DatabaseHelper extends SQLiteAssetHelper {
     public ArrayList<String> getImpact(String st){
 
         SQLiteDatabase db = getWritableDatabase();
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "OwnCategories" + "(NAME VARCHAR, IMPACT DOUBLE, EKOLOGIC INTEGER, COUNTRY VARCHAR);";
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "own_food" + "(NAME VARCHAR, IMPACT DOUBLE, EKOLOGIC INTEGER, COUNTRY VARCHAR);";
         db.execSQL(CREATE_CONTACTS_TABLE);
         db.close();
 
         ArrayList<String> mArrayList = new ArrayList<>();
         for(String s :st.split("\\s+")) {
-            Cursor categories = getImpactFromDatabase("vegCategories", s);
+            Cursor categories = getImpactFromDatabase("vegtable", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
                 mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT"))));
                 categories.moveToNext();
             }
 
-            categories = getImpactFromDatabase("meanCategories", s);
+            categories = getImpactFromDatabase("food", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
                 mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT"))));
                 categories.moveToNext();
             }
-            categories = getImpactFromDatabase("OwnCategories", s);
+            categories = getImpactFromDatabase("own_food", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
                 mArrayList.add((categories.getString(categories.getColumnIndex("IMPACT"))));
@@ -165,20 +165,20 @@ public class DatabaseHelper extends SQLiteAssetHelper {
 
 
         for(String s :st.split("\\s+")) {
-            Cursor categories = getImpactFromDatabase("vegCategories", s);
+            Cursor categories = getImpactFromDatabase("vegtable", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
                 mArrayList.add((categories.getInt(categories.getColumnIndex("EKOLOGIC"))));
                 categories.moveToNext();
             }
 
-            categories = getImpactFromDatabase("meanCategories", s);
+            categories = getImpactFromDatabase("food", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
                 mArrayList.add(0);
                 categories.moveToNext();
             }
-            categories = getImpactFromDatabase("OwnCategories", s);
+            categories = getImpactFromDatabase("own_food", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
                 mArrayList.add((categories.getInt(categories.getColumnIndex("EKOLOGIC"))));
@@ -196,7 +196,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         ArrayList<String> mArrayList = new ArrayList<>();
         String temp;
         for(String s :st.split("\\s+")) {
-            Cursor categories = getImpactFromDatabase("vegCategories", s);
+            Cursor categories = getImpactFromDatabase("vegtable", s);
             categories.moveToFirst();
 
             while (!categories.isAfterLast()) {
@@ -208,14 +208,14 @@ public class DatabaseHelper extends SQLiteAssetHelper {
                 //+"  Ekologisk:"+categories.getString(categories.getColumnIndex("EKOLOGIC"))));
                 categories.moveToNext();
             }
-            categories = getImpactFromDatabase("meanCategories", s);
+            categories = getImpactFromDatabase("food", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
                 mArrayList.add((categories.getString(categories.getColumnIndex("NAME"))));
 
                 categories.moveToNext();
             }
-            categories = getImpactFromDatabase("OwnCategories", s);
+            categories = getImpactFromDatabase("own_food", s);
             categories.moveToFirst();
             while (!categories.isAfterLast()) {
                 temp =categories.getString(categories.getColumnIndex("NAME"))+"  "+categories.getString(categories.getColumnIndex("COUNTRY"));
@@ -235,16 +235,16 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         values.put("NAME", text);
         values.put("IMPACT", text2);
         values.put("COUNTRY",county);
-        db.insert("OwnCategories", null, values);
+        db.insert("own_food", null, values);
         db.close();
     }
     public void saveList(List<ShopItem> l,String name1) {
         String name=name1.replaceAll("\\s", "");
         SQLiteDatabase db = getWritableDatabase();
 
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "Shoppingview"+name + "(NAME VARCHAR, AMOUNT DOUBLE, COUNTRY VARCHAR, EKOLOGIC INTEGER);";
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "shopping_"+name + "(NAME VARCHAR, AMOUNT DOUBLE, COUNTRY VARCHAR, EKOLOGIC INTEGER);";
         db.execSQL(CREATE_CONTACTS_TABLE);
-        db.execSQL("delete from " + "Shoppingview" + name);
+        db.execSQL("delete from " + "shopping_" + name);
         db.close();
         double totalimpact =0;
         for(ShopItem s : l){
@@ -255,12 +255,12 @@ public class DatabaseHelper extends SQLiteAssetHelper {
             values.put("COUNTRY", s.getCountry());
             values.put("EKOLOGIC", s.getEco());
             Log.d("database", "database: " + s.getQuantity());
-            db.insert("Shoppingview"+name, null, values);
+            db.insert("shopping_"+name, null, values);
             db.close();
             totalimpact += s.getmCO2()*s.getQuantity();
         }
         db = getWritableDatabase();
-        db.execSQL("UPDATE ShoppingListsview SET AMOUNT='" + totalimpact + "' WHERE NAME='" + name1 + "'");
+        db.execSQL("UPDATE shopping_list SET AMOUNT='" + totalimpact + "' WHERE NAME='" + name1 + "'");
         db.close();
 
     }
@@ -268,11 +268,11 @@ public class DatabaseHelper extends SQLiteAssetHelper {
     public ArrayList<ShopItem> getSavedList(String name) {
         ArrayList<ShopItem> savedList = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "Shoppingview"+name.replaceAll("\\s","") + "(NAME VARCHAR, AMOUNT DOUBLE, COUNTRY VARCHAR, EKOLOGIC INTEGER);";
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + "shopping_"+name.replaceAll("\\s","") + "(NAME VARCHAR, AMOUNT DOUBLE, COUNTRY VARCHAR, EKOLOGIC INTEGER);";
         db.execSQL(CREATE_CONTACTS_TABLE);
         db.close();
 
-        Cursor categories = getFromDatabase("Shoppingview"+name.replaceAll("\\s",""), "NAME, AMOUNT, COUNTRY, EKOLOGIC");
+        Cursor categories = getFromDatabase("shopping_"+name.replaceAll("\\s",""), "NAME, AMOUNT, COUNTRY, EKOLOGIC");
         while (!categories.isAfterLast()) {
             savedList.add(
                     new ShopItem(categories.getString(categories.getColumnIndex("NAME")),
@@ -292,14 +292,14 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         values.put("NAME", s);
         values.put("DATE", format);
         values.put("AMOUNT", 0);
-        db.insert("ShoppingListsview", null, values);
+        db.insert("shopping_list", null, values);
         db.close();
     }
 
     public ArrayList<ShopItem> getShoppingLists() {
         ArrayList<ShopItem> savedList = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
-        Cursor categories = getFromDatabase("ShoppingListsview", "NAME, AMOUNT, DATE");
+        Cursor categories = getFromDatabase("shopping_list", "NAME, AMOUNT, DATE");
         while (!categories.isAfterLast()) {
             savedList.add(
                     new ShopItem(categories.getString(categories.getColumnIndex("NAME")),
@@ -312,8 +312,8 @@ public class DatabaseHelper extends SQLiteAssetHelper {
 
     public void removeShoppingList(String s) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete("ShoppingListsview", "NAME='" + s + "'", null);
-        db.execSQL("delete from " + "Shoppingview" + s.replaceAll("\\s", ""));
+        db.delete("shopping_list", "NAME='" + s + "'", null);
+        db.execSQL("delete from " + "shopping_" + s.replaceAll("\\s", ""));
         db.close();
     }
 
@@ -346,14 +346,14 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         ContentValues values = new ContentValues();
         values.put("DATE",date);
         values.put("TOTALUSED", totalused);
-        db.insert("TRAVELUSED", null, values);
+        db.insert("travel_used", null, values);
         db.close();
     }
 
     public ArrayList<ShopItem> getTravelUsed() {
         ArrayList<ShopItem> savedList = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
-        Cursor categories = getFromDatabase("TRAVELUSED", "DATE, TOTALUSED");
+        Cursor categories = getFromDatabase("travel_used", "DATE, TOTALUSED");
         while (!categories.isAfterLast()) {
             savedList.add(
                     new ShopItem(categories.getString(categories.getColumnIndex("DATE")),
