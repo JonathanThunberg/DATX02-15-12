@@ -58,14 +58,14 @@ public class VehicleFragment extends Fragment {
     private ArrayList<ImageButton> buttonList= new ArrayList<ImageButton>();
     private ArrayList<Button> carTypeButtonList=new ArrayList<Button>();
 
-    private double smallestCarCarbon = 158.12;
-    private double smallerCarCarbon = 190.28;
-    private double biggerCarCarbon = 230.48;
-    private double biggestCarCarbon = 270.68;
+    private double smallestCarCarbon = 0.15812;
+    private double smallerCarCarbon = 0.19028;
+    private double biggerCarCarbon = 0.23048;
+    private double biggestCarCarbon = 0.27068;
 
-    private double busCarbon = 60.68;
+    private double busCarbon = 0.053;
 
-    private double trainCarbon = 0.01;
+    private double trainCarbon = 0.0007;
 
     private double walkingCarbon = 0;
     private double bikingCarbon = 0;

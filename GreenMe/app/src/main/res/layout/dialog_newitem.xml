@@ -27,7 +27,6 @@
         android:hint="Påverkan kg/(kg co2)"/>
     <EditText
         android:id="@+id/usercountry"
-        android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
